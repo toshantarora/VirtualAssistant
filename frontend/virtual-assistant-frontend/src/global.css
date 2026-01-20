@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+* {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+@theme {
+  --color-primary: #0c4d25;
+  --color-primary-500: #0C4D25;
+  --color-primary-100:#c2d3c8;
+  --color-primary-200: #f4f6f4;
+  --color-secondary: #b2461e;
+  --color-tertiary: #0b2a4a;
+  --color-text: #06140a;
+  --color-tint: "#D4E3DA";
+  --color-grey: #d1d1d1;
+  --color-light-grey: #F5F5F5;
+  --color-black: #031108;
+}
