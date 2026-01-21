@@ -4,13 +4,15 @@ import {
   UsersRound,
   UserRoundPlus,
   Wrench,
+  MapPin,
 } from "lucide-react";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Users", href: "/dashboard/users", icon: UsersRound },
   { name: "Add User", href: "/dashboard/add-user", icon: UserRoundPlus },
-  { name: "Masters", href: "/dashboard/masters", icon: Wrench },
+//   { name: "Masters", href: "/dashboard/masters", icon: Wrench },
+  { name: "Locations", href: "/dashboard/locations", icon: MapPin },
 ];
 
 const SidebarNav = ({ onItemClick }) => {

@@ -8,6 +8,7 @@ import Dashboard from "../pages/dashboard/Dashboard";
 import Users from "../pages/dashboard/Users";
 import AddUser from "../pages/dashboard/AddUser";
 import Masters from "../pages/dashboard/Masters";
+import Locations from "../pages/dashboard/Locations";
 
 export default function AppRouter() {
   return (
@@ -32,6 +33,7 @@ export default function AppRouter() {
           <Route path="/dashboard/users" element={<Users />} />
           <Route path="/dashboard/add-user" element={<AddUser />} />
           <Route path="/dashboard/masters" element={<Masters />} />
+          <Route path="/dashboard/locations" element={<Locations />} />
         </Route>
 
         {/* Fallback */}
