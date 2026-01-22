@@ -1,7 +1,7 @@
 import { Loader2, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import DeleteUserModal from "./DeleteUserModal";
-import { formatLastActive, formatUsageTime } from "../utils/time";
+import { formatLastActive, formatUsageTime, getShortId } from "../utils/time";
 import { deleteUserApi } from "../services/dashboardService";
 import Notification from "./Notification";
 
@@ -71,7 +71,6 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted }) => {
     return <p className="p-6 text-center">No users found</p>;
   }
 
-
   return (
     <>
       <Notification
@@ -101,15 +100,32 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted }) => {
                   key={user.id}
                   className="hover:bg-gray-50 transition-colors"
                 >
-                  <td className="px-6 py-5">{user.id}</td>
+                  <td className="px-6 py-5">
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(user.id);
+                      }}
+                      className="
+      font-medium
+      text-primary-700
+      hover:underline
+      active:scale-95
+      transition
+      cursor-pointer
+    "
+                      title="Click to copy full ID"
+                    >
+                      {getShortId(user.id)}
+                    </button>
+                  </td>
 
                   <td className="px-6 py-5">
                     <div className="flex items-center gap-3">
-                      <img
+                      {/* <img
                         src={user.avatar}
                         className="h-10 w-10 rounded-full"
                         alt="avatar"
-                      />
+                      /> */}
                       <div>
                         <p className="font-medium">{user.fullname}</p>
                         <p className="text-xs text-green-800">{user.email}</p>

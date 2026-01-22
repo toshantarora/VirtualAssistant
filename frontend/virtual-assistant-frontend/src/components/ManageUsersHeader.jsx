@@ -1,11 +1,22 @@
 import { Search, Plus } from "lucide-react";
 
-const ManageUsersHeader = ({  total, openAdd , search, onSearch }) => {
+const ManageUsersHeader = ({
+  total,
+  openAdd,
+  search,
+  onSearch,
+  showAddUser = true,
+  status = null,
+}) => {
   return (
     <div className="flex flex-col px-4 gap-4 sm:flex-row sm:items-center sm:justify-between">
       <h2 className="text-lg font-semibold">
-        Manage Users{" "}
-        <span className="text-sm text-gray-500">({total} Total)</span>
+        {status == "ACTIVE"
+          ? "Active"
+          : status === "INACTIVE"
+          ? "Inactive"
+          : "Total"}{" "}
+        Users <span className="text-sm text-gray-500">({total} Total)</span>
       </h2>
 
       <div className="flex items-center gap-3">
@@ -20,14 +31,18 @@ const ManageUsersHeader = ({  total, openAdd , search, onSearch }) => {
           />
         </div>
 
-        <button  onClick={() => openAdd()} className="flex items-center gap-2 rounded-full bg-secondary px-5 py-2 text-sm font-medium text-white">
-          <Plus size={16} />
-          Add User
-        </button>
+        {showAddUser && (
+          <button
+            onClick={() => openAdd()}
+            className="flex items-center gap-2 rounded-full bg-secondary px-5 py-2 text-sm font-medium text-white"
+          >
+            <Plus size={16} />
+            Add User
+          </button>
+        )}
       </div>
     </div>
   );
 };
 
 export default ManageUsersHeader;
-

@@ -20,14 +20,37 @@ export const getDashboardStats = () => {
   return api.get("/admin/dashboard/stats");
 };
 
+// export const getUsers = async ({
+//   page = 1,
+//   limit = 10,
+//   search = "",
+//   role = "USER",
+//   isActive,
+// }) => {
+//   const API_URL = "/admin/users";
+//   const params = {
+//     page,
+//     limit,
+//     role,
+    
+//   };
+
+//   if (search) params.search = search;
+//   if (isActive !== undefined) params.isActive = isActive;
+
+//   return api.get(API_URL, { params });
+// };
 export const getUsers = async ({
   page = 1,
   limit = 10,
   search = "",
   role = "USER",
-  isActive,
+  status,                 // ✅ ACTIVE | INACTIVE
+  lastActiveFrom,         // ✅ ISO DateTime
+  lastActiveTo,           // ✅ ISO DateTime
 }) => {
   const API_URL = "/admin/users";
+
   const params = {
     page,
     limit,
@@ -35,10 +58,15 @@ export const getUsers = async ({
   };
 
   if (search) params.search = search;
-  if (isActive !== undefined) params.isActive = isActive;
+  if (status) params.status = status;
+
+  // ✅ Backend expects DateTime strings
+  if (lastActiveFrom) params.lastActiveFrom = lastActiveFrom;
+  if (lastActiveTo) params.lastActiveTo = lastActiveTo;
 
   return api.get(API_URL, { params });
 };
+
 
 export const updateUserApi = (id, payload) => {
   return api.patch(

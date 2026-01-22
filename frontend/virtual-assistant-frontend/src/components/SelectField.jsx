@@ -10,7 +10,7 @@ const SelectField = ({
    onChange,
 }) => {
   return (
-    <div className="w-[306px]">
+    <div className="">
       {label && (
         <label className="mb-1 block text-sm font-medium text-gray-700">
           {label}
