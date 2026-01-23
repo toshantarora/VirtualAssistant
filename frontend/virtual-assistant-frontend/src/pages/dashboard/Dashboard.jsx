@@ -143,7 +143,7 @@ const Dashboard = () => {
       {/* ================= Users Table ================= */}
       <div className="bg-white py-3 mt-6 rounded-2xl border border-primary-100 space-y-6">
         <ManageUsersHeader
-          total={stats.totalUsers}
+          total={totalUsers}
           openAdd={openAdd}
           search={search}
           onSearch={(value) => {
