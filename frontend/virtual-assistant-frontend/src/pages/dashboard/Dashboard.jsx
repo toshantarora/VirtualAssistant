@@ -95,6 +95,7 @@ const Dashboard = () => {
         status,
         lastActiveFrom,
         lastActiveTo,
+        sortBy: "recent",
       });
 
       setUsers(res.data.data.users);
@@ -154,7 +155,6 @@ const Dashboard = () => {
   const handleUserDeleted = async () => {
     await Promise.all([fetchUsers(), fetchStats()]);
   };
-console.log("status", status);
 
   return (
     <>
@@ -178,12 +178,6 @@ console.log("status", status);
           active={status === "ACTIVE"}
         />
 
-        {/* <StatCard
-          title="Inactive Users (7d)"
-          value={stats.inactiveLast7Days}
-          icon={UserX}
-          loading={statsLoading}
-        /> */}
         <StatCard
           title="Inactive Users (7d)"
           value={stats.inactiveLast7Days}
