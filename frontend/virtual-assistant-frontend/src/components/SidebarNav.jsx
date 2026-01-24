@@ -12,7 +12,7 @@ const navigation = [
   { name: "Users", href: "/dashboard/users", icon: UsersRound },
   { name: "Add User", href: "/dashboard/add-user", icon: UserRoundPlus },
 //   { name: "Masters", href: "/dashboard/masters", icon: Wrench },
-  { name: "Locations", href: "/dashboard/locations", icon: MapPin },
+  { name: "Masters", href: "/dashboard/locations", icon: MapPin },
 ];
 
 const SidebarNav = ({ onItemClick }) => {

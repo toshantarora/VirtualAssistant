@@ -74,7 +74,7 @@ const Login = () => {
             src={loginImg}
             alt="Virtual Assistant"
             //className="w-full h-full  object-cover"
-            className="max-h-full w-auto object-contain"
+            className="h-auto w-auto object-contain"
           />
         </div>
 
@@ -114,14 +114,14 @@ const Login = () => {
                 error={errors.password}
               />
 
-              <div className="text-right">
+              {/* <div className="text-right">
                 <button
                   type="button"
                   className="text-sm text-primary hover:underline"
                 >
                   Forget password?
                 </button>
-              </div>
+              </div> */}
 
               <button
                 type="submit"

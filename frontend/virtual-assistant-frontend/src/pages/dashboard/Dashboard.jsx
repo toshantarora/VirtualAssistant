@@ -6,7 +6,10 @@ import Pagination from "../../components/Pagination";
 import StatCard from "../../components/StatCard";
 import UserModal from "../../components/UserModal";
 import UsersTable from "../../components/UsersTable";
+import { useLocations } from "../../hooks/useLocations";
+import SelectField from "../../components/SelectField";
 import { getDashboardStats, getUsers } from "../../services/dashboardService";
+import { useForm } from "react-hook-form";
 
 const Dashboard = () => {
   /* ------------------ Modal State ------------------ */
@@ -23,6 +26,24 @@ const Dashboard = () => {
   const [page, setPage] = useState(1);
   const limit = 6;
   const [search, setSearch] = useState("");
+  const [province, setProvince] = useState("");
+  const [consistuancy, setConsistuancy] = useState("");
+  const [facility, setFacility] = useState("");
+  const [ward, setWard] = useState("");const {
+      states,
+      constituencies,
+      facilities,
+      wards,
+      fetchStates,
+      fetchConstituencies,
+      fetchFacilities,
+      fetchWards,
+    } = useLocations();
+
+    const {
+        register,
+        reset,
+      } = useForm();
 
   /* ------------------ Stats State ------------------ */
   const [stats, setStats] = useState({
@@ -46,6 +67,28 @@ const Dashboard = () => {
     setMode("edit");
     setSelectedUser(user);
     setOpen(true);
+  };
+
+  /* ------------------ FETCH STATES ------------------ */
+  useEffect(() => {
+    fetchStates();
+  }, []);
+  /* ------------------ SELECT HANDLERS ------------------ */
+  const onStateChange = async (e) => {
+    console.log("onStateChange = ", e.target.value)
+    setProvince(e.target.value)
+    reset({ constituency: "", facility: "", ward: "" });
+    await fetchConstituencies(e.target.value);
+  };
+
+  const onConstituencyChange = async (e) => {
+    reset({ facility: "", ward: "" });
+    await fetchFacilities(e.target.value);
+  };
+
+  const onFacilityChange = async (e) => {
+    reset({ ward: "" });
+    await fetchWards(e.target.value);
   };
 
   /* ------------------ Fetch Stats ------------------ */
@@ -111,6 +154,55 @@ const Dashboard = () => {
   return (
     <>
       {/* ================= Stats ================= */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <SelectField
+              name="state"
+              placeholder="Province"
+              register={register}
+              // error={errors.state}
+              onChange={onStateChange}
+              options={states.map((s) => ({
+                label: s.name,
+                value: s.id,
+              }))}
+            />
+
+            <SelectField
+              name="constituency"
+              placeholder="Constituency"
+              register={register}
+              // error={errors.constituency}
+              onChange={onConstituencyChange}
+              options={constituencies.map((c) => ({
+                label: c.name,
+                value: c.id,
+              }))}
+            />
+
+            <SelectField
+              name="facility"
+              placeholder="Facility"
+              register={register}
+              // error={errors.facility}
+              onChange={onFacilityChange}
+              options={facilities.map((f) => ({
+                label: f.name,
+                value: f.id,
+              }))}
+            />
+
+            <SelectField
+              name="ward"
+              placeholder="Ward"
+              register={register}  
+              // error={errors.ward}
+              options={wards.map((w) => ({
+                label: w.name,
+                value: w.id,
+              }))}
+            />
+          </div>
+
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <StatCard
           title="Total Users"

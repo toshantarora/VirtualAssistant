@@ -32,7 +32,7 @@ const StatsCard = ({
           <Icon className="h-6 w-6 text-black" />
         </div>
 
-        {!loading && (
+        {/* {!loading && (
           <span
             className={`rounded-full px-3 py-1 text-sm font-medium ${
               isUp ? "bg-green-100 text-green-600" : "bg-red-100 text-red-500"
@@ -40,7 +40,7 @@ const StatsCard = ({
           >
             {percentage}
           </span>
-        )}
+        )} */}
       </div>
 
       <div className="mt-6">

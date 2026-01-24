@@ -31,17 +31,17 @@ const Header = ({ onMenuClick }) => {
 
         {/* Right */}
         <div className="hidden lg:flex items-center gap-6">
-          <span className="text-sm cursor-pointer">Help</span>
-          <span className="text-sm cursor-pointer">Settings</span>
+          {/* <span className="text-sm cursor-pointer">Help</span>
+          <span className="text-sm cursor-pointer">Settings</span> */}
 
           <div className="h-6 w-px bg-gray-200" />
 
           <span className="text-sm font-medium">Super Admin</span>
 
-          <img
+          {/* <img
             src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e"
             className="h-9 w-9 rounded-full"
-          />
+          /> */}
 
           <button
             onClick={handleLogout}
