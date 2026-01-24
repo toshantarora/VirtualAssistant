@@ -20,8 +20,10 @@ const locationService = {
   },
 
   // Delete a location
-  deleteLocation: async (id) => {
-    const response = await api.delete(`/admin/locations/${id}`);
+  deleteLocation: async (id, type) => {
+    const response = await api.delete(`/admin/locations/${id}`, {
+      params: { type },
+    });
     return response.data;
   },
 

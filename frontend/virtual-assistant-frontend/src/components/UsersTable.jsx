@@ -1,7 +1,7 @@
 import { Loader2, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import DeleteUserModal from "./DeleteUserModal";
-import { formatLastActive, formatUsageTime, getShortId } from "../utils/time";
+// import { formatLastActive, formatUsageTime, getShortId } from "../utils/time";
 import { deleteUserApi } from "../services/dashboardService";
 import Notification from "./Notification";
 
@@ -85,11 +85,17 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted }) => {
           <table className="w-full text-sm border-collapse">
             <thead className="sticky top-0 z-10 bg-[#f6f8f5] text-left shadow-sm">
               <tr>
-                <th className="px-6 py-4 font-medium">User ID</th>
-                <th className="px-6 py-4 font-medium">Name & Email</th>
-                <th className="px-6 py-4 font-medium">Mobile Number</th>
+                {/* <th className="px-6 py-4 font-medium">User ID</th>
                 <th className="px-6 py-4 font-medium">Usage Time</th>
                 <th className="px-6 py-4 font-medium">Last Active</th>
+                 */}
+                <th className="px-6 py-4 font-medium">Name & Email</th>
+                <th className="px-6 py-4 font-medium">Mobile Number</th>{" "}
+                <th className="px-6 py-4 font-medium">Province</th>
+                <th className="px-6 py-4 font-medium">consistuancy</th>{" "}
+                <th className="px-6 py-4 font-medium">Facility</th>
+                <th className="px-6 py-4 font-medium">ward</th>{" "}
+                <th className="px-6 py-4 font-medium">facilityType</th>
                 <th className="px-6 py-4 font-medium">Actions</th>
               </tr>
             </thead>
@@ -100,7 +106,7 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted }) => {
                   key={user.id}
                   className="hover:bg-gray-50 transition-colors"
                 >
-                  <td className="px-6 py-5">
+                  {/* <td className="px-6 py-5">
                     <button
                       onClick={() => {
                         navigator.clipboard.writeText(user.id);
@@ -117,8 +123,7 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted }) => {
                     >
                       {getShortId(user.id)}
                     </button>
-                  </td>
-
+                  </td> */}
                   <td className="px-6 py-5">
                     <div className="flex items-center gap-3">
                       {/* <img
@@ -132,17 +137,25 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted }) => {
                       </div>
                     </div>
                   </td>
-
                   <td className="px-6 py-5 font-medium">{user.mobile}</td>
-
                   <td className="px-6 py-5 font-medium">
-                    {formatUsageTime(user.totalUsageSeconds)}
+                    {/* {formatUsageTime(user.totalUsageSeconds)} */}
+                    {user?.provinceId ? user?.provinceId : "-"}
+                  </td>
+                  <td className="px-6 py-5 text-gray-600">
+                    {/* {formatLastActive(user.lastActiveAt)} */}
+                    {user?.constituencyId ? user?.constituencyId : "-"}
                   </td>
 
                   <td className="px-6 py-5 text-gray-600">
-                    {formatLastActive(user.lastActiveAt)}
+                    {user?.facilityId ? user?.facilityId : "-"}
                   </td>
-
+                  <td className="px-6 py-5 text-gray-600">
+                    {user?.wardId ? user?.wardId : "-"}
+                  </td>
+                  <td className="px-6 py-5 text-gray-600">
+                    {user?.facilityTypeId ? user?.facilityTypeId : "-"}
+                  </td>
                   <td className="px-6 py-5">
                     <div className="flex gap-4">
                       <button

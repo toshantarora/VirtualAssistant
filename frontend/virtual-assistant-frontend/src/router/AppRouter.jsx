@@ -7,21 +7,27 @@ import Login from "../pages/auth/Login";
 import Dashboard from "../pages/dashboard/Dashboard";
 import Users from "../pages/dashboard/Users";
 import AddUser from "../pages/dashboard/AddUser";
-import Masters from "../pages/dashboard/Masters";
 import Locations from "../pages/dashboard/Locations";
+
+/* Masters Pages */
+import Province from "../pages/dashboard/masters/Province";
+import Constituency from "../pages/dashboard/masters/Constituency";
+import Facility from "../pages/dashboard/masters/Facility";
+import Ward from "../pages/dashboard/masters/Ward";
 
 export default function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Default Route */}
+        {/* ================= Root ================= */}
         <Route path="/" element={<Navigate to="/login" replace />} />
-        {/* Auth Routes */}
+
+        {/* ================= Auth ================= */}
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />
         </Route>
 
-        {/* Protected Routes */}
+        {/* ================= Protected ================= */}
         <Route
           element={
             <ProtectedRoute>
@@ -32,12 +38,20 @@ export default function AppRouter() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dashboard/users" element={<Users />} />
           <Route path="/dashboard/add-user" element={<AddUser />} />
-          <Route path="/dashboard/masters" element={<Masters />} />
           <Route path="/dashboard/locations" element={<Locations />} />
+
+          {/* ========= Masters ========= */}
+          <Route path="/dashboard/masters">
+            <Route index element={<Navigate to="province" replace />} />
+            <Route path="province" element={<Province />} />
+            <Route path="constituency" element={<Constituency />} />
+            <Route path="facility" element={<Facility />} />
+            <Route path="ward" element={<Ward />} />
+          </Route>
         </Route>
 
-        {/* Fallback */}
-        <Route path="*" element={<Login />} />
+        {/* ================= Fallback ================= */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
   );
