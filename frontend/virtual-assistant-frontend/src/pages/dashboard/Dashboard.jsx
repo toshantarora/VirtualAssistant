@@ -5,7 +5,7 @@ import ManageUsersHeader from "../../components/ManageUsersHeader";
 import Pagination from "../../components/Pagination";
 import StatCard from "../../components/StatCard";
 import UserModal from "../../components/UserModal";
-import UsersTable from "../../components/UsersTable";
+import UsersTableDashBoard from "../../components/UsersTableDashBoard";
 import { useLocations } from "../../hooks/useLocations";
 import SelectField from "../../components/SelectField";
 import { getDashboardStats, getUsers } from "../../services/dashboardService";
@@ -244,7 +244,7 @@ const Dashboard = () => {
           }}
         />
 
-        <UsersTable
+        <UsersTableDashBoard
           users={users}
           loading={usersLoading}
           openEdit={openEdit}
