@@ -1,15 +1,6 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
-
-import {
-  ChevronRight,
-  Folder,
-  FolderOpen,
-  Plus,
-  MapPin,
-  Pencil,
-  Trash2,
-  Search,
-} from "lucide-react";
+import { Plus, Pencil, Trash2, Search } from "lucide-react";
 import { useForm } from "react-hook-form";
 import locationService from "../../../services/locationService";
 import InputBox from "../../../components/InputBox";
@@ -22,9 +13,20 @@ import {
 } from "@headlessui/react";
 import DeleteUserModal from "../../../components/DeleteUserModal";
 import ConfirmDeleteModal from "../../../components/ConfirmDeleteModal";
+import { useLocations } from "../../../hooks/useLocations";
+import SelectField from "../../../components/SelectField";
 
 const LOCATION_HIERARCHY = ["PROVINCE", "CONSTITUENCY", "FACILITY", "WARD"];
 
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const constituencySchema = z.object({
+  state: z.string().min(1, "Province is required"),
+  constituency: z.string().trim().min(1, "Constituency is required"),
+  facility: z.string().trim().min(1, "Facility is required"),
+  ward: z.string().trim().min(1, "Ward is required"),
+});
 const Ward = () => {
   const [locations, setLocations] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -32,10 +34,22 @@ const Ward = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [creating, setCreating] = useState(false);
   const [editingLocation, setEditingLocation] = useState(null);
+  const [prefillLoading, setPrefillLoading] = useState(false);
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [locationToDelete, setLocationToDelete] = useState(null);
   const isEditMode = Boolean(editingLocation);
+
+  const {
+    states,
+    constituencies,
+    facilities,
+    // wards,
+    fetchStates,
+    fetchConstituencies,
+    fetchFacilities,
+    // fetchWards,
+  } = useLocations();
   const {
     register,
     handleSubmit,
@@ -43,7 +57,15 @@ const Ward = () => {
     setValue,
     setError,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    resolver: zodResolver(constituencySchema),
+    defaultValues: {
+      state: "",
+      constituency: "",
+      facility: "",
+      ward: "",
+    },
+  });
 
   // ================= FETCH PROVINCES =================
   const fetchLocations = async () => {
@@ -52,7 +74,7 @@ const Ward = () => {
       const data = await locationService.getLocations({ type: "WARD" });
       setLocations(data);
     } catch (error) {
-      console.error("Failed to fetch CONSTITUENCY", error);
+      console.error("Failed to fetch ward", error);
     } finally {
       setLoading(false);
     }
@@ -85,7 +107,7 @@ const Ward = () => {
     // 🔑 ensure edit state is cleared AFTER modal closes
     setTimeout(() => {
       setEditingLocation(null);
-      reset({ name: "" });
+      reset({ constituency: "", state: "", facility: "" });
     }, 0);
   };
 
@@ -94,10 +116,45 @@ const Ward = () => {
     setLocationToDelete(location);
     setDeleteModalOpen(true);
   };
+  console.log("editingLocation", editingLocation);
 
+  useEffect(() => {
+    if (!isModalOpen) return;
+
+    const init = async () => {
+      setPrefillLoading(true);
+
+      reset({ constituency: "", state: "", facility: "" });
+
+      await fetchStates();
+
+      if (isEditMode && editingLocation) {
+        reset({
+          state: editingLocation?.province?.id,
+          constituency: editingLocation?.constituency?.id,
+          facility: editingLocation?.facilityId,
+          ward: editingLocation?.name,
+        });
+        await fetchConstituencies(editingLocation?.province?.id);
+        reset((p) => ({
+          ...p,
+          constituency: editingLocation?.constituency?.id,
+        }));
+        await fetchFacilities(editingLocation?.constituency?.id);
+        reset((p) => ({ ...p, facility: editingLocation.facilityId }));
+      }
+
+      setPrefillLoading(false);
+    };
+
+    init();
+  }, [isModalOpen, editingLocation]);
+
+  console.log("editingLocation", editingLocation);
   // ================= ADD / EDIT PROVINCE =================
   const onSubmit = async (data) => {
-    const name = data.name.trim();
+    const name = data.ward.trim();
+    console.log("data", data, locations);
 
     // Prevent duplicate Province names
     const exists = locations.some(
@@ -107,26 +164,31 @@ const Ward = () => {
     );
 
     if (exists) {
-      setError("name", {
+      setError("ward", {
         type: "manual",
-        message: "Province already exists",
+        message: "Ward already exists",
       });
       return;
     }
 
     setCreating(true);
+    console.log("data", data);
+
     try {
       if (editingLocation) {
         // ✅ EDIT (SEND TYPE)
+
         await locationService.updateLocation(editingLocation.id, {
+          parentId: data.facility,
           name,
-          type: "PROVINCE",
+          type: "WARD",
         });
       } else {
         // ✅ ADD
         await locationService.createLocation({
+          parentId: data?.facility,
           name,
-          type: "PROVINCE",
+          type: "WARD",
         });
       }
 
@@ -145,22 +207,42 @@ const Ward = () => {
     if (!locationToDelete) return;
 
     try {
-      await locationService.deleteLocation(locationToDelete.id, "PROVINCE");
+      await locationService.deleteLocation(locationToDelete.id, "WARD");
 
       setDeleteModalOpen(false);
       setLocationToDelete(null);
       fetchLocations();
     } catch (error) {
+      reset({ constituency: "", state: "" });
       console.error("Delete failed", error);
-      alert(error.response?.data?.message || "Failed to delete province");
+      alert(error.response?.data?.message || "Failed to delete ward");
     }
   };
+
+  const onStateChange = async (e) => {
+    const value = e.target.value;
+    reset({ constituency: "", facility: "", ward: "" });
+    await fetchConstituencies(value);
+  };
+  const onConstituencyChange = async (e) => {
+    const value = e.target.value;
+    reset({ facility: "", ward: "" });
+    await fetchFacilities(value);
+  };
+
+  const onFacilityChange = async (e) => {
+    const value = e.target.value;
+    reset({ ward: "" });
+    //await fetchWards(value);
+  };
+  console.log("onStateChange", states);
+  console.log("constituencies", constituencies);
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-6 min-h-[calc(100vh-(--spacing(32)))]">
       <div className="relative mb-6 flex items-center">
         {/* Left: Title */}
-        <h1 className="text-2xl font-bold text-gray-800">Ward</h1>
+        <h1 className="text-2xl font-bold text-gray-800">Wards</h1>
 
         {/* Center: Search */}
         <div className="absolute left-1/2 w-full max-w-sm -translate-x-1/2">
@@ -208,8 +290,8 @@ const Ward = () => {
                   <tr>
                     <th className="px-6 py-4 font-medium">Province</th>
                     <th className="px-6 py-4 font-medium">Constituency</th>
-                     <th className="px-6 py-4 font-medium">Facility</th>
-                      <th className="px-6 py-4 font-medium">Ward</th>
+                    <th className="px-6 py-4 font-medium">Facility</th>
+                    <th className="px-6 py-4 font-medium">Ward</th>
                     <th className="px-6 py-4 font-medium text-right">Action</th>
                   </tr>
                 </thead>
@@ -228,37 +310,36 @@ const Ward = () => {
                             <p className="font-medium text-gray-900">
                               {location.province.name}
                             </p>
-                          
+                            {/* <p className="text-xs text-green-800">
+                             {location.name}
+                            </p> */}
                           </div>
                         </div>
                       </td>
-                       <td className="px-6 py-5">
+                      <td className="px-6 py-5">
                         <div className="flex items-center gap-3">
                           <div>
                             <p className="font-medium text-gray-900">
                               {location.constituency.name}
                             </p>
-                           
                           </div>
                         </div>
                       </td>
-                        <td className="px-6 py-5">
+                      <td className="px-6 py-5">
                         <div className="flex items-center gap-3">
                           <div>
                             <p className="font-medium text-gray-900">
                               {location.facility.name}
                             </p>
-                           
                           </div>
                         </div>
                       </td>
-                       <td className="px-6 py-5">
+                      <td className="px-6 py-5">
                         <div className="flex items-center gap-3">
                           <div>
                             <p className="font-medium text-gray-900">
                               {location.name}
                             </p>
-                           
                           </div>
                         </div>
                       </td>
@@ -304,8 +385,8 @@ const Ward = () => {
                         className="px-6 py-12 text-center text-gray-500"
                       >
                         {searchTerm
-                          ? "No matching provinces found"
-                          : "No provinces found"}
+                          ? "No matching data found"
+                          : "No data found"}
                       </td>
                     </tr>
                   )}
@@ -356,33 +437,81 @@ const Ward = () => {
                 <DialogTitle className="text-lg font-medium mb-4">
                   {isEditMode ? "Edit Province" : "Add New Province"}
                 </DialogTitle>
-
-                <form onSubmit={handleSubmit(onSubmit)}>
-                  <InputBox
-                    label="Province Name"
-                    name="name"
-                    register={register}
-                    placeholder="Enter province name"
-                    error={errors.name}
-                  />
-
-                  <div className="mt-6 flex justify-end gap-3">
-                    <button
-                      type="button"
-                      onClick={closeModal}
-                      className="border px-4 py-2 rounded-md text-sm"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={creating}
-                      className="bg-primary text-white px-4 py-2 rounded-md text-sm disabled:opacity-50"
-                    >
-                      {creating ? "Saving..." : isEditMode ? "Update" : "Save"}
-                    </button>
+                {prefillLoading ? (
+                  <div className="flex h-40 items-center justify-center">
+                    <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary" />
                   </div>
-                </form>
+                ) : (
+                  <form onSubmit={handleSubmit(onSubmit)}>
+                    <SelectField
+                      name="state"
+                      placeholder="Province"
+                      register={register}
+                      error={errors.state}
+                      onChange={onStateChange}
+                      options={states.map((s) => ({
+                        label: s.name,
+                        value: s.id,
+                      }))}
+                    />
+                    <div className="mt-4">
+                      <SelectField
+                        name="constituency"
+                        placeholder="Constituency"
+                        register={register}
+                        error={errors.constituency}
+                        onChange={onConstituencyChange}
+                        options={constituencies.map((s) => ({
+                          label: s.name,
+                          value: s.id,
+                        }))}
+                      />
+                    </div>
+                    <div className="mt-4">
+                      <SelectField
+                        name="facility"
+                        placeholder="Facility"
+                        register={register}
+                        error={errors.facility}
+                        options={facilities.map((f) => ({
+                          label: f.name,
+                          value: f.id,
+                        }))}
+                        onChange={onFacilityChange}
+                      />
+                    </div>
+                    <div className="mt-4">
+                      <InputBox
+                        // label="Constituency"
+                        name="ward"
+                        register={register}
+                        placeholder="Enter Ward Name"
+                        error={errors.ward}
+                      />
+                    </div>
+
+                    <div className="mt-6 flex justify-end gap-3">
+                      <button
+                        type="button"
+                        onClick={closeModal}
+                        className="border px-4 py-2 rounded-md text-sm"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={creating}
+                        className="bg-primary text-white px-4 py-2 rounded-md text-sm disabled:opacity-50"
+                      >
+                        {creating
+                          ? "Saving..."
+                          : isEditMode
+                          ? "Update"
+                          : "Save"}
+                      </button>
+                    </div>
+                  </form>
+                )}
               </DialogPanel>
             </TransitionChild>
           </div>
