@@ -23,7 +23,7 @@ const SelectFieldHeader = ({
       <div className="relative">
         <select
           {...rest}
-          className={`h-[60px] w-full appearance-none rounded-[24px] border px-6 py-3 pr-12 text-sm outline-none
+          className={`h-12 md:h-[60px] w-full appearance-none rounded-xl md:rounded-[24px] border px-4 md:px-6 py-2 md:py-3 pr-10 md:pr-12 text-xs md:text-sm outline-none
             ${
               error
                 ? "border-red-500 focus:ring-red-500"

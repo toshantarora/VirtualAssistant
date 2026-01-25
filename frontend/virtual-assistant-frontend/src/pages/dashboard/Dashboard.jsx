@@ -26,10 +26,20 @@ const Dashboard = () => {
   const [page, setPage] = useState(1);
   const limit = 6;
   const [search, setSearch] = useState("");
-  const [province, setProvince] = useState("");
-  const [consistuancy, setConsistuancy] = useState("");
-  const [facility, setFacility] = useState("");
-  const [ward, setWard] = useState("");const {
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  /* ------------------ Debounce Search ------------------ */
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [search]);
+  
+  const {
       states,
       constituencies,
       facilities,
@@ -43,11 +53,11 @@ const Dashboard = () => {
     const {
         watch,
         register,
-        reset,
+        setValue,
       } = useForm({
         defaultValues: {
           province: "",
-          consistuancy: "",
+          constituency: "",
           facility: "",
           ward: "",
         },
@@ -81,38 +91,41 @@ const Dashboard = () => {
   useEffect(() => {
     fetchStates();
   }, []);
+
   /* ------------------ SELECT HANDLERS ------------------ */
   const onStateChange = async (e) => {
-    setProvince(e.target.value)
-    reset({ constituency: "", facility: "", ward: "" });
+    setValue("constituency", "");
+    setValue("facility", "");
+    setValue("ward", "");
     await fetchConstituencies(e.target.value);
   };
 
   const onConstituencyChange = async (e) => {
-    setConsistuancy(e.target.value)
-    reset({ facility: "", ward: "" });
+    setValue("facility", "");
+    setValue("ward", "");
     await fetchFacilities(e.target.value);
   };
 
   const onFacilityChange = async (e) => {
-    setFacility(e.target.value)
-    reset({ ward: "" });
+    setValue("ward", "");
     await fetchWards(e.target.value);
   };
 
-  const onWardChange = async (e) => {
-    setWard(e.target.value)
-  };
+  /* ------------------ Watchers ------------------ */
+  const selectedProvince = watch("province");
+  const selectedConstituency = watch("constituency");
+  const selectedFacility = watch("facility");
+  const selectedWard = watch("ward");
 
   /* ------------------ Fetch Stats ------------------ */
   const fetchStats = useCallback(async () => {
     try {
       setStatsLoading(true);
       const res = await getDashboardStats({
-        provinceId:watch("province"),
-        constituencyId:watch("consistuancy"),
-        facilityId:watch("facility"),
-        wardId:watch("ward"),
+        provinceId: selectedProvince,
+        constituencyId: selectedConstituency,
+        facilityId: selectedFacility,
+        wardId: selectedWard,
       });
       setStats(res.data.data);
     } catch (err) {
@@ -120,7 +133,7 @@ const Dashboard = () => {
     } finally {
       setStatsLoading(false);
     }
-  }, []);
+  }, [selectedProvince, selectedConstituency, selectedFacility, selectedWard]);
 
   /* ------------------ Fetch Users ------------------ */
   const fetchUsers = useCallback(async () => {
@@ -129,15 +142,15 @@ const Dashboard = () => {
       const res = await getUsers({
         page,
         limit,
-        search,
+        search: debouncedSearch,
         role: "USER",
         activeLast7Days: activeFilter === "active" ? true : undefined,
         inactiveLast7Days: activeFilter === "inactive" ? true : undefined,
         sortBy: "recent",
-        provinceId:watch("province"),
-        constituencyId:watch("consistuancy"),
-        facilityId:watch("facility"),
-        wardId:watch("ward"),
+        provinceId: selectedProvince,
+        constituencyId: selectedConstituency,
+        facilityId: selectedFacility,
+        wardId: selectedWard,
       });
 
       setUsers(res.data.data.users);
@@ -147,16 +160,16 @@ const Dashboard = () => {
     } finally {
       setUsersLoading(false);
     }
-  }, [page, limit, search, activeFilter]);
+  }, [page, limit, debouncedSearch, activeFilter, selectedProvince, selectedConstituency, selectedFacility, selectedWard]);
 
   /* ------------------ Effects ------------------ */
   useEffect(() => {
     fetchStats(); // once
-  }, [fetchStats, province, consistuancy, facility, ward]);
+  }, [fetchStats]);
 
   useEffect(() => {
     fetchUsers(); // on page/search change
-  }, [fetchUsers, province, consistuancy, facility, ward]);
+  }, [fetchUsers]);
 
   const handleFilterClick = (filter) => {
     setPage(1);
@@ -175,56 +188,6 @@ const Dashboard = () => {
   return (
     <>
       {/* ================= Stats ================= */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <SelectFieldHeader
-              name="province"
-              placeholder="Province"
-              register={register}
-              // error={errors.state}
-              onChange={onStateChange}
-              options={states.map((s) => ({
-                label: s.name,
-                value: s.id,
-              }))}
-            />
-
-            <SelectFieldHeader
-              name="constituency"
-              placeholder="Constituency"
-              register={register}
-              // error={errors.constituency}
-              onChange={onConstituencyChange}
-              options={constituencies.map((c) => ({
-                label: c.name,
-                value: c.id,
-              }))}
-            />
-
-            <SelectFieldHeader
-              name="facility"
-              placeholder="Facility"
-              register={register}
-              // error={errors.facility}
-              onChange={onFacilityChange}
-              options={facilities.map((f) => ({
-                label: f.name,
-                value: f.id,
-              }))}
-            />
-
-            <SelectFieldHeader
-              name="ward"
-              placeholder="Ward"
-              register={register}  
-              // error={errors.ward}
-              onChange={onWardChange}
-              options={wards.map((w) => ({
-                label: w.name,
-                value: w.id,
-              }))}
-            />
-          </div>
-
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <StatCard
           title="Total Users"
@@ -252,6 +215,53 @@ const Dashboard = () => {
           onClick={() => handleFilterClick("inactive")}
           active={activeFilter === "inactive"}
         />
+      </div>
+
+      <div className="bg-white p-3 md:p-5 mt-4 md:mt-8 rounded-2xl border border-primary-100">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
+          <SelectFieldHeader
+            name="province"
+            placeholder="Province"
+            register={register}
+            onChange={onStateChange}
+            options={states.map((s) => ({
+              label: s.name,
+              value: s.id,
+            }))}
+          />
+
+          <SelectFieldHeader
+            name="constituency"
+            placeholder="Constituency"
+            register={register}
+            onChange={onConstituencyChange}
+            options={constituencies.map((c) => ({
+              label: c.name,
+              value: c.id,
+            }))}
+          />
+
+          <SelectFieldHeader
+            name="facility"
+            placeholder="Facility"
+            register={register}
+            onChange={onFacilityChange}
+            options={facilities.map((f) => ({
+              label: f.name,
+              value: f.id,
+            }))}
+          />
+
+          <SelectFieldHeader
+            name="ward"
+            placeholder="Ward"
+            register={register}  
+            options={wards.map((w) => ({
+              label: w.name,
+              value: w.id,
+            }))}
+          />
+        </div>
       </div>
 
       {/* ================= Users Table ================= */}
