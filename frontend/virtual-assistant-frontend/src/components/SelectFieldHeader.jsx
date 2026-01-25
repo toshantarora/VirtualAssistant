@@ -3,11 +3,15 @@ import { ChevronDown } from "lucide-react";
 const SelectFieldHeader = ({
   label,
   name,
+  register,
   options = [],
   error,
   placeholder = "Select",
-   onChange,
+  onChange,
 }) => {
+
+  const { onChange: rhfOnChange, ...rest } = register(name);
+
   return (
     <div className="">
       {label && (
@@ -18,7 +22,7 @@ const SelectFieldHeader = ({
 
       <div className="relative">
         <select
-           {...register(name, { onChange })}
+          {...rest}
           className={`h-[60px] w-full appearance-none rounded-[24px] border px-6 py-3 pr-12 text-sm outline-none
             ${
               error
@@ -26,6 +30,10 @@ const SelectFieldHeader = ({
                 : "border-primary-100 focus:border-primary focus:ring-primary"
             }
           `}
+          onChange={(e) => {
+            rhfOnChange(e);   // ✅ update react-hook-form
+            onChange?.(e);    // ✅ your custom handler
+          }}
         >
           <option value="">{placeholder}</option>
 
@@ -36,23 +44,15 @@ const SelectFieldHeader = ({
           ))}
         </select>
 
-        {/* Chevron Icon */}
         <ChevronDown
           size={22}
           className="pointer-events-none absolute right-6 top-1/2 -translate-y-1/2 text-black"
         />
       </div>
 
-      {/* Error Message */}
-      {error && (
-        <p className="mt-1 text-xs text-red-500">{error.message}</p>
-      )}
+      {error && <p className="mt-1 text-xs text-red-500">{error.message}</p>}
     </div>
   );
 };
 
 export default SelectFieldHeader;
-
-
-
-

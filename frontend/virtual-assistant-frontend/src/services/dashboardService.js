@@ -16,8 +16,19 @@ export const createUserApi = async (payload) => {
   return data;
 };
 
-export const getDashboardStats = () => {
-  return api.get("/admin/dashboard/stats");
+export const getDashboardStats = ({
+  provinceId,
+  constituencyId,
+  facilityId,
+  wardId,
+}) => {
+  const params = {};
+  if (provinceId) params.provinceId = provinceId;
+  if (constituencyId) params.constituencyId = constituencyId;
+  if (facilityId) params.facilityId = facilityId;
+  if (wardId) params.wardId = wardId;
+
+  return api.get("/admin/dashboard/stats", { params });
 };
 
 export const getUsers = async ({
@@ -31,6 +42,10 @@ export const getUsers = async ({
   activeLast7Days,
   inactiveLast7Days,
   sortBy,
+  provinceId,
+  constituencyId,
+  facilityId,
+  wardId,
 }) => {
   const API_URL = "/admin/users";
 
@@ -47,6 +62,10 @@ export const getUsers = async ({
   if (activeLast7Days !== undefined) params.activeLast7Days = activeLast7Days;
   if (inactiveLast7Days !== undefined) params.inactiveLast7Days = inactiveLast7Days;
   if (sortBy) params.sortBy = sortBy;
+  if (provinceId) params.provinceId = provinceId;
+  if (constituencyId) params.constituencyId = constituencyId;
+  if (facilityId) params.facilityId = facilityId;
+  if (wardId) params.wardId = wardId;
 
   return api.get(API_URL, { params });
 };

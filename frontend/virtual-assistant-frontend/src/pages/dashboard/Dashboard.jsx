@@ -7,7 +7,7 @@ import StatCard from "../../components/StatCard";
 import UserModal from "../../components/UserModal";
 import UsersTableDashBoard from "../../components/UsersTableDashBoard";
 import { useLocations } from "../../hooks/useLocations";
-import SelectField from "../../components/SelectField";
+import SelectFieldHeader from "../../components/SelectFieldHeader";
 import { getDashboardStats, getUsers } from "../../services/dashboardService";
 import { useForm } from "react-hook-form";
 
@@ -41,9 +41,17 @@ const Dashboard = () => {
     } = useLocations();
 
     const {
+        watch,
         register,
         reset,
-      } = useForm();
+      } = useForm({
+        defaultValues: {
+          province: "",
+          consistuancy: "",
+          facility: "",
+          ward: "",
+        },
+      });
 
   /* ------------------ Stats State ------------------ */
   const [stats, setStats] = useState({
@@ -75,27 +83,37 @@ const Dashboard = () => {
   }, []);
   /* ------------------ SELECT HANDLERS ------------------ */
   const onStateChange = async (e) => {
-    console.log("onStateChange = ", e.target.value)
     setProvince(e.target.value)
     reset({ constituency: "", facility: "", ward: "" });
     await fetchConstituencies(e.target.value);
   };
 
   const onConstituencyChange = async (e) => {
+    setConsistuancy(e.target.value)
     reset({ facility: "", ward: "" });
     await fetchFacilities(e.target.value);
   };
 
   const onFacilityChange = async (e) => {
+    setFacility(e.target.value)
     reset({ ward: "" });
     await fetchWards(e.target.value);
+  };
+
+  const onWardChange = async (e) => {
+    setWard(e.target.value)
   };
 
   /* ------------------ Fetch Stats ------------------ */
   const fetchStats = useCallback(async () => {
     try {
       setStatsLoading(true);
-      const res = await getDashboardStats();
+      const res = await getDashboardStats({
+        provinceId:watch("province"),
+        constituencyId:watch("consistuancy"),
+        facilityId:watch("facility"),
+        wardId:watch("ward"),
+      });
       setStats(res.data.data);
     } catch (err) {
       console.error("Dashboard stats error:", err);
@@ -108,7 +126,6 @@ const Dashboard = () => {
   const fetchUsers = useCallback(async () => {
     try {
       setUsersLoading(true);
-
       const res = await getUsers({
         page,
         limit,
@@ -117,6 +134,10 @@ const Dashboard = () => {
         activeLast7Days: activeFilter === "active" ? true : undefined,
         inactiveLast7Days: activeFilter === "inactive" ? true : undefined,
         sortBy: "recent",
+        provinceId:watch("province"),
+        constituencyId:watch("consistuancy"),
+        facilityId:watch("facility"),
+        wardId:watch("ward"),
       });
 
       setUsers(res.data.data.users);
@@ -131,11 +152,11 @@ const Dashboard = () => {
   /* ------------------ Effects ------------------ */
   useEffect(() => {
     fetchStats(); // once
-  }, [fetchStats]);
+  }, [fetchStats, province, consistuancy, facility, ward]);
 
   useEffect(() => {
     fetchUsers(); // on page/search change
-  }, [fetchUsers]);
+  }, [fetchUsers, province, consistuancy, facility, ward]);
 
   const handleFilterClick = (filter) => {
     setPage(1);
@@ -155,8 +176,8 @@ const Dashboard = () => {
     <>
       {/* ================= Stats ================= */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <SelectField
-              name="state"
+            <SelectFieldHeader
+              name="province"
               placeholder="Province"
               register={register}
               // error={errors.state}
@@ -167,7 +188,7 @@ const Dashboard = () => {
               }))}
             />
 
-            <SelectField
+            <SelectFieldHeader
               name="constituency"
               placeholder="Constituency"
               register={register}
@@ -179,7 +200,7 @@ const Dashboard = () => {
               }))}
             />
 
-            <SelectField
+            <SelectFieldHeader
               name="facility"
               placeholder="Facility"
               register={register}
@@ -191,11 +212,12 @@ const Dashboard = () => {
               }))}
             />
 
-            <SelectField
+            <SelectFieldHeader
               name="ward"
               placeholder="Ward"
               register={register}  
               // error={errors.ward}
+              onChange={onWardChange}
               options={wards.map((w) => ({
                 label: w.name,
                 value: w.id,
