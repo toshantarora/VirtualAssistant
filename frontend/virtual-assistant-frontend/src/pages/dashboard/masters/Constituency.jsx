@@ -1,15 +1,6 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
-
-import {
-  ChevronRight,
-  Folder,
-  FolderOpen,
-  Plus,
-  MapPin,
-  Pencil,
-  Trash2,
-  Search,
-} from "lucide-react";
+import { Plus, Pencil, Trash2, Search } from "lucide-react";
 import { useForm } from "react-hook-form";
 import locationService from "../../../services/locationService";
 import InputBox from "../../../components/InputBox";
@@ -22,9 +13,18 @@ import {
 } from "@headlessui/react";
 import DeleteUserModal from "../../../components/DeleteUserModal";
 import ConfirmDeleteModal from "../../../components/ConfirmDeleteModal";
+import { useLocations } from "../../../hooks/useLocations";
+import SelectField from "../../../components/SelectField";
 
 const LOCATION_HIERARCHY = ["PROVINCE", "CONSTITUENCY", "FACILITY", "WARD"];
 
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const constituencySchema = z.object({
+  state: z.string().min(1, "Province is required"),
+  constituency: z.string().trim().min(1, "Constituency is required"),
+});
 const Constituency = () => {
   const [locations, setLocations] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -32,10 +32,22 @@ const Constituency = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [creating, setCreating] = useState(false);
   const [editingLocation, setEditingLocation] = useState(null);
+  const [prefillLoading, setPrefillLoading] = useState(false);
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [locationToDelete, setLocationToDelete] = useState(null);
   const isEditMode = Boolean(editingLocation);
+
+  const {
+    states,
+    // constituencies,
+    // facilities,
+    // wards,
+    fetchStates,
+    // fetchConstituencies,
+    // fetchFacilities,
+    // fetchWards,
+  } = useLocations();
   const {
     register,
     handleSubmit,
@@ -43,7 +55,13 @@ const Constituency = () => {
     setValue,
     setError,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    resolver: zodResolver(constituencySchema),
+    defaultValues: {
+      state: "",
+      constituency: "",
+    },
+  });
 
   // ================= FETCH PROVINCES =================
   const fetchLocations = async () => {
@@ -85,7 +103,7 @@ const Constituency = () => {
     // 🔑 ensure edit state is cleared AFTER modal closes
     setTimeout(() => {
       setEditingLocation(null);
-      reset({ name: "" });
+      reset({ constituency: "", state: "" });
     }, 0);
   };
 
@@ -94,10 +112,36 @@ const Constituency = () => {
     setLocationToDelete(location);
     setDeleteModalOpen(true);
   };
+  console.log("editingLocation", editingLocation);
 
+  useEffect(() => {
+    if (!isModalOpen) return;
+
+    const init = async () => {
+      setPrefillLoading(true);
+
+      reset({ constituency: "", state: "" });
+
+      await fetchStates();
+
+      if (isEditMode && editingLocation) {
+        reset({
+          state: editingLocation?.province?.id,
+          constituency: editingLocation?.name,
+        });
+      }
+
+      setPrefillLoading(false);
+    };
+
+    init();
+  }, [isModalOpen, editingLocation]);
+
+  console.log("editingLocation", editingLocation);
   // ================= ADD / EDIT PROVINCE =================
   const onSubmit = async (data) => {
-    const name = data.name.trim();
+    const name = data.constituency.trim();
+    console.log("data", data, locations);
 
     // Prevent duplicate Province names
     const exists = locations.some(
@@ -107,9 +151,9 @@ const Constituency = () => {
     );
 
     if (exists) {
-      setError("name", {
+      setError("constituency", {
         type: "manual",
-        message: "Province already exists",
+        message: "Constituency already exists",
       });
       return;
     }
@@ -118,15 +162,18 @@ const Constituency = () => {
     try {
       if (editingLocation) {
         // ✅ EDIT (SEND TYPE)
+
         await locationService.updateLocation(editingLocation.id, {
+          parentId: data.state,
           name,
-          type: "PROVINCE",
+          type: "CONSTITUENCY",
         });
       } else {
         // ✅ ADD
         await locationService.createLocation({
+          parentId: data?.state,
           name,
-          type: "PROVINCE",
+          type: "CONSTITUENCY",
         });
       }
 
@@ -145,16 +192,24 @@ const Constituency = () => {
     if (!locationToDelete) return;
 
     try {
-      await locationService.deleteLocation(locationToDelete.id, "PROVINCE");
+      await locationService.deleteLocation(locationToDelete.id, "CONSTITUENCY");
 
       setDeleteModalOpen(false);
       setLocationToDelete(null);
       fetchLocations();
     } catch (error) {
+      reset({ constituency: "", state: "" });
       console.error("Delete failed", error);
       alert(error.response?.data?.message || "Failed to delete province");
     }
   };
+
+  const onStateChange = async (e) => {
+    // const value = e.target.value;
+    reset({ constituency: "" });
+    // await fetchConstituencies(value);
+  };
+  console.log("onStateChange", states);
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-6 min-h-[calc(100vh-(--spacing(32)))]">
@@ -232,13 +287,12 @@ const Constituency = () => {
                           </div>
                         </div>
                       </td>
-                       <td className="px-6 py-5">
+                      <td className="px-6 py-5">
                         <div className="flex items-center gap-3">
                           <div>
                             <p className="font-medium text-gray-900">
                               {location.name}
                             </p>
-                           
                           </div>
                         </div>
                       </td>
@@ -336,33 +390,56 @@ const Constituency = () => {
                 <DialogTitle className="text-lg font-medium mb-4">
                   {isEditMode ? "Edit Province" : "Add New Province"}
                 </DialogTitle>
-
-                <form onSubmit={handleSubmit(onSubmit)}>
-                  <InputBox
-                    label="Province Name"
-                    name="name"
-                    register={register}
-                    placeholder="Enter province name"
-                    error={errors.name}
-                  />
-
-                  <div className="mt-6 flex justify-end gap-3">
-                    <button
-                      type="button"
-                      onClick={closeModal}
-                      className="border px-4 py-2 rounded-md text-sm"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={creating}
-                      className="bg-primary text-white px-4 py-2 rounded-md text-sm disabled:opacity-50"
-                    >
-                      {creating ? "Saving..." : isEditMode ? "Update" : "Save"}
-                    </button>
+                {prefillLoading ? (
+                  <div className="flex h-40 items-center justify-center">
+                    <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary" />
                   </div>
-                </form>
+                ) : (
+                  <form onSubmit={handleSubmit(onSubmit)}>
+                    <SelectField
+                      name="state"
+                      placeholder="Province"
+                      register={register}
+                      error={errors.state}
+                      onChange={onStateChange}
+                      options={states.map((s) => ({
+                        label: s.name,
+                        value: s.id,
+                      }))}
+                    />
+
+                    <div className="mt-4">
+                      <InputBox
+                        // label="Constituency"
+                        name="constituency"
+                        register={register}
+                        placeholder="Enter Constituency Name"
+                        error={errors.constituency}
+                      />
+                    </div>
+
+                    <div className="mt-6 flex justify-end gap-3">
+                      <button
+                        type="button"
+                        onClick={closeModal}
+                        className="border px-4 py-2 rounded-md text-sm"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={creating}
+                        className="bg-primary text-white px-4 py-2 rounded-md text-sm disabled:opacity-50"
+                      >
+                        {creating
+                          ? "Saving..."
+                          : isEditMode
+                          ? "Update"
+                          : "Save"}
+                      </button>
+                    </div>
+                  </form>
+                )}
               </DialogPanel>
             </TransitionChild>
           </div>
