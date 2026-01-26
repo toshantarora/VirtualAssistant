@@ -3,7 +3,7 @@ import api from './api';
 const locationService = {
   // Fetch locations (supports parentId, type, etc.)
   getLocations: async (params = {}) => {
-    const response = await api.get('/admin/locations', { params });
+    const response = await api.get('/public/locations', { params });
     return response.data?.data || [];
   },
 

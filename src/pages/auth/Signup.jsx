@@ -103,11 +103,7 @@ const Signup = () => {
         providerType: data.providerType,
       };
 
-      // Note: validation schema in frontend currently doesn't enforce password field for UserModal (admin side)
-      // We might need to specific signup schema with password.
-      // For now, I'll add password input and assume backend validation handles it.
-
-      await signupApi({ ...payload, password: data.password }); // explicit password
+      await signupApi({ ...payload, password: data.password });
 
       setToastData({
         success: true,
@@ -156,12 +152,10 @@ const Signup = () => {
         message={toastData.message}
       />
       <div className="min-h-screen flex">
-        {/* Left Image Section */}
         <div className="hidden md:flex w-1/2 bg-primary py-8 items-center justify-center">
           <img src={loginImg} alt="Virtual Assistant" className="h-auto w-auto object-contain" />
         </div>
 
-        {/* Right Signup Section */}
         <div className="w-full md:w-1/2 flex items-center justify-center bg-gray-50 overflow-y-auto py-10">
           <div className="w-full max-w-lg bg-white rounded-3xl shadow-lg p-8">
             <h1 className="text-3xl font-bold text-gray-800 mb-2">Sign Up</h1>
@@ -186,7 +180,6 @@ const Signup = () => {
                 placeholder="Password"
                 name="password"
                 register={register}
-                // error={errors.password} // userSchema might not have password
               />
 
               <InputBox

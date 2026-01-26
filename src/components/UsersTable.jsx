@@ -130,10 +130,6 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted }) => {
           <table className="w-full text-sm border-collapse">
             <thead className="sticky top-0 z-10 bg-[#f6f8f5] text-left shadow-sm">
               <tr>
-                {/* <th className="px-6 py-4 font-medium">User ID</th>
-                <th className="px-6 py-4 font-medium">Usage Time</th>
-                <th className="px-6 py-4 font-medium">Last Active</th>
-                 */}
                 <th className="px-6 py-4 font-medium">Name & Email</th>
                 <th className="px-6 py-4 font-medium">Mobile Number</th>{' '}
                 <th className="px-6 py-4 font-medium">Status</th>
@@ -149,31 +145,8 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted }) => {
             <tbody className="divide-y divide-[#cfded6]">
               {users.map((user) => (
                 <tr key={user.id} className="hover:bg-gray-50 transition-colors">
-                  {/* <td className="px-6 py-5">
-                    <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(user.id);
-                      }}
-                      className="
-      font-medium
-      text-primary-700
-      hover:underline
-      active:scale-95
-      transition
-      cursor-pointer
-    "
-                      title="Click to copy full ID"
-                    >
-                      {getShortId(user.id)}
-                    </button>
-                  </td> */}
                   <td className="px-6 py-5">
                     <div className="flex items-center gap-3">
-                      {/* <img
-                        src={user.avatar}
-                        className="h-10 w-10 rounded-full"
-                        alt="avatar"
-                      /> */}
                       <div>
                         <p className="font-medium">{user.fullname}</p>
                         <p className="text-xs text-green-800">{user.email}</p>
@@ -199,11 +172,9 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted }) => {
                     </span>
                   </td>
                   <td className="px-6 py-5 font-medium">
-                    {/* {formatUsageTime(user.totalUsageSeconds)} */}
                     {user?.province ? user?.province?.name : '-'}
                   </td>
                   <td className="px-6 py-5 text-gray-600">
-                    {/* {formatLastActive(user.lastActiveAt)} */}
                     {user?.constituency ? user?.constituency?.name : '-'}
                   </td>
 

@@ -55,7 +55,6 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted, showDelete =
       setTimeout(() => setShowNotification(false), 3000);
     } finally {
       setDeleting(false);
-      //   setTimeout(() => setShowNotification(false), 8000);
     }
   };
 
@@ -110,11 +109,6 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted, showDelete =
                   </td>
                   <td className="px-6 py-5">
                     <div className="flex items-center gap-3">
-                      {/* <img
-                        src={user.avatar}
-                        className="h-10 w-10 rounded-full"
-                        alt="avatar"
-                      /> */}
                       <div>
                         <p className="font-medium">{user.fullname}</p>
                         <p className="text-xs text-green-800">{user.email}</p>
@@ -127,15 +121,6 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted, showDelete =
                   </td>
                   <td className="px-6 py-5 text-gray-600">{formatLastActive(user.lastActiveAt)}</td>
 
-                  {/* <td className="px-6 py-5 text-gray-600">
-                    {user?.facility ? user?.facility?.name : "-"}
-                  </td>
-                  <td className="px-6 py-5 text-gray-600">
-                    {user?.ward ? user?.ward?.name : "-"}
-                  </td>
-                  <td className="px-6 py-5 text-gray-600">
-                    {user?.facilityType ? user?.facilityType : "-"}
-                  </td> */}
                   {(openEdit || showDelete) && (
                     <td className="px-6 py-5">
                       <div className="flex gap-4">

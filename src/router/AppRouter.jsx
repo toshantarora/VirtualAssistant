@@ -23,47 +23,47 @@ import { LocationProvider } from '../context/LocationContext';
 export default function AppRouter() {
   return (
     <BrowserRouter>
-      <Routes>
-        {/* ================= Root ================= */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
+      <LocationProvider>
+        <Routes>
+          {/* ================= Root ================= */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
 
-        {/* ================= Auth ================= */}
-        <Route element={<AuthLayout />}>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-        </Route>
-
-        {/* ================= Protected ================= */}
-        <Route
-          element={
-            <ProtectedRoute>
-              <LocationProvider>
-                <DashboardLayout />
-              </LocationProvider>
-            </ProtectedRoute>
-          }
-        >
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dashboard/users" element={<Users />} />
-          <Route path="/dashboard/add-user" element={<AddUser />} />
-          <Route path="/dashboard/locations" element={<Locations />} />
-
-          {/* ========= Masters ========= */}
-          <Route path="/dashboard/masters">
-            <Route index element={<Navigate to="country" replace />} />
-            <Route path="country" element={<Country />} />
-            <Route path="province" element={<Province />} />
-            <Route path="district" element={<District />} />
-            <Route path="constituency" element={<Constituency />} />
-            <Route path="ward" element={<Ward />} />
-            <Route path="facility" element={<Facility />} />
+          {/* ================= Auth ================= */}
+          <Route element={<AuthLayout />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
           </Route>
-        </Route>
 
-        {/* ================= Fallback ================= */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
+          {/* ================= Protected ================= */}
+          <Route
+            element={
+              <ProtectedRoute>
+                <DashboardLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard/users" element={<Users />} />
+            <Route path="/dashboard/add-user" element={<AddUser />} />
+            <Route path="/dashboard/locations" element={<Locations />} />
+
+            {/* ========= Masters ========= */}
+            <Route path="/dashboard/masters">
+              <Route index element={<Navigate to="country" replace />} />
+              <Route path="country" element={<Country />} />
+              <Route path="province" element={<Province />} />
+              <Route path="district" element={<District />} />
+              <Route path="constituency" element={<Constituency />} />
+              <Route path="ward" element={<Ward />} />
+              <Route path="facility" element={<Facility />} />
+            </Route>
+          </Route>
+
+          {/* ================= Fallback ================= */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </LocationProvider>
     </BrowserRouter>
   );
 }

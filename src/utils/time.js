@@ -25,21 +25,7 @@ export const getShortId = (uuid) => {
   return `#${Math.abs(hash).toString().slice(0, 6)}`;
 };
 
-// export const getLast7DaysRange = () => {
-//   const now = new Date();
 
-//   const to = new Date(now);
-//   to.setHours(23, 59, 59, 999);
-
-//   const from = new Date(now);
-//   from.setDate(from.getDate() - 7);
-//   from.setHours(0, 0, 0, 0);
-
-//   return {
-//     from: from.toISOString(),
-//     to: to.toISOString(),
-//   };
-// };
 export const getLast7DaysRange = () => {
   const now = new Date();
 

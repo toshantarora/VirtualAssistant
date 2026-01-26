@@ -92,12 +92,6 @@ const AddUserForm = ({ onSuccess }) => {
     fetchCountries();
   }, [fetchCountries]);
 
-  //   useEffect(() => {
-  //     if (dialogType === "success" && dialogOpen) {
-  //       const t = setTimeout(() => setDialogOpen(false), 2000);
-  //       return () => clearTimeout(t);
-  //     }
-  //   }, [dialogType, dialogOpen]);
   /* ------------------ SUBMIT ------------------ */
   const onSubmit = async (formData) => {
     try {
