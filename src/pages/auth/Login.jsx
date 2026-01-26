@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import loginImg from "../../assets/login-illustration.png";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -159,14 +160,17 @@ const Login = () => {
                 </button>
               </div>
 
-              {/* <div className="text-right">
-                <button
-                  type="button"
+              <div className="text-right flex justify-between items-center">
+                <Link to="/signup" className="text-sm text-primary hover:underline">
+                    Create an Account
+                </Link>
+                <Link
+                  to="/forgot-password"
                   className="text-sm text-primary hover:underline"
                 >
-                  Forget password?
-                </button>
-              </div> */}
+                  Forgot password?
+                </Link>
+              </div>
 
               <button
                 type="submit"

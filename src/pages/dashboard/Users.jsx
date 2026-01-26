@@ -21,6 +21,9 @@ const Users = () => {
   const limit = 6;
   const [search, setSearch] = useState("");
 
+  /* ------------------ Filtering State ------------------ */
+  const [activeFilter, setActiveFilter] = useState("all"); // 'all', 'pending', 'archived'
+
   /* ------------------ Handlers ------------------ */
   const openAdd = () => {
     setMode("add");
@@ -43,6 +46,7 @@ const Users = () => {
         limit,
         search,
         role: "USER",
+        status: activeFilter === "all" ? undefined : (activeFilter === "pending" ? "PENDING" : (activeFilter === "archived" ? "ARCHIVED" : undefined)),
       });
 
       setUsers(res.data.data.users);
@@ -52,7 +56,7 @@ const Users = () => {
     } finally {
       setLoading(false);
     }
-  }, [page, limit, search]);
+  }, [page, limit, search, activeFilter]);
 
   useEffect(() => {
     fetchUsers();
@@ -74,8 +78,25 @@ const Users = () => {
             setPage(1);
             setSearch(value);
           }}
-          showAddUser={false}
+          showAddUser={true}
         />
+
+        {/* Filter Tabs */}
+        <div className="flex gap-4 px-6 border-b border-gray-100">
+            {['all', 'pending', 'archived'].map((filter) => (
+                <button
+                    key={filter}
+                    onClick={() => { setActiveFilter(filter); setPage(1); }}
+                    className={`pb-3 px-1 text-sm font-medium capitalize transition-colors border-b-2 ${
+                        activeFilter === filter
+                            ? "border-primary text-primary"
+                            : "border-transparent text-gray-500 hover:text-gray-700"
+                    }`}
+                >
+                    {filter}
+                </button>
+            ))}
+        </div>
 
         <UsersTable
           users={users}

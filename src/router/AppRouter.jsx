@@ -4,6 +4,8 @@ import AuthLayout from "../layouts/AuthLayout";
 import DashboardLayout from "../layouts/DashboardLayout";
 
 import Login from "../pages/auth/Login";
+import Signup from "../pages/auth/Signup";
+import ForgotPassword from "../pages/auth/ForgotPassword";
 import Dashboard from "../pages/dashboard/Dashboard";
 import Users from "../pages/dashboard/Users";
 import AddUser from "../pages/dashboard/AddUser";
@@ -25,6 +27,8 @@ export default function AppRouter() {
         {/* ================= Auth ================= */}
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
         </Route>
 
         {/* ================= Protected ================= */}

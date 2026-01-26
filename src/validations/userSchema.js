@@ -5,7 +5,8 @@ export const userSchema = z.object({
   email: z.string().email("Invalid email address"),
   mobileNumber: z
     .string()
-    .regex(/^\d{10}$/, "Mobile number must be exactly 10 digits"),
+    .regex(/^\d{9}$/, "Mobile number must be exactly 9 digits"),
+  providerType: z.string().optional(),
   state: z.string().min(1, "Province is required"),
   constituency: z.string().min(1, "Constituency is required"),
   ward: z.string().min(1, "Ward is required"),

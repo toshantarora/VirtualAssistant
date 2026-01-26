@@ -112,6 +112,7 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
         constituencyId: formData.constituency,
         facilityId: formData.facility,
         wardId: formData.ward,
+        providerType: formData.providerType,
       };
 
       if (isEdit) {
@@ -202,6 +203,16 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
                 error={errors.mobileNumber}
                 maxLength={10}
                 type="tel"
+              />
+              <SelectField
+                name="providerType"
+                placeholder="Provider Type"
+                register={register}
+                error={errors.providerType}
+                options={[
+                  { label: "Regular", value: "Regular" },
+                  { label: "Consultant", value: "Consultant" },
+                ]}
               />
 
               <SelectField

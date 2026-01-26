@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { User, UserCheck, UserX, Loader2 } from "lucide-react";
+import { User, UserCheck, UserX, Loader2, Clock } from "lucide-react";
 
 import ManageUsersHeader from "../../components/ManageUsersHeader";
 import Pagination from "../../components/Pagination";
@@ -68,6 +68,7 @@ const Dashboard = () => {
     totalUsers: 0,
     activeLast7Days: 0,
     inactiveLast7Days: 0,
+    pendingUsers: 0,
   });
   const [statsLoading, setStatsLoading] = useState(true);
 
@@ -146,6 +147,7 @@ const Dashboard = () => {
         role: "USER",
         activeLast7Days: activeFilter === "active" ? true : undefined,
         inactiveLast7Days: activeFilter === "inactive" ? true : undefined,
+        status: activeFilter === "pending" ? "PENDING" : (activeFilter === "active" || activeFilter === "inactive") ? "APPROVED" : undefined,
         sortBy: "recent",
         provinceId: selectedProvince,
         constituencyId: selectedConstituency,
@@ -215,6 +217,15 @@ const Dashboard = () => {
           onClick={() => handleFilterClick("inactive")}
           active={activeFilter === "inactive"}
         />
+
+        <StatCard
+          title="Pending Users"
+          value={stats.pendingUsers}
+          icon={Clock}
+          loading={statsLoading}
+          onClick={() => handleFilterClick("pending")}
+          active={activeFilter === "pending"}
+        />
       </div>
 
       <div className="bg-white p-3 md:p-5 mt-4 md:mt-8 rounded-2xl border border-primary-100">
@@ -274,13 +285,14 @@ const Dashboard = () => {
             setPage(1); // reset page on search
             setSearch(value);
           }}
+          showAddUser={false}
         />
 
         <UsersTableDashBoard
           users={users}
           loading={usersLoading}
-          openEdit={openEdit}
           onUserDeleted={handleUserDeleted}
+          showDelete={false}
         />
       </div>
 

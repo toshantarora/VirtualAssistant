@@ -5,7 +5,7 @@ import { formatLastActive, formatUsageTime, getShortId } from "../utils/time";
 import { deleteUserApi } from "../services/dashboardService";
 import Notification from "./Notification";
 
-const UsersTable = ({ openEdit, users = [], loading, onUserDeleted }) => {
+const UsersTable = ({ openEdit, users = [], loading, onUserDeleted, showDelete = true }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [deleting, setDeleting] = useState(false);
@@ -90,7 +90,7 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted }) => {
                 <th className="px-6 py-4 font-medium">Mobile Number</th>{" "}
                 <th className="px-6 py-4 font-medium">Usage Time</th>
                 <th className="px-6 py-4 font-medium">Last Active</th>
-                <th className="px-6 py-4 font-medium">Actions</th>
+                {(openEdit || showDelete) && <th className="px-6 py-4 font-medium">Actions</th>}
               </tr>
             </thead>
 
@@ -141,23 +141,29 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted }) => {
                   <td className="px-6 py-5 text-gray-600">
                     {user?.facilityType ? user?.facilityType : "-"}
                   </td> */}
+                  {(openEdit || showDelete) && (
                   <td className="px-6 py-5">
                     <div className="flex gap-4">
-                      <button
-                        onClick={() => openEditModal(user)}
-                        className="hover:text-green-700 transition-colors"
-                      >
-                        <Pencil size={18} />
-                      </button>
+                      {openEdit && (
+                        <button
+                          onClick={() => openEditModal(user)}
+                          className="hover:text-green-700 transition-colors"
+                        >
+                          <Pencil size={18} />
+                        </button>
+                      )}
 
+                      {showDelete && (
                       <button
                         onClick={() => openDeleteModal(user)}
                         className="hover:text-red-600 transition-colors"
                       >
                         <Trash2 size={18} />
                       </button>
+                      )}
                     </div>
                   </td>
+                  )}
                 </tr>
               ))}
             </tbody>

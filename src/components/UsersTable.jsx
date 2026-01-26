@@ -1,14 +1,33 @@
-import { Loader2, Pencil, Trash2 } from "lucide-react";
+import { Loader2, Pencil, Trash2, Check, Archive, XCircle, RotateCcw } from "lucide-react";
 import { useState } from "react";
 import DeleteUserModal from "./DeleteUserModal";
 // import { formatLastActive, formatUsageTime, getShortId } from "../utils/time";
-import { deleteUserApi } from "../services/dashboardService";
+import { deleteUserApi, updateUserApi } from "../services/dashboardService";
 import Notification from "./Notification";
+
+const ActionButton = ({ onClick, disabled, loading, icon: Icon, title, className }) => (
+  <div className="relative group">
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={`p-1 rounded transition-colors ${className}`}
+    >
+      {loading ? <Loader2 size={18} className="animate-spin" /> : <Icon size={18} />}
+    </button>
+    {/* Custom Tooltip */}
+    <div className="absolute bottom-full mb-1 left-1/2 transform -translate-x-1/2 hidden group-hover:block bg-gray-800 text-white text-xs rounded py-1 px-2 z-50 whitespace-nowrap shadow-lg">
+      {title}
+      {/* Arrow */}
+      <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+    </div>
+  </div>
+);
 
 const UsersTable = ({ openEdit, users = [], loading, onUserDeleted }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [actionLoading, setActionLoading] = useState(null);
 
   const [showNotification, setShowNotification] = useState(false);
   const [notificationData, setNotificationData] = useState({
@@ -23,6 +42,34 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted }) => {
 
   const openEditModal = (user) => {
     openEdit(user);
+  };
+
+  const handleStatusUpdate = async (userId, newStatus, actionName) => {
+    try {
+      setActionLoading(userId);
+      await updateUserApi(userId, { userStatus: newStatus });
+      
+      await onUserDeleted?.(); // Refresh list
+      
+      setNotificationData({
+        success: true,
+        title: "Success",
+        message: `User ${actionName} successfully.`,
+      });
+      setShowNotification(true);
+      setTimeout(() => setShowNotification(false), 3000);
+    } catch (error) {
+      console.error("Update failed", error);
+      setNotificationData({
+        success: false,
+        title: "Update Failed",
+        message: `Unable to ${actionName} user.`,
+      });
+      setShowNotification(true);
+      setTimeout(() => setShowNotification(false), 3000);
+    } finally {
+        setActionLoading(null);
+    }
   };
 
   const handleDelete = async () => {
@@ -91,8 +138,9 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted }) => {
                  */}
                 <th className="px-6 py-4 font-medium">Name & Email</th>
                 <th className="px-6 py-4 font-medium">Mobile Number</th>{" "}
+                <th className="px-6 py-4 font-medium">Status</th>
                 <th className="px-6 py-4 font-medium">Province</th>
-                <th className="px-6 py-4 font-medium">consistuancy</th>{" "}
+                <th className="px-6 py-4 font-medium">Constituency</th>{" "}
                 <th className="px-6 py-4 font-medium">Facility</th>
                 <th className="px-6 py-4 font-medium">ward</th>{" "}
                 <th className="px-6 py-4 font-medium">Facility Type</th>
@@ -138,6 +186,23 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted }) => {
                     </div>
                   </td>
                   <td className="px-6 py-5 font-medium">{user.mobile}</td>
+                  <td className="px-6 py-5">
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        user.userStatus === "APPROVED" // Using userStatus now
+                          ? "bg-green-100 text-green-700"
+                          : user.userStatus === "PENDING"
+                          ? "bg-yellow-100 text-yellow-700" 
+                          : user.userStatus === "BANNED"
+                          ? "bg-red-100 text-red-700"
+                          : user.userStatus === "ARCHIVED" || user.deletedAt
+                          ? "bg-gray-100 text-gray-700"
+                          : "bg-red-100 text-red-700" // Unknown
+                      }`}
+                    >
+                      {user.userStatus || (user.deletedAt ? "ARCHIVED" : "UNKNOWN")}
+                    </span>
+                  </td>
                   <td className="px-6 py-5 font-medium">
                     {/* {formatUsageTime(user.totalUsageSeconds)} */}
                     {user?.province ? user?.province?.name : "-"}
@@ -154,23 +219,52 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted }) => {
                     {user?.ward ? user?.ward?.name : "-"}
                   </td>
                   <td className="px-6 py-5 text-gray-600">
-                    {user?.facilityType ? user?.facilityType : "-"}
+                    {user?.facilityType ? user?.facilityType?.name : "-"}
                   </td>
                   <td className="px-6 py-5">
-                    <div className="flex gap-4">
-                      <button
-                        onClick={() => openEditModal(user)}
-                        className="hover:text-green-700 transition-colors"
-                      >
-                        <Pencil size={18} />
-                      </button>
+                    <div className="flex gap-2">
+                        {/* Approve Button (Only for Pending) */}
+                        {user.userStatus === 'PENDING' && (
+                            <ActionButton
+                                onClick={() => handleStatusUpdate(user.id, 'APPROVED', 'approved')}
+                                disabled={actionLoading === user.id}
+                                loading={actionLoading === user.id}
+                                icon={Check}
+                                className="hover:bg-green-100 text-green-600"
+                                title="Approve User"
+                            />
+                        )}
+                        
+                        {/* Archive Button (For Non-Archived) */}
+                        {user.userStatus !== 'ARCHIVED' && !user.deletedAt && (
+                            <ActionButton
+                                onClick={() => handleStatusUpdate(user.id, 'ARCHIVED', 'archived')}
+                                disabled={actionLoading === user.id}
+                                loading={actionLoading === user.id}
+                                icon={Archive}
+                                className="hover:bg-gray-100 text-gray-500"
+                                title="Archive User"
+                            />
+                        )}
 
-                      <button
-                        onClick={() => openDeleteModal(user)}
-                        className="hover:text-red-600 transition-colors"
-                      >
-                        <Trash2 size={18} />
-                      </button>
+                        {/* Unarchive Button (For Archived) */}
+                        {(user.userStatus === 'ARCHIVED' || user.deletedAt) && (
+                            <ActionButton
+                                onClick={() => handleStatusUpdate(user.id, 'APPROVED', 'restored')}
+                                disabled={actionLoading === user.id}
+                                loading={actionLoading === user.id}
+                                icon={RotateCcw}
+                                className="hover:bg-blue-100 text-blue-600"
+                                title="Restore User"
+                            />
+                        )}
+
+                        <ActionButton
+                            onClick={() => openEditModal(user)}
+                            icon={Pencil}
+                            className="hover:bg-blue-100 text-blue-600"
+                            title="Edit User"
+                        />
                     </div>
                   </td>
                 </tr>
