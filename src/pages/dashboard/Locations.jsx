@@ -1,38 +1,27 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
-import {
-  ChevronRight,
-  Folder,
-  FolderOpen,
-  Plus,
-  MapPin,
-  Pencil,
-  Trash2,
-} from "lucide-react";
-import { useForm } from "react-hook-form";
-import locationService from "../../services/locationService";
-import InputBox from "../../components/InputBox";
-import {
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-  Transition,
-  TransitionChild,
-} from "@headlessui/react";
+import { ChevronRight, Folder, FolderOpen, Plus, MapPin, Pencil, Trash2 } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import locationService from '../../services/locationService';
+import InputBox from '../../components/InputBox';
+import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react';
+import { useLocations } from '../../hooks/useLocations';
 
-const LOCATION_HIERARCHY = ["PROVINCE", "CONSTITUENCY", "FACILITY", "WARD"];
+const LOCATION_HIERARCHY = ['COUNTRY', 'PROVINCE', 'DISTRICT', 'CONSTITUENCY', 'WARD', 'FACILITY'];
 
 const Locations = () => {
   const [locations, setLocations] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const { refreshList } = useLocations();
+
   const [breadcrumbs, setBreadcrumbs] = useState(() => {
-    const stored = localStorage.getItem("locationBreadcrumbs");
+    const stored = localStorage.getItem('locationBreadcrumbs');
     return stored ? JSON.parse(stored) : [];
   });
 
   useEffect(() => {
-    localStorage.setItem("locationBreadcrumbs", JSON.stringify(breadcrumbs));
+    localStorage.setItem('locationBreadcrumbs', JSON.stringify(breadcrumbs));
   }, [breadcrumbs]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -56,19 +45,17 @@ const Locations = () => {
   const nextType = editingLocation
     ? editingLocation.type
     : currentLevelIndex < LOCATION_HIERARCHY.length
-    ? LOCATION_HIERARCHY[currentLevelIndex]
-    : null;
+      ? LOCATION_HIERARCHY[currentLevelIndex]
+      : null;
 
   const fetchLocations = async () => {
     setLoading(true);
     try {
-      const params = currentParentId
-        ? { parentId: currentParentId }
-        : { type: "PROVINCE" };
-      const data = await locationService.getLocations(params);
+      const typeToFetch = LOCATION_HIERARCHY[breadcrumbs.length];
+      const data = await refreshList(typeToFetch, currentParentId);
       setLocations(data);
     } catch (error) {
-      console.error("Failed to fetch locations", error);
+      console.error('Failed to fetch locations', error);
     } finally {
       setLoading(false);
     }
@@ -99,14 +86,14 @@ const Locations = () => {
 
   const openCreateModal = () => {
     setEditingLocation(null);
-    reset({ name: "" });
+    reset({ name: '' });
     setIsModalOpen(true);
   };
 
   const openEditModal = (e, location) => {
     e.stopPropagation();
     setEditingLocation(location);
-    setValue("name", location.name);
+    setValue('name', location.name);
     setIsModalOpen(true);
   };
 
@@ -127,13 +114,11 @@ const Locations = () => {
 
     // ✅ Prevent duplicate only on CREATE
     if (!editingLocation) {
-      const exists = locations.some(
-        (loc) => loc.name.trim().toLowerCase() === name.toLowerCase()
-      );
+      const exists = locations.some((loc) => loc.name.trim().toLowerCase() === name.toLowerCase());
 
       if (exists) {
-        setError("name", {
-          type: "manual",
+        setError('name', {
+          type: 'manual',
           message: `${nextType} already exists`,
         });
         return;
@@ -155,12 +140,13 @@ const Locations = () => {
       closeModal();
       fetchLocations();
     } catch (error) {
-      console.error("Save failed", error);
-      alert(error.response?.data?.message || "Failed to save location");
+      console.error('Save failed', error);
+      alert(error.response?.data?.message || 'Failed to save location');
     } finally {
       setCreating(false);
     }
   };
+
   const handleDeleteConfirm = async () => {
     if (!locationToDelete) return;
     try {
@@ -168,8 +154,8 @@ const Locations = () => {
       setDeleteModalOpen(false);
       fetchLocations();
     } catch (error) {
-      console.error("Failed to delete location", error);
-      alert(error.response?.data?.message || "Failed to delete location");
+      console.error('Failed to delete location', error);
+      alert(error.response?.data?.message || 'Failed to delete location');
     }
   };
 
@@ -178,16 +164,12 @@ const Locations = () => {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">
-            {breadcrumbs.length > 0
-              ? breadcrumbs[breadcrumbs.length - 1].name
-              : "Locations"}
+            {breadcrumbs.length > 0 ? breadcrumbs[breadcrumbs.length - 1].name : 'Locations'}
           </h1>
           <p className="text-gray-500 text-sm mt-1">
             {breadcrumbs.length > 0
-              ? `Manage ${breadcrumbs[
-                  breadcrumbs.length - 1
-                ].type.toLowerCase()} details`
-              : "Manage geographical hierarchy"}
+              ? `Manage ${breadcrumbs[breadcrumbs.length - 1].type.toLowerCase()} details`
+              : 'Manage geographical hierarchy'}
           </p>
         </div>
         {(nextType || editingLocation) && !editingLocation && (
@@ -206,7 +188,7 @@ const Locations = () => {
         <button
           onClick={() => handleBreadcrumbClick(-1)}
           className={`hover:text-primary font-medium ${
-            breadcrumbs.length === 0 ? "text-primary" : ""
+            breadcrumbs.length === 0 ? 'text-primary' : ''
           }`}
         >
           All Provinces
@@ -217,7 +199,7 @@ const Locations = () => {
             <button
               onClick={() => handleBreadcrumbClick(index)}
               className={`hover:text-primary font-medium ${
-                index === breadcrumbs.length - 1 ? "text-primary" : ""
+                index === breadcrumbs.length - 1 ? 'text-primary' : ''
               }`}
             >
               {crumb.name}
@@ -233,7 +215,7 @@ const Locations = () => {
             <h2 className="text-lg font-bold text-gray-800">
               {LOCATION_HIERARCHY[breadcrumbs.length]
                 ? `${LOCATION_HIERARCHY[breadcrumbs.length]}`
-                : "Details"}
+                : 'Details'}
             </h2>
           </div>
         )}
@@ -268,25 +250,20 @@ const Locations = () => {
                       key={location.id}
                       onClick={() => handleLocationClick(location)}
                       className={`hover:bg-gray-50 transition-colors cursor-pointer group ${
-                        breadcrumbs.length >= LOCATION_HIERARCHY.length - 1
-                          ? "cursor-default"
-                          : ""
+                        breadcrumbs.length >= LOCATION_HIERARCHY.length - 1 ? 'cursor-default' : ''
                       }`}
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-                            {breadcrumbs.length >=
-                            LOCATION_HIERARCHY.length - 1 ? (
+                            {breadcrumbs.length >= LOCATION_HIERARCHY.length - 1 ? (
                               <MapPin size={20} />
                             ) : (
                               <FolderOpen size={20} />
                             )}
                           </div>
                           <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">
-                              {location.name}
-                            </div>
+                            <div className="text-sm font-medium text-gray-900">{location.name}</div>
                           </div>
                         </div>
                       </td>
@@ -306,8 +283,7 @@ const Locations = () => {
                           >
                             <Trash2 size={18} />
                           </button>
-                          {breadcrumbs.length <
-                            LOCATION_HIERARCHY.length - 1 && (
+                          {breadcrumbs.length < LOCATION_HIERARCHY.length - 1 && (
                             <span className="ml-2 text-primary hover:text-primary-dark cursor-pointer">
                               <ChevronRight size={20} />
                             </span>
@@ -318,17 +294,12 @@ const Locations = () => {
                   ))
                 ) : (
                   <tr>
-                    <td
-                      colSpan="3"
-                      className="px-6 py-12 text-center text-gray-500"
-                    >
+                    <td colSpan="3" className="px-6 py-12 text-center text-gray-500">
                       <div className="flex flex-col items-center justify-center">
                         <Folder size={48} className="mb-3 opacity-20" />
                         <p>No locations found in this level.</p>
                         {nextType && (
-                          <p className="text-sm mt-1">
-                            Click "Add {nextType}" to create one.
-                          </p>
+                          <p className="text-sm mt-1">Click "Add {nextType}" to create one.</p>
                         )}
                       </div>
                     </td>
@@ -365,10 +336,7 @@ const Locations = () => {
                 leaveTo="opacity-0 scale-95"
               >
                 <DialogPanel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                  <DialogTitle
-                    as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900 mb-4"
-                  >
+                  <DialogTitle as="h3" className="text-lg font-medium leading-6 text-gray-900 mb-4">
                     {editingLocation
                       ? `Edit ${editingLocation.type.toLowerCase()}`
                       : `Add New ${nextType?.toLowerCase()}`}
@@ -384,7 +352,7 @@ const Locations = () => {
                       />
                       {!editingLocation && currentParentId && (
                         <div className="mt-2 text-sm text-gray-500">
-                          Parent:{" "}
+                          Parent:{' '}
                           <span className="font-medium">
                             {breadcrumbs[breadcrumbs.length - 1]?.name}
                           </span>
@@ -405,7 +373,7 @@ const Locations = () => {
                         disabled={creating}
                         className="inline-flex justify-center rounded-md border border-transparent bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        {creating ? "Saving..." : "Save"}
+                        {creating ? 'Saving...' : 'Save'}
                       </button>
                     </div>
                   </form>
@@ -417,11 +385,7 @@ const Locations = () => {
       </Transition>
 
       <Transition appear show={deleteModalOpen} as="div">
-        <Dialog
-          as="div"
-          className="relative z-50"
-          onClose={() => setDeleteModalOpen(false)}
-        >
+        <Dialog as="div" className="relative z-50" onClose={() => setDeleteModalOpen(false)}>
           <TransitionChild
             enter="ease-out duration-300"
             enterFrom="opacity-0"
@@ -444,19 +408,14 @@ const Locations = () => {
                 leaveTo="opacity-0 scale-95"
               >
                 <DialogPanel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                  <DialogTitle
-                    as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900 mb-2"
-                  >
+                  <DialogTitle as="h3" className="text-lg font-medium leading-6 text-gray-900 mb-2">
                     Delete Location
                   </DialogTitle>
                   <div className="mt-2">
                     <p className="text-sm text-gray-500">
-                      Are you sure you want to delete{" "}
-                      <span className="font-bold">
-                        {locationToDelete?.name}
-                      </span>
-                      ? This action cannot be undone.
+                      Are you sure you want to delete{' '}
+                      <span className="font-bold">{locationToDelete?.name}</span>? This action
+                      cannot be undone.
                     </p>
                   </div>
 

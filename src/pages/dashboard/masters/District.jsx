@@ -10,15 +10,13 @@ import SelectFieldHeader from '../../../components/SelectFieldHeader';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-const wardSchema = z.object({
+const districtSchema = z.object({
   countryId: z.string().min(1, 'Country is required'),
   provinceId: z.string().min(1, 'Province is required'),
-  districtId: z.string().min(1, 'District is required'),
-  constituencyId: z.string().min(1, 'Constituency is required'),
-  ward: z.string().trim().min(1, 'Ward is required'),
+  district: z.string().trim().min(1, 'District name is required'),
 });
 
-const Ward = () => {
+const District = () => {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -31,17 +29,8 @@ const Ward = () => {
 
   const isEditMode = Boolean(editingLocation);
 
-  // Filters (Main Page)
-  const {
-    countries,
-    getList,
-    fetchStates,
-    fetchDistricts,
-    fetchConstituencies,
-    refreshList,
-    fetchCountries,
-    fetchWards: fetchWardsAction,
-  } = useLocations();
+  // Filters
+  const { countries, getList, fetchStates, refreshList, fetchCountries, fetchDistricts: fetchDistrictsAction } = useLocations();
 
   const {
     register,
@@ -52,64 +41,43 @@ const Ward = () => {
     watch,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(wardSchema),
+    resolver: zodResolver(districtSchema),
     defaultValues: {
       countryId: '',
       provinceId: '',
-      districtId: '',
-      constituencyId: '',
-      ward: '',
+      district: '',
       countryFilter: '',
       provinceFilter: '',
-      districtFilter: '',
-      constituencyFilter: '',
     },
   });
 
-  const watchCountryId = watch('countryId');
-  const watchProvinceId = watch('provinceId');
-  const watchDistrictId = watch('districtId');
-
   const selectedCountryFilter = watch('countryFilter');
   const selectedProvinceFilter = watch('provinceFilter');
-  const selectedDistrictFilter = watch('districtFilter');
-  const selectedConstituencyFilter = watch('constituencyFilter');
+  const watchCountryId = watch('countryId');
 
-  // Global lists for filters
-  const locations = getList('WARD', selectedConstituencyFilter);
+  // Filter lists derived from global context
+  const locations = getList('DISTRICT', selectedProvinceFilter);
   const states = getList('PROVINCE', selectedCountryFilter);
-  const districts = getList('DISTRICT', selectedProvinceFilter);
-  const constituencies = getList('CONSTITUENCY', selectedDistrictFilter);
-
-  // Global lists for modal
   const modalStates = getList('PROVINCE', watchCountryId);
-  const modalDistricts = getList('DISTRICT', watchProvinceId);
-  const modalConstituencies = getList('CONSTITUENCY', watchDistrictId);
 
-  // Fetch logic for modal cascading
+  // Fetch states for modal when country changes
   useEffect(() => {
-    if (watchCountryId) fetchStates(watchCountryId);
+    if (watchCountryId) {
+      fetchStates(watchCountryId);
+    }
   }, [watchCountryId, fetchStates]);
 
-  useEffect(() => {
-    if (watchProvinceId) fetchDistricts(watchProvinceId);
-  }, [watchProvinceId, fetchDistricts]);
-
-  useEffect(() => {
-    if (watchDistrictId) fetchConstituencies(watchDistrictId);
-  }, [watchDistrictId, fetchConstituencies]);
-
-  // ================= FETCH WARDS =================
-  const fetchWards = useCallback(async () => {
+  // ================= FETCH DATA =================
+  const fetchDistricts = useCallback(async () => {
     setLoading(true);
     try {
-      await refreshList('WARD', selectedConstituencyFilter);
+      await refreshList('DISTRICT', selectedProvinceFilter);
     } catch (error) {
-      console.error('Failed to fetch ward', error);
+      console.error('Failed to fetch DISTRICT', error);
     } finally {
       setLoading(false);
     }
-  }, [selectedConstituencyFilter, refreshList]);
+  }, [selectedProvinceFilter, refreshList]);
 
   // Initial Load - fetch countries
   useEffect(() => {
@@ -131,32 +99,17 @@ const Ward = () => {
   const onCountryFilterChange = async (e) => {
     const val = e.target.value;
     setValue('provinceFilter', '');
-    setValue('districtFilter', '');
-    setValue('constituencyFilter', '');
     if (val) await fetchStates(val);
   };
 
   const onProvinceFilterChange = async (e) => {
     const val = e.target.value;
-    setValue('districtFilter', '');
-    setValue('constituencyFilter', '');
-    if (val) await fetchDistricts(val);
-  };
-
-  const onDistrictFilterChange = async (e) => {
-    const val = e.target.value;
-    setValue('constituencyFilter', '');
-    if (val) await fetchConstituencies(val);
-  };
-
-  const onConstituencyFilterChange = async (e) => {
-    const val = e.target.value;
-    if (val) await fetchWardsAction(val);
+    if (val) await fetchDistrictsAction(val);
   };
 
   useEffect(() => {
-    fetchWards();
-  }, [fetchWards]);
+    fetchDistricts();
+  }, [fetchDistricts]);
 
   const filteredLocations = (locations || []).filter((location) =>
     location.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -166,15 +119,11 @@ const Ward = () => {
   const openCreateModal = () => {
     setEditingLocation(null);
     reset({
-      ward: '',
+      district: '',
       countryId: selectedCountryFilter || '',
       provinceId: selectedProvinceFilter || '',
-      districtId: selectedDistrictFilter || '',
-      constituencyId: selectedConstituencyFilter || '',
       countryFilter: selectedCountryFilter,
       provinceFilter: selectedProvinceFilter,
-      districtFilter: selectedDistrictFilter,
-      constituencyFilter: selectedConstituencyFilter,
     });
     setIsModalOpen(true);
   };
@@ -183,21 +132,15 @@ const Ward = () => {
     e.stopPropagation();
     setEditingLocation(location);
 
-    // Parent hierarchy
-    const countryId = location.constituency?.district?.province?.countryId || '';
-    const provinceId = location.constituency?.district?.province?.id || '';
-    const districtId = location.constituency?.district?.id || '';
+    // Attempt to set countryId
+    const countryId = location.province?.countryId || location.province?.parentId || '';
 
     reset({
-      ward: location.name,
+      district: location.name,
       countryId: countryId,
-      provinceId: provinceId,
-      districtId: districtId,
-      constituencyId: location.constituency?.id || '',
+      provinceId: location.province?.id || '',
       countryFilter: selectedCountryFilter,
       provinceFilter: selectedProvinceFilter,
-      districtFilter: selectedDistrictFilter,
-      constituencyFilter: selectedConstituencyFilter,
     });
 
     setIsModalOpen(true);
@@ -207,7 +150,7 @@ const Ward = () => {
     setIsModalOpen(false);
     setTimeout(() => {
       setEditingLocation(null);
-      reset({ ward: '', constituencyId: '', countryFilter: selectedCountryFilter, provinceFilter: selectedProvinceFilter, districtFilter: selectedDistrictFilter, constituencyFilter: selectedConstituencyFilter });
+      reset({ district: '', provinceId: '', countryFilter: selectedCountryFilter, provinceFilter: selectedProvinceFilter });
     }, 0);
   };
 
@@ -217,18 +160,18 @@ const Ward = () => {
     setDeleteModalOpen(true);
   };
 
-  // ================= ADD / EDIT WARD =================
+  // ================= ADD / EDIT DISTRICT =================
   const onSubmit = async (data) => {
-    const name = data.ward.trim();
+    const name = data.district.trim();
 
     const exists = locations.some(
       (loc) => loc.name.toLowerCase() === name.toLowerCase() && loc.id !== editingLocation?.id
     );
 
     if (exists) {
-      setError('ward', {
+      setError('district', {
         type: 'manual',
-        message: 'Ward already exists',
+        message: 'District already exists',
       });
       return;
     }
@@ -237,23 +180,24 @@ const Ward = () => {
     try {
       if (editingLocation) {
         await locationService.updateLocation(editingLocation.id, {
-          parentId: data.constituencyId,
+          parentId: data.provinceId,
           name,
-          type: 'WARD',
+          type: 'DISTRICT',
         });
       } else {
         await locationService.createLocation({
-          parentId: data.constituencyId,
+          parentId: data.provinceId,
           name,
-          type: 'WARD',
+          type: 'DISTRICT',
         });
       }
 
       closeModal();
-      fetchWards(); // Refresh list
+      // Refresh list
+      fetchDistricts(); // Refresh with current filter
     } catch (error) {
       console.error('Save failed', error);
-      alert(error.response?.data?.message || 'Failed to save ward');
+      alert(error.response?.data?.message || 'Failed to save district');
     } finally {
       setCreating(false);
     }
@@ -263,13 +207,13 @@ const Ward = () => {
     if (!locationToDelete) return;
 
     try {
-      await locationService.deleteLocation(locationToDelete.id, 'WARD');
+      await locationService.deleteLocation(locationToDelete.id, 'DISTRICT');
       setDeleteModalOpen(false);
       setLocationToDelete(null);
-      fetchWards();
+      fetchDistricts();
     } catch (error) {
       console.error('Delete failed', error);
-      alert(error.response?.data?.message || 'Failed to delete ward');
+      alert(error.response?.data?.message || 'Failed to delete district');
     }
   };
 
@@ -298,38 +242,18 @@ const Ward = () => {
             }))}
             onChange={onProvinceFilterChange}
           />
-          <SelectFieldHeader
-            name="districtFilter"
-            placeholder="Select District"
-            register={register}
-            options={districts.map((d) => ({
-              label: d.name,
-              value: d.id,
-            }))}
-            onChange={onDistrictFilterChange}
-          />
-          <SelectFieldHeader
-            name="constituencyFilter"
-            placeholder="Select Constituency"
-            register={register}
-            options={constituencies.map((c) => ({
-              label: c.name,
-              value: c.id,
-            }))}
-            onChange={onConstituencyFilterChange}
-          />
         </div>
       </div>
 
       <div className="bg-white rounded-lg shadow-sm p-6 min-h-[calc(100vh-(--spacing(32)))]">
         <div className="relative mb-6 flex flex-wrap items-center gap-4">
-          <h1 className="text-2xl font-bold text-gray-800">Wards</h1>
+          <h1 className="text-2xl font-bold text-gray-800">District</h1>
 
           <div className="flex-1 max-w-sm relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
             <input
               type="text"
-              placeholder="Search ward..."
+              placeholder="Search district..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full rounded-lg border border-gray-300 pl-10 pr-4 py-2 text-sm shadow-sm focus:border-primary focus:ring-1 focus:ring-primary placeholder-gray-400 outline-none"
@@ -342,7 +266,7 @@ const Ward = () => {
               className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-white hover:bg-primary/90"
             >
               <Plus size={18} />
-              Add New Ward
+              Add New District
             </button>
           </div>
         </div>
@@ -355,11 +279,11 @@ const Ward = () => {
           ) : (
             <div className="flex h-full border border-primary-100 flex-col overflow-hidden rounded-xl bg-white">
               <div className="overflow-y-auto" style={{ maxHeight: '500px' }}>
-                <table className="w-full  border-collapse text-sm">
+                <table className="w-full border-collapse text-sm">
                   <thead className="sticky top-0 z-10 bg-[#f6f8f5] text-left shadow-sm">
                     <tr>
-                      <th className="px-6 py-4 font-medium">Constituency</th>
-                      <th className="px-6 py-4 font-medium">Ward</th>
+                      <th className="px-6 py-4 font-medium">Province</th>
+                      <th className="px-6 py-4 font-medium">District</th>
                       <th className="px-6 py-4 font-medium text-right">Action</th>
                     </tr>
                   </thead>
@@ -367,7 +291,7 @@ const Ward = () => {
                     {filteredLocations?.map((location) => (
                       <tr key={location.id} className="transition-colors hover:bg-gray-50">
                         <td className="px-6 py-5">
-                          <p className="font-medium text-gray-900">{location.constituency?.name}</p>
+                          <p className="font-medium text-gray-900">{location.province?.name}</p>
                         </td>
                         <td className="px-6 py-5">
                           <p className="font-medium text-gray-900">{location.name}</p>
@@ -395,9 +319,9 @@ const Ward = () => {
                     {locations.length === 0 && (
                       <tr>
                         <td colSpan={3} className="px-6 py-12 text-center text-gray-500">
-                          {selectedConstituencyFilter
-                            ? 'No wards found'
-                            : 'Select a Constituency to view Wards'}
+                          {selectedCountryFilter && !selectedProvinceFilter
+                            ? 'Select a Province to view Districts'
+                            : 'No districts found'}
                         </td>
                       </tr>
                     )}
@@ -445,7 +369,7 @@ const Ward = () => {
               >
                 <DialogPanel className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
                   <DialogTitle className="text-lg font-medium mb-4">
-                    {isEditMode ? 'Edit Ward' : 'Add New Ward'}
+                    {isEditMode ? 'Edit District' : 'Add New District'}
                   </DialogTitle>
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="space-y-4">
@@ -490,53 +414,12 @@ const Ward = () => {
                         )}
                       </div>
 
-                      <div className="">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          District
-                        </label>
-                        <select
-                          {...register('districtId')}
-                          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none disabled:bg-gray-100"
-                          disabled={!watchProvinceId}
-                        >
-                          <option value="">Select District</option>
-                          {modalDistricts.map((d) => (
-                            <option key={d.id} value={d.id}>
-                              {d.name}
-                            </option>
-                          ))}
-                        </select>
-                        {errors.districtId && (
-                          <p className="mt-1 text-xs text-red-500">{errors.districtId.message}</p>
-                        )}
-                      </div>
-
-                      <div className="">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Constituency
-                        </label>
-                        <select
-                          {...register('constituencyId')}
-                          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none disabled:bg-gray-100"
-                          disabled={!watchDistrictId}
-                        >
-                          <option value="">Select Constituency</option>
-                          {modalConstituencies.map((c) => (
-                            <option key={c.id} value={c.id}>
-                              {c.name}
-                            </option>
-                          ))}
-                        </select>
-                        {errors.constituencyId && (
-                          <p className="mt-1 text-xs text-red-500">{errors.constituencyId.message}</p>
-                        )}
-                      </div>
                       <InputBox
-                        name="ward"
-                        label="Ward Name"
+                        name="district"
+                        label="District Name"
                         register={register}
-                        placeholder="Enter Ward Name"
-                        error={errors.ward}
+                        placeholder="Enter District Name"
+                        error={errors.district}
                       />
                     </div>
 
@@ -567,4 +450,4 @@ const Ward = () => {
   );
 };
 
-export default Ward;
+export default District;

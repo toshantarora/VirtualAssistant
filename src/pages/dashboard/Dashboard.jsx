@@ -1,20 +1,20 @@
-import { useEffect, useState, useCallback } from "react";
-import { User, UserCheck, UserX, Loader2, Clock } from "lucide-react";
+import { useEffect, useState, useCallback } from 'react';
+import { User, UserCheck, UserX, Loader2, Clock } from 'lucide-react';
 
-import ManageUsersHeader from "../../components/ManageUsersHeader";
-import Pagination from "../../components/Pagination";
-import StatCard from "../../components/StatCard";
-import UserModal from "../../components/UserModal";
-import UsersTableDashBoard from "../../components/UsersTableDashBoard";
-import { useLocations } from "../../hooks/useLocations";
-import SelectFieldHeader from "../../components/SelectFieldHeader";
-import { getDashboardStats, getUsers } from "../../services/dashboardService";
-import { useForm } from "react-hook-form";
+import ManageUsersHeader from '../../components/ManageUsersHeader';
+import Pagination from '../../components/Pagination';
+import StatCard from '../../components/StatCard';
+import UserModal from '../../components/UserModal';
+import UsersTableDashBoard from '../../components/UsersTableDashBoard';
+import { useLocations } from '../../hooks/useLocations';
+import SelectFieldHeader from '../../components/SelectFieldHeader';
+import { getDashboardStats, getUsers } from '../../services/dashboardService';
+import { useForm } from 'react-hook-form';
 
 const Dashboard = () => {
   /* ------------------ Modal State ------------------ */
   const [open, setOpen] = useState(false);
-  const [mode, setMode] = useState("add");
+  const [mode, setMode] = useState('add');
   const [selectedUser, setSelectedUser] = useState(null);
 
   /* ------------------ Users State ------------------ */
@@ -25,8 +25,8 @@ const Dashboard = () => {
   /* ------------------ Pagination & Search ------------------ */
   const [page, setPage] = useState(1);
   const limit = 6;
-  const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
 
   /* ------------------ Debounce Search ------------------ */
   useEffect(() => {
@@ -38,30 +38,27 @@ const Dashboard = () => {
       clearTimeout(handler);
     };
   }, [search]);
-  
-  const {
-      states,
-      constituencies,
-      facilities,
-      wards,
-      fetchStates,
-      fetchConstituencies,
-      fetchFacilities,
-      fetchWards,
-    } = useLocations();
 
-    const {
-        watch,
-        register,
-        setValue,
-      } = useForm({
-        defaultValues: {
-          province: "",
-          constituency: "",
-          facility: "",
-          ward: "",
-        },
-      });
+  const {
+    getList,
+    fetchCountries,
+    fetchStates,
+    fetchDistricts,
+    fetchConstituencies,
+    fetchWards,
+    fetchFacilities,
+  } = useLocations();
+
+  const { watch, register, setValue } = useForm({
+    defaultValues: {
+      country: '',
+      province: '',
+      district: '',
+      constituency: '',
+      ward: '',
+      facility: '',
+    },
+  });
 
   /* ------------------ Stats State ------------------ */
   const [stats, setStats] = useState({
@@ -73,68 +70,103 @@ const Dashboard = () => {
   const [statsLoading, setStatsLoading] = useState(true);
 
   /* ------------------ Filtering State ------------------ */
-  const [activeFilter, setActiveFilter] = useState("all"); // 'all', 'active', 'inactive'
+  const [activeFilter, setActiveFilter] = useState('all'); // 'all', 'active', 'inactive'
 
   /* ------------------ Modal Handlers ------------------ */
   const openAdd = () => {
-    setMode("add");
+    setMode('add');
     setSelectedUser(null);
     setOpen(true);
   };
 
-  const openEdit = (user) => {
-    setMode("edit");
-    setSelectedUser(user);
-    setOpen(true);
-  };
-
-  /* ------------------ FETCH STATES ------------------ */
+  /* ------------------ FETCH COUNTRIES ------------------ */
   useEffect(() => {
-    fetchStates();
-  }, []);
+    fetchCountries();
+  }, [fetchCountries]);
 
   /* ------------------ SELECT HANDLERS ------------------ */
+  const onCountryChange = async (e) => {
+    const val = e.target.value;
+    setValue('province', '');
+    setValue('district', '');
+    setValue('constituency', '');
+    setValue('ward', '');
+    setValue('facility', '');
+    if (val) await fetchStates(val);
+  };
+
   const onStateChange = async (e) => {
-    setValue("constituency", "");
-    setValue("facility", "");
-    setValue("ward", "");
-    await fetchConstituencies(e.target.value);
+    const val = e.target.value;
+    setValue('district', '');
+    setValue('constituency', '');
+    setValue('ward', '');
+    setValue('facility', '');
+    if (val) await fetchDistricts(val);
+  };
+
+  const onDistrictChange = async (e) => {
+    const val = e.target.value;
+    setValue('constituency', '');
+    setValue('ward', '');
+    setValue('facility', '');
+    if (val) await fetchConstituencies(val);
   };
 
   const onConstituencyChange = async (e) => {
-    setValue("facility", "");
-    setValue("ward", "");
-    await fetchFacilities(e.target.value);
+    const val = e.target.value;
+    setValue('ward', '');
+    setValue('facility', '');
+    if (val) await fetchWards(val);
   };
 
-  const onFacilityChange = async (e) => {
-    setValue("ward", "");
-    await fetchWards(e.target.value);
+  const onWardChange = async (e) => {
+    const val = e.target.value;
+    setValue('facility', '');
+    if (val) await fetchFacilities(val);
   };
 
-  /* ------------------ Watchers ------------------ */
-  const selectedProvince = watch("province");
-  const selectedConstituency = watch("constituency");
-  const selectedFacility = watch("facility");
-  const selectedWard = watch("ward");
+  /* ------------------ Watchers & Derivations ------------------ */
+  const selectedCountry = watch('country');
+  const selectedProvince = watch('province');
+  const selectedDistrict = watch('district');
+  const selectedConstituency = watch('constituency');
+  const selectedWard = watch('ward');
+  const selectedFacility = watch('facility');
+
+  // Derive lists from context
+  const countries = getList('COUNTRY');
+  const states = getList('PROVINCE', selectedCountry);
+  const districts = getList('DISTRICT', selectedProvince);
+  const constituencies = getList('CONSTITUENCY', selectedDistrict);
+  const wards = getList('WARD', selectedConstituency);
+  const facilities = getList('FACILITY', selectedWard);
 
   /* ------------------ Fetch Stats ------------------ */
   const fetchStats = useCallback(async () => {
     try {
       setStatsLoading(true);
       const res = await getDashboardStats({
+        countryId: selectedCountry,
         provinceId: selectedProvince,
+        districtId: selectedDistrict,
         constituencyId: selectedConstituency,
-        facilityId: selectedFacility,
         wardId: selectedWard,
+        facilityId: selectedFacility,
       });
       setStats(res.data.data);
     } catch (err) {
-      console.error("Dashboard stats error:", err);
+      console.error('Dashboard stats error:', err);
     } finally {
       setStatsLoading(false);
     }
-  }, [selectedProvince, selectedConstituency, selectedFacility, selectedWard]);
+  }, [
+    selectedCountry,
+    selectedProvince,
+    selectedDistrict,
+    selectedConstituency,
+    selectedWard,
+    selectedFacility,
+  ]);
 
   /* ------------------ Fetch Users ------------------ */
   const fetchUsers = useCallback(async () => {
@@ -144,25 +176,43 @@ const Dashboard = () => {
         page,
         limit,
         search: debouncedSearch,
-        role: "USER",
-        activeLast7Days: activeFilter === "active" ? true : undefined,
-        inactiveLast7Days: activeFilter === "inactive" ? true : undefined,
-        status: activeFilter === "pending" ? "PENDING" : (activeFilter === "active" || activeFilter === "inactive") ? "APPROVED" : undefined,
-        sortBy: "recent",
+        role: 'USER',
+        activeLast7Days: activeFilter === 'active' ? true : undefined,
+        inactiveLast7Days: activeFilter === 'inactive' ? true : undefined,
+        status:
+          activeFilter === 'pending'
+            ? 'PENDING'
+            : activeFilter === 'active' || activeFilter === 'inactive'
+              ? 'APPROVED'
+              : undefined,
+        sortBy: 'recent',
+        countryId: selectedCountry,
         provinceId: selectedProvince,
+        districtId: selectedDistrict,
         constituencyId: selectedConstituency,
-        facilityId: selectedFacility,
         wardId: selectedWard,
+        facilityId: selectedFacility,
       });
 
       setUsers(res.data.data.users);
       setTotalUsers(res.data.data.total);
     } catch (err) {
-      console.error("User fetch error:", err);
+      console.error('User fetch error:', err);
     } finally {
       setUsersLoading(false);
     }
-  }, [page, limit, debouncedSearch, activeFilter, selectedProvince, selectedConstituency, selectedFacility, selectedWard]);
+  }, [
+    page,
+    limit,
+    debouncedSearch,
+    activeFilter,
+    selectedCountry,
+    selectedProvince,
+    selectedDistrict,
+    selectedConstituency,
+    selectedWard,
+    selectedFacility,
+  ]);
 
   /* ------------------ Effects ------------------ */
   useEffect(() => {
@@ -196,8 +246,8 @@ const Dashboard = () => {
           value={stats.totalUsers}
           icon={User}
           loading={statsLoading}
-          onClick={() => handleFilterClick("all")}
-          active={activeFilter === "all"}
+          onClick={() => handleFilterClick('all')}
+          active={activeFilter === 'all'}
         />
 
         <StatCard
@@ -205,8 +255,8 @@ const Dashboard = () => {
           value={stats.activeLast7Days}
           icon={UserCheck}
           loading={statsLoading}
-          onClick={() => handleFilterClick("active")}
-          active={activeFilter === "active"}
+          onClick={() => handleFilterClick('active')}
+          active={activeFilter === 'active'}
         />
 
         <StatCard
@@ -214,8 +264,8 @@ const Dashboard = () => {
           value={stats.inactiveLast7Days}
           icon={UserX}
           loading={statsLoading}
-          onClick={() => handleFilterClick("inactive")}
-          active={activeFilter === "inactive"}
+          onClick={() => handleFilterClick('inactive')}
+          active={activeFilter === 'inactive'}
         />
 
         <StatCard
@@ -223,13 +273,24 @@ const Dashboard = () => {
           value={stats.pendingUsers}
           icon={Clock}
           loading={statsLoading}
-          onClick={() => handleFilterClick("pending")}
-          active={activeFilter === "pending"}
+          onClick={() => handleFilterClick('pending')}
+          active={activeFilter === 'pending'}
         />
       </div>
 
       <div className="bg-white p-3 md:p-5 mt-4 md:mt-8 rounded-2xl border border-primary-100">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+          <SelectFieldHeader
+            name="country"
+            placeholder="Country"
+            register={register}
+            onChange={onCountryChange}
+            options={countries.map((c) => ({
+              label: c.name,
+              value: c.id,
+            }))}
+          />
+
           <SelectFieldHeader
             name="province"
             placeholder="Province"
@@ -238,6 +299,17 @@ const Dashboard = () => {
             options={states.map((s) => ({
               label: s.name,
               value: s.id,
+            }))}
+          />
+
+          <SelectFieldHeader
+            name="district"
+            placeholder="District"
+            register={register}
+            onChange={onDistrictChange}
+            options={districts.map((d) => ({
+              label: d.name,
+              value: d.id,
             }))}
           />
 
@@ -253,23 +325,23 @@ const Dashboard = () => {
           />
 
           <SelectFieldHeader
-            name="facility"
-            placeholder="Facility"
+            name="ward"
+            placeholder="Ward"
             register={register}
-            onChange={onFacilityChange}
-            options={facilities.map((f) => ({
-              label: f.name,
-              value: f.id,
+            onChange={onWardChange}
+            options={wards.map((w) => ({
+              label: w.name,
+              value: w.id,
             }))}
           />
 
           <SelectFieldHeader
-            name="ward"
-            placeholder="Ward"
-            register={register}  
-            options={wards.map((w) => ({
-              label: w.name,
-              value: w.id,
+            name="facility"
+            placeholder="Facility"
+            register={register}
+            options={facilities.map((f) => ({
+              label: f.name,
+              value: f.id,
             }))}
           />
         </div>
