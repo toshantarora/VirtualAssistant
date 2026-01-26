@@ -12,7 +12,7 @@ const DashboardLayout = () => {
       <Sidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* Content */}
-      <main className="lg:ml-72 pt-24 px-4 lg:px-8">
+      <main className="lg:ml-72 pt-24 px-4 lg:px-8 pb-8">
         <Outlet />
       </main>
     </div>

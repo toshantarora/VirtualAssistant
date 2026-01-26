@@ -173,6 +173,7 @@ const AddUserForm = ({ onSuccess }) => {
               placeholder="Country"
               register={register}
               error={errors.country}
+              value={watch('country')}
               onChange={onCountryChange}
               options={countries.map((c) => ({
                 label: c.name,
@@ -185,6 +186,7 @@ const AddUserForm = ({ onSuccess }) => {
               placeholder="Province"
               register={register}
               error={errors.state}
+              value={watch('state')}
               onChange={onStateChange}
               options={states.map((s) => ({
                 label: s.name,
@@ -197,6 +199,7 @@ const AddUserForm = ({ onSuccess }) => {
               placeholder="District"
               register={register}
               error={errors.district}
+              value={watch('district')}
               onChange={onDistrictChange}
               options={districts.map((d) => ({
                 label: d.name,
@@ -209,6 +212,7 @@ const AddUserForm = ({ onSuccess }) => {
               placeholder="Constituency"
               register={register}
               error={errors.constituency}
+              value={watch('constituency')}
               onChange={onConstituencyChange}
               options={constituencies.map((c) => ({
                 label: c.name,
@@ -221,6 +225,7 @@ const AddUserForm = ({ onSuccess }) => {
               placeholder="Ward"
               register={register}
               error={errors.ward}
+              value={watch('ward')}
               onChange={onWardChange}
               options={wards.map((w) => ({
                 label: w.name,
@@ -233,6 +238,7 @@ const AddUserForm = ({ onSuccess }) => {
               placeholder="Facility"
               register={register}
               error={errors.facility}
+              value={watch('facility')}
               options={facilities.map((f) => ({
                 label: f.name,
                 value: f.id,

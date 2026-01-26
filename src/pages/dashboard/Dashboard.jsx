@@ -279,11 +279,12 @@ const Dashboard = () => {
       </div>
 
       <div className="bg-white p-3 md:p-5 mt-4 md:mt-8 rounded-2xl border border-primary-100">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 md:gap-4">
           <SelectFieldHeader
             name="country"
             placeholder="Country"
             register={register}
+            value={watch('country')}
             onChange={onCountryChange}
             options={countries.map((c) => ({
               label: c.name,
@@ -295,6 +296,7 @@ const Dashboard = () => {
             name="province"
             placeholder="Province"
             register={register}
+            value={watch('province')}
             onChange={onStateChange}
             options={states.map((s) => ({
               label: s.name,
@@ -306,6 +308,7 @@ const Dashboard = () => {
             name="district"
             placeholder="District"
             register={register}
+            value={watch('district')}
             onChange={onDistrictChange}
             options={districts.map((d) => ({
               label: d.name,
@@ -317,6 +320,7 @@ const Dashboard = () => {
             name="constituency"
             placeholder="Constituency"
             register={register}
+            value={watch('constituency')}
             onChange={onConstituencyChange}
             options={constituencies.map((c) => ({
               label: c.name,
@@ -328,6 +332,7 @@ const Dashboard = () => {
             name="ward"
             placeholder="Ward"
             register={register}
+            value={watch('ward')}
             onChange={onWardChange}
             options={wards.map((w) => ({
               label: w.name,
@@ -339,6 +344,7 @@ const Dashboard = () => {
             name="facility"
             placeholder="Facility"
             register={register}
+            value={watch('facility')}
             options={facilities.map((f) => ({
               label: f.name,
               value: f.id,

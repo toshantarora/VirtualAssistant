@@ -243,6 +243,7 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
                 placeholder="Provider Type"
                 register={register}
                 error={errors.providerType}
+                value={watch('providerType')}
                 options={[
                   { label: 'Regular', value: 'Regular' },
                   { label: 'Consultant', value: 'Consultant' },
@@ -254,6 +255,7 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
                 placeholder="Country"
                 register={register}
                 error={errors.country}
+                value={watch('country')}
                 onChange={onCountryChange}
                 options={countries.map((c) => ({
                   label: c.name,
@@ -266,6 +268,7 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
                 placeholder="Province"
                 register={register}
                 error={errors.state}
+                value={watch('state')}
                 onChange={onStateChange}
                 options={states.map((s) => ({
                   label: s.name,
@@ -278,6 +281,7 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
                 placeholder="District"
                 register={register}
                 error={errors.district}
+                value={watch('district')}
                 onChange={onDistrictChange}
                 options={districts.map((d) => ({
                   label: d.name,
@@ -290,6 +294,7 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
                 placeholder="Constituency"
                 register={register}
                 error={errors.constituency}
+                value={watch('constituency')}
                 options={constituencies.map((c) => ({
                   label: c.name,
                   value: c.id,
@@ -302,6 +307,7 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
                 placeholder="Ward"
                 register={register}
                 error={errors.ward}
+                value={watch('ward')}
                 options={wards.map((w) => ({
                   label: w.name,
                   value: w.id,
@@ -314,6 +320,7 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
                 placeholder="Facility"
                 register={register}
                 error={errors.facility}
+                value={watch('facility')}
                 options={facilities.map((f) => ({
                   label: f.name,
                   value: f.id,

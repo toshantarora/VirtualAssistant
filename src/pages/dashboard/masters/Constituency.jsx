@@ -257,11 +257,12 @@ const Constituency = () => {
     <div className="space-y-6">
       {/* Filter Card */}
       <div className="bg-white p-3 md:p-5 mt-4 rounded-2xl border border-primary-100">
-        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
           <SelectFieldHeader
             name="countryFilter"
-            placeholder="Select Country"
+            placeholder="Country"
             register={register}
+            value={watch('countryFilter')}
             options={countries.map((c) => ({
               label: c.name,
               value: c.id,
@@ -270,8 +271,9 @@ const Constituency = () => {
           />
           <SelectFieldHeader
             name="provinceFilter"
-            placeholder="Select Province"
+            placeholder="Province"
             register={register}
+            value={watch('provinceFilter')}
             options={states.map((s) => ({
               label: s.name,
               value: s.id,
@@ -280,8 +282,9 @@ const Constituency = () => {
           />
           <SelectFieldHeader
             name="districtFilter"
-            placeholder="Select District"
+            placeholder="District"
             register={register}
+            value={watch('districtFilter')}
             options={districts.map((d) => ({
               label: d.name,
               value: d.id,

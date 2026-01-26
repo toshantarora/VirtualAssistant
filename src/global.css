@@ -15,6 +15,8 @@ body {
     -apple-system,
     BlinkMacSystemFont,
     sans-serif;
+  /* Prevent layout shift when scrollbar appears/disappears */
+  scrollbar-gutter: stable;
 }
 @theme {
   --color-primary: #0c4d25;

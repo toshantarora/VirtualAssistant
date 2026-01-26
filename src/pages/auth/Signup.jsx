@@ -196,6 +196,7 @@ const Signup = () => {
                 placeholder="Provider Type"
                 register={register}
                 error={errors.providerType}
+                value={watch('providerType')}
                 options={[
                   { label: 'Regular', value: 'Regular' },
                   { label: 'Consultant', value: 'Consultant' },
@@ -208,6 +209,7 @@ const Signup = () => {
                   placeholder="Country"
                   register={register}
                   error={errors.country}
+                  value={watch('country')}
                   onChange={onCountryChange}
                   options={countries.map((c) => ({
                     label: c.name,
@@ -220,6 +222,7 @@ const Signup = () => {
                   placeholder="Province"
                   register={register}
                   error={errors.state}
+                  value={watch('state')}
                   onChange={onStateChange}
                   options={states.map((s) => ({
                     label: s.name,
@@ -232,6 +235,7 @@ const Signup = () => {
                   placeholder="District"
                   register={register}
                   error={errors.district}
+                  value={watch('district')}
                   onChange={onDistrictChange}
                   options={districts.map((d) => ({
                     label: d.name,
@@ -244,6 +248,7 @@ const Signup = () => {
                   placeholder="Constituency"
                   register={register}
                   error={errors.constituency}
+                  value={watch('constituency')}
                   options={constituencies.map((c) => ({
                     label: c.name,
                     value: c.id,
@@ -256,6 +261,7 @@ const Signup = () => {
                   placeholder="Ward"
                   register={register}
                   error={errors.ward}
+                  value={watch('ward')}
                   options={wards.map((w) => ({
                     label: w.name,
                     value: w.id,
@@ -268,6 +274,7 @@ const Signup = () => {
                   placeholder="Facility"
                   register={register}
                   error={errors.facility}
+                  value={watch('facility')}
                   options={facilities.map((f) => ({
                     label: f.name,
                     value: f.id,
