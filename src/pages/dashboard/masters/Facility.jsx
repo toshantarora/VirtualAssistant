@@ -308,7 +308,7 @@ const Facility = () => {
     <div className="space-y-6">
       {/* Filter Card */}
       <div className="bg-white p-3 md:p-5 mt-4 rounded-2xl border border-primary-100">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4 gap-3 md:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
           <SelectFieldHeader
             name="countryFilter"
             placeholder="Country"
@@ -438,15 +438,13 @@ const Facility = () => {
                         </td>
                       </tr>
                     ))}
-                    {locations.length === 0 && (
-                      <tr>
+                    {locations.length === 0 && (<tr>
                         <td colSpan={3} className="px-6 py-12 text-center text-gray-500">
                           {selectedWardFilter
                             ? 'No facilities found'
                             : 'Select a Ward to view Facilities'}
                         </td>
-                      </tr>
-                    )}
+                      </tr>)}
                   </tbody>
                 </table>
               </div>

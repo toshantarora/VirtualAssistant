@@ -403,15 +403,13 @@ const Ward = () => {
                         </td>
                       </tr>
                     ))}
-                    {locations.length === 0 && (
-                      <tr>
+                    {locations.length === 0 && (<tr>
                         <td colSpan={3} className="px-6 py-12 text-center text-gray-500">
                           {selectedConstituencyFilter
                             ? 'No wards found'
                             : 'Select a Constituency to view Wards'}
                         </td>
-                      </tr>
-                    )}
+                      </tr>)}
                   </tbody>
                 </table>
               </div>

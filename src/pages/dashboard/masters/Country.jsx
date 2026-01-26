@@ -217,20 +217,16 @@ const Country = () => {
                     </tr>
                   ))}
 
-                  {locations.length === 0 && (
-                    <tr>
+                  {locations.length === 0 && (<tr>
                       <td colSpan={2} className="px-6 py-12 text-center text-gray-500">
                         No countries found
                       </td>
-                    </tr>
-                  )}
-                  {filteredLocations.length === 0 && locations.length > 0 && (
-                    <tr>
+                    </tr>)}
+                  {filteredLocations.length === 0 && locations.length > 0 && (<tr>
                       <td colSpan={2} className="px-6 py-12 text-center text-gray-500">
                         No matching countries found
                       </td>
-                    </tr>
-                  )}
+                    </tr>)}
                 </tbody>
               </table>
             </div>

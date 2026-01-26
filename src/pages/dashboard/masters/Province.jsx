@@ -277,13 +277,11 @@ const Province = () => {
                         </td>
                       </tr>
                     ))}
-                    {locations.length === 0 && (
-                      <tr>
+                    {locations.length === 0 && (<tr>
                         <td colSpan={3} className="px-6 py-12 text-center text-gray-500">
                           No provinces found
                         </td>
-                      </tr>
-                    )}
+                      </tr>)}
                   </tbody>
                 </table>
               </div>

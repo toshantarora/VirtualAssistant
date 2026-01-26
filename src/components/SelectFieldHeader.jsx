@@ -74,7 +74,6 @@ const SelectFieldHeader = ({
           rhfOnChange(event);
           if (onChange) onChange(event);
         }}
-        modal={false}
         immediate
       >
         <div className="relative">
