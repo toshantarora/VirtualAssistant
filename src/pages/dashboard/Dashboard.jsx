@@ -10,8 +10,11 @@ import { useLocations } from '../../hooks/useLocations';
 import SelectFieldHeader from '../../components/SelectFieldHeader';
 import { getDashboardStats, getUsers } from '../../services/dashboardService';
 import { useForm } from 'react-hook-form';
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 
 const Dashboard = () => {
+  useDocumentTitle('Dashboard', 'Overview of system usage and user statistics');
+
   /* ------------------ Modal State ------------------ */
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState('add');

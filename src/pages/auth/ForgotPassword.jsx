@@ -8,12 +8,15 @@ import InputBox from '../../components/InputBox';
 import { Link } from 'react-router-dom';
 import { forgotPasswordApi } from '../../services/authService';
 import Notification from '../../components/Notification';
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 
 const forgotPasswordSchema = z.object({
   email: z.string().email('Invalid email address').min(1, 'Email is required'),
 });
 
 const ForgotPassword = () => {
+  useDocumentTitle('Forgot Password', 'Reset your Usage Monitor account password');
+
   const {
     register,
     handleSubmit,

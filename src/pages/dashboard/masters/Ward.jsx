@@ -9,6 +9,7 @@ import { useLocations } from '../../../hooks/useLocations';
 import SelectFieldHeader from '../../../components/SelectFieldHeader';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 
 const wardSchema = z.object({
   countryId: z.string().min(1, 'Country is required'),
@@ -19,6 +20,7 @@ const wardSchema = z.object({
 });
 
 const Ward = () => {
+  useDocumentTitle('Wards', 'Manage ward locations');
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 

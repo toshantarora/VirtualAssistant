@@ -9,6 +9,7 @@ import { useLocations } from '../../../hooks/useLocations';
 import SelectFieldHeader from '../../../components/SelectFieldHeader';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 
 const provinceSchema = z.object({
   countryId: z.string().min(1, 'Country is required'),
@@ -16,6 +17,7 @@ const provinceSchema = z.object({
 });
 
 const Province = () => {
+  useDocumentTitle('Provinces', 'Manage province locations');
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 

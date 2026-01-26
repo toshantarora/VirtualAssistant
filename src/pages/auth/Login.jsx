@@ -10,8 +10,11 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/AuthContext';
 import { loginApi } from '../../services/authService';
 import Notification from '../../components/Notification';
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 
 const Login = () => {
+  useDocumentTitle('Login', 'Login to access the Usage Monitor admin dashboard');
+  
   const {
     register,
     handleSubmit,

@@ -10,8 +10,11 @@ import { useNavigate, Link } from 'react-router-dom';
 import { signupApi } from '../../services/authService';
 import Notification from '../../components/Notification';
 import { useLocations } from '../../hooks/useLocations';
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 
 const Signup = () => {
+  useDocumentTitle('Create Account', 'Sign up for a new Usage Monitor account');
+
   const {
     register,
     handleSubmit,

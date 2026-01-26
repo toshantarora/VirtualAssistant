@@ -7,8 +7,11 @@ import { getUsers } from '../../services/dashboardService';
 import { useLocations } from '../../hooks/useLocations';
 import { useForm } from 'react-hook-form';
 import SelectFieldHeader from '../../components/SelectFieldHeader';
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 
 const Users = () => {
+  useDocumentTitle('Manage Users', 'View and manage system users');
+  
   /* ------------------ Modal State ------------------ */
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState('add');

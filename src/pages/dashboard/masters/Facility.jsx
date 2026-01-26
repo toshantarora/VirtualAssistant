@@ -9,6 +9,7 @@ import { useLocations } from '../../../hooks/useLocations';
 import SelectFieldHeader from '../../../components/SelectFieldHeader';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 
 const facilitySchema = z.object({
   countryId: z.string().min(1, 'Country is required'),
@@ -20,6 +21,7 @@ const facilitySchema = z.object({
 });
 
 const Facility = () => {
+  useDocumentTitle('Facilities', 'Manage healthcare facilities');
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 

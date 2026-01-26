@@ -6,10 +6,12 @@ import locationService from '../../services/locationService';
 import InputBox from '../../components/InputBox';
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react';
 import { useLocations } from '../../hooks/useLocations';
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 
 const LOCATION_HIERARCHY = ['COUNTRY', 'PROVINCE', 'DISTRICT', 'CONSTITUENCY', 'WARD', 'FACILITY'];
 
 const Locations = () => {
+  useDocumentTitle('Locations', 'Manage geographical location hierarchy');
   const [locations, setLocations] = useState([]);
   const [loading, setLoading] = useState(false);
 

@@ -6,8 +6,10 @@ import InputBox from '../../../components/InputBox';
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react';
 import ConfirmDeleteModal from '../../../components/ConfirmDeleteModal';
 import { useLocations } from '../../../hooks/useLocations';
+import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 
 const Country = () => {
+  useDocumentTitle('Countries', 'Manage country locations');
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
