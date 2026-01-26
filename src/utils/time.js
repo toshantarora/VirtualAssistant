@@ -1,12 +1,12 @@
 export const formatUsageTime = (seconds = 0) => {
-  if (!seconds) return "0h 0m";
+  if (!seconds) return '0h 0m';
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
   return `${h}h ${m}m`;
 };
 
 export const formatLastActive = (date) => {
-  if (!date) return "Never";
+  if (!date) return 'Never';
   const diff = Date.now() - new Date(date).getTime();
   const mins = Math.floor(diff / 60000);
   if (mins < 60) return `${mins} mins ago`;
@@ -43,33 +43,17 @@ export const getShortId = (uuid) => {
 export const getLast7DaysRange = () => {
   const now = new Date();
 
-  const to = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate(),
-    23,
-    59,
-    59,
-    999
-  );
+  const to = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
 
-  const from = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate() - 7,
-    0,
-    0,
-    0,
-    0
-  );
+  const from = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7, 0, 0, 0, 0);
 
   const formatLocalDateTime = (date) => {
-    const pad = (n) => String(n).padStart(2, "0");
+    const pad = (n) => String(n).padStart(2, '0');
 
     return (
       `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}` +
       `T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}.` +
-      `${String(date.getMilliseconds()).padStart(3, "0")}`
+      `${String(date.getMilliseconds()).padStart(3, '0')}`
     );
   };
 
@@ -78,6 +62,3 @@ export const getLast7DaysRange = () => {
     to: formatLocalDateTime(to),
   };
 };
-
-
-

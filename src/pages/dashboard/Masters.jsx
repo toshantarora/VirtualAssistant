@@ -1,9 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 const Masters = () => {
-  return (
-    <div>Masters</div>
-  )
-}
+  return <div>Masters</div>;
+};
 
-export default Masters
+export default Masters;

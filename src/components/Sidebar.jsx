@@ -1,16 +1,12 @@
-import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
-import { X } from "lucide-react";
-import SidebarNav from "./SidebarNav";
+import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react';
+import { X } from 'lucide-react';
+import SidebarNav from './SidebarNav';
 
 const Sidebar = ({ mobileOpen, setMobileOpen }) => {
   return (
     <>
       {/* Mobile Sidebar */}
-      <Dialog
-        open={mobileOpen}
-        onClose={setMobileOpen}
-        className="relative z-50 lg:hidden"
-      >
+      <Dialog open={mobileOpen} onClose={setMobileOpen} className="relative z-50 lg:hidden">
         <DialogBackdrop className="fixed inset-0 bg-black/40" />
 
         <DialogPanel className="fixed inset-y-0 left-0 w-72 bg-white p-6">
@@ -36,4 +32,3 @@ const Sidebar = ({ mobileOpen, setMobileOpen }) => {
 };
 
 export default Sidebar;
-

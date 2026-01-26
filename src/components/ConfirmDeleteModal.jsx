@@ -1,19 +1,13 @@
-import {
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-  Transition,
-  TransitionChild,
-} from "@headlessui/react";
+import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react';
 
 const ConfirmDeleteModal = ({
   isOpen,
   onClose,
   onConfirm,
-  title = "Delete",
+  title = 'Delete',
   description,
-  confirmText = "Delete",
-  cancelText = "Cancel",
+  confirmText = 'Delete',
+  cancelText = 'Cancel',
   loading = false,
 }) => {
   return (
@@ -42,18 +36,11 @@ const ConfirmDeleteModal = ({
               leaveTo="opacity-0 scale-95"
             >
               <DialogPanel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                <DialogTitle
-                  as="h3"
-                  className="mb-2 text-lg font-medium leading-6 text-gray-900"
-                >
+                <DialogTitle as="h3" className="mb-2 text-lg font-medium leading-6 text-gray-900">
                   {title}
                 </DialogTitle>
 
-                {description && (
-                  <p className="mt-2 text-sm text-gray-500">
-                    {description}
-                  </p>
-                )}
+                {description && <p className="mt-2 text-sm text-gray-500">{description}</p>}
 
                 <div className="mt-6 flex justify-end gap-3">
                   <button
@@ -71,7 +58,7 @@ const ConfirmDeleteModal = ({
                     onClick={onConfirm}
                     disabled={loading}
                   >
-                    {loading ? "Deleting..." : confirmText}
+                    {loading ? 'Deleting...' : confirmText}
                   </button>
                 </div>
               </DialogPanel>

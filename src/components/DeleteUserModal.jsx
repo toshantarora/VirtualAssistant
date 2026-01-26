@@ -1,12 +1,7 @@
-import React from "react";
-import { AlertTriangle, Loader2, X } from "lucide-react";
+import React from 'react';
+import { AlertTriangle, Loader2, X } from 'lucide-react';
 
-const DeleteUserModal = ({
-  isOpen,
-  onClose,
-  onDelete,
-  loading = false,
-}) => {
+const DeleteUserModal = ({ isOpen, onClose, onDelete, loading = false }) => {
   if (!isOpen) return null;
 
   return (
@@ -30,12 +25,9 @@ const DeleteUserModal = ({
 
           {/* Text */}
           <div className="flex-1">
-            <h3 className="text-2xl font-bold text-gray-900">
-              Delete User
-            </h3>
+            <h3 className="text-2xl font-bold text-gray-900">Delete User</h3>
             <p className="mt-3 text-lg text-gray-600">
-              Are you sure you want to delete this user?  
-              This action cannot be undone.
+              Are you sure you want to delete this user? This action cannot be undone.
             </p>
           </div>
         </div>
@@ -61,7 +53,7 @@ const DeleteUserModal = ({
                 Deleting...
               </>
             ) : (
-              "Delete"
+              'Delete'
             )}
           </button>
         </div>

@@ -30,7 +30,14 @@ const District = () => {
   const isEditMode = Boolean(editingLocation);
 
   // Filters
-  const { countries, getList, fetchStates, refreshList, fetchCountries, fetchDistricts: fetchDistrictsAction } = useLocations();
+  const {
+    countries,
+    getList,
+    fetchStates,
+    refreshList,
+    fetchCountries,
+    fetchDistricts: fetchDistrictsAction,
+  } = useLocations();
 
   const {
     register,
@@ -150,7 +157,12 @@ const District = () => {
     setIsModalOpen(false);
     setTimeout(() => {
       setEditingLocation(null);
-      reset({ district: '', provinceId: '', countryFilter: selectedCountryFilter, provinceFilter: selectedProvinceFilter });
+      reset({
+        district: '',
+        provinceId: '',
+        countryFilter: selectedCountryFilter,
+        provinceFilter: selectedProvinceFilter,
+      });
     }, 0);
   };
 

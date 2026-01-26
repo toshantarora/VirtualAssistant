@@ -51,7 +51,15 @@ const AddUserForm = ({ onSuccess }) => {
   /* ------------------ SELECT HANDLERS ------------------ */
   const onCountryChange = async (e) => {
     const val = e.target.value;
-    reset((p) => ({ ...p, country: val, state: '', district: '', constituency: '', ward: '', facility: '' }));
+    reset((p) => ({
+      ...p,
+      country: val,
+      state: '',
+      district: '',
+      constituency: '',
+      ward: '',
+      facility: '',
+    }));
     if (val) await fetchStates(val);
   };
 

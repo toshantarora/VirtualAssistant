@@ -1,4 +1,4 @@
-import { Search, Plus } from "lucide-react";
+import { Search, Plus } from 'lucide-react';
 
 const ManageUsersHeader = ({
   total,
@@ -11,12 +11,8 @@ const ManageUsersHeader = ({
   return (
     <div className="flex flex-col gap-3 px-3 md:px-5 sm:flex-row sm:items-center sm:justify-between">
       <h2 className="text-base md:text-lg font-semibold">
-        {status == "ACTIVE"
-          ? "Active"
-          : status === "INACTIVE"
-          ? "Inactive"
-          : "Total"}{" "}
-        Users <span className="text-xs md:text-sm text-gray-500">({total} Total)</span>
+        {status == 'ACTIVE' ? 'Active' : status === 'INACTIVE' ? 'Inactive' : 'Total'} Users{' '}
+        <span className="text-xs md:text-sm text-gray-500">({total} Total)</span>
       </h2>
 
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:gap-3">

@@ -1,8 +1,8 @@
-import { Menu, LogOut } from "lucide-react";
-import VirtualAssistantLogo from "../assets/VirtualAssistantLogo.jpg";
-import { useContext } from "react";
-import { AuthContext } from "../auth/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Menu, LogOut } from 'lucide-react';
+import VirtualAssistantLogo from '../assets/VirtualAssistantLogo.jpg';
+import { useContext } from 'react';
+import { AuthContext } from '../auth/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Header = ({ onMenuClick }) => {
   const { logout } = useContext(AuthContext);
@@ -10,7 +10,7 @@ const Header = ({ onMenuClick }) => {
 
   const handleLogout = () => {
     logout(); // clear token + user
-    navigate("/login"); // redirect to login page
+    navigate('/login'); // redirect to login page
   };
   return (
     <header className="fixed top-0 left-0 z-40 w-full border-b border-primary-100 bg-white">
@@ -18,10 +18,7 @@ const Header = ({ onMenuClick }) => {
         {/* Left */}
         <div className="flex items-center gap-3">
           {/* Mobile menu button */}
-          <button
-            onClick={onMenuClick}
-            className="lg:hidden rounded-md p-2 hover:bg-gray-100"
-          >
+          <button onClick={onMenuClick} className="lg:hidden rounded-md p-2 hover:bg-gray-100">
             <Menu size={22} />
           </button>
 

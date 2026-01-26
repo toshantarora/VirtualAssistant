@@ -111,4 +111,3 @@ export const LocationProvider = ({ children }) => {
 
   return <LocationContext.Provider value={value}>{children}</LocationContext.Provider>;
 };
-

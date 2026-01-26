@@ -1,20 +1,15 @@
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  DialogTitle,
-} from "@headlessui/react";
-import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
+import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 const StatusDialog = ({
   open,
   onClose,
-  type = "success", // "success" | "error"
+  type = 'success', // "success" | "error"
   title,
   message,
   onConfirm, // 👈 NEW
 }) => {
-  const isSuccess = type === "success";
+  const isSuccess = type === 'success';
 
   const handleClick = () => {
     if (isSuccess && onConfirm) {
@@ -32,7 +27,7 @@ const StatusDialog = ({
         <DialogPanel className="w-full max-w-sm rounded-lg bg-white p-6 text-center shadow-xl">
           <div
             className={`mx-auto flex h-12 w-12 items-center justify-center rounded-full ${
-              isSuccess ? "bg-green-100" : "bg-red-100"
+              isSuccess ? 'bg-green-100' : 'bg-red-100'
             }`}
           >
             {isSuccess ? (
@@ -42,9 +37,7 @@ const StatusDialog = ({
             )}
           </div>
 
-          <DialogTitle className="mt-4 text-lg font-semibold">
-            {title}
-          </DialogTitle>
+          <DialogTitle className="mt-4 text-lg font-semibold">{title}</DialogTitle>
 
           <p className="mt-2 text-sm text-gray-600">{message}</p>
 
@@ -52,12 +45,10 @@ const StatusDialog = ({
             <button
               onClick={handleClick}
               className={`w-full rounded-md px-4 py-2 text-white transition ${
-                isSuccess
-                  ? "bg-primary hover:bg-primary-500"
-                  : "bg-gray-600 hover:bg-gray-500"
+                isSuccess ? 'bg-primary hover:bg-primary-500' : 'bg-gray-600 hover:bg-gray-500'
               }`}
             >
-              {isSuccess ? "Go to Dashboard" : "Cancel"}
+              {isSuccess ? 'Go to Dashboard' : 'Cancel'}
             </button>
           </div>
         </DialogPanel>

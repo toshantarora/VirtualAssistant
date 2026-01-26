@@ -1,16 +1,12 @@
 const StatsCard = ({
   title,
   value = 0,
-  percentage = "0%",
   // eslint-disable-next-line no-unused-vars
   icon: Icon,
-  trend = "up",
   loading = false,
   onClick,
   active = false,
 }) => {
-  const isUp = trend === "up";
-
   return (
     <div
       onClick={onClick}
@@ -19,8 +15,8 @@ const StatsCard = ({
         transition-all duration-200 ease-out flex items-center gap-4
         ${
           active
-            ? "border-primary bg-primary/5 shadow-[0_8px_20px_rgba(0,0,0,0.15)] translate-y-px"
-            : "border-primary-100 bg-white shadow-[0_4px_12px_rgba(0,0,0,0.08)]"
+            ? 'border-primary bg-primary/5 shadow-[0_8px_20px_rgba(0,0,0,0.15)] translate-y-px'
+            : 'border-primary-100 bg-white shadow-[0_4px_12px_rgba(0,0,0,0.08)]'
         }
         hover:shadow-[0_10px_24px_rgba(0,0,0,0.18)]
         active:translate-y-[2px]
@@ -33,7 +29,7 @@ const StatsCard = ({
 
       <div className="flex flex-col">
         <p className="text-sm font-medium text-green-900">{title}</p>
-        
+
         {loading ? (
           <div className="mt-1 h-7 w-16 animate-pulse rounded bg-gray-200" />
         ) : (

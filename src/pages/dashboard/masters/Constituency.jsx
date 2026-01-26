@@ -181,7 +181,13 @@ const Constituency = () => {
     setIsModalOpen(false);
     setTimeout(() => {
       setEditingLocation(null);
-      reset({ constituency: '', districtId: '', countryFilter: selectedCountryFilter, provinceFilter: selectedProvinceFilter, districtFilter: selectedDistrictFilter });
+      reset({
+        constituency: '',
+        districtId: '',
+        countryFilter: selectedCountryFilter,
+        provinceFilter: selectedProvinceFilter,
+        districtFilter: selectedDistrictFilter,
+      });
     }, 0);
   };
 

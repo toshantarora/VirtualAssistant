@@ -1,15 +1,15 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import loginImg from "../../assets/login-illustration.png";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
-import { loginSchema } from "../../validations/loginSchema";
-import InputBox from "../../components/InputBox";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../auth/AuthContext";
-import { loginApi } from "../../services/authService";
-import Notification from "../../components/Notification";
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import loginImg from '../../assets/login-illustration.png';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2 } from 'lucide-react';
+import { loginSchema } from '../../validations/loginSchema';
+import InputBox from '../../components/InputBox';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../auth/AuthContext';
+import { loginApi } from '../../services/authService';
+import Notification from '../../components/Notification';
 
 const Login = () => {
   const {
@@ -23,8 +23,8 @@ const Login = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastData, setToastData] = useState({
     success: true,
-    title: "",
-    message: "",
+    title: '',
+    message: '',
   });
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -41,17 +41,16 @@ const Login = () => {
       setToastData({
         success: true,
         title: res?.message,
-        message: "Welcome back to the dashboard",
+        message: 'Welcome back to the dashboard',
       });
       setShowToast(true);
       setTimeout(() => setShowToast(false), 3000);
-      navigate("/dashboard");
+      navigate('/dashboard');
     } catch (error) {
-      const errorMessage =
-        error?.response?.data?.message || "Invalid email or password";
+      const errorMessage = error?.response?.data?.message || 'Invalid email or password';
       setToastData({
         success: false,
-        title: "Login Failed",
+        title: 'Login Failed',
         message: errorMessage,
       });
       setShowToast(true);
@@ -84,9 +83,7 @@ const Login = () => {
         <div className="w-full md:w-1/2 flex items-center justify-center bg-gray-50">
           <div className="w-full max-w-md bg-white rounded-3xl shadow-lg p-8">
             <h1 className="text-4xl font-bold text-gray-800 mb-2">Login</h1>
-            <p className="text-gray-500 mb-9">
-              Log in to access the admin dashboard.
-            </p>
+            <p className="text-gray-500 mb-9">Log in to access the admin dashboard.</p>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               {/* <input
@@ -110,7 +107,7 @@ const Login = () => {
 
               <div className="relative">
                 <InputBox
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? 'text' : 'password'}
                   placeholder="Password"
                   name="password"
                   register={register}
@@ -162,12 +159,9 @@ const Login = () => {
 
               <div className="text-right flex justify-between items-center">
                 <Link to="/signup" className="text-sm text-primary hover:underline">
-                    Create an Account
+                  Create an Account
                 </Link>
-                <Link
-                  to="/forgot-password"
-                  className="text-sm text-primary hover:underline"
-                >
+                <Link to="/forgot-password" className="text-sm text-primary hover:underline">
                   Forgot password?
                 </Link>
               </div>
@@ -183,7 +177,7 @@ const Login = () => {
                     Logging in...
                   </>
                 ) : (
-                  "Log in"
+                  'Log in'
                 )}
               </button>
             </form>

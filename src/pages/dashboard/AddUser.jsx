@@ -1,6 +1,6 @@
-import React from "react";
-import UserModal from "../../components/UserModal";
-import AddUserForm from "../../components/AddUserForm";
+import React from 'react';
+import UserModal from '../../components/UserModal';
+import AddUserForm from '../../components/AddUserForm';
 
 const AddUser = () => {
   return (

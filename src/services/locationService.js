@@ -1,15 +1,15 @@
-import api from "./api";
+import api from './api';
 
 const locationService = {
   // Fetch locations (supports parentId, type, etc.)
   getLocations: async (params = {}) => {
-    const response = await api.get("/admin/locations", { params });
+    const response = await api.get('/admin/locations', { params });
     return response.data?.data || [];
   },
 
   // Create a new location
   createLocation: async (data) => {
-    const response = await api.post("/admin/locations", data);
+    const response = await api.post('/admin/locations', data);
     return response.data?.data;
   },
 

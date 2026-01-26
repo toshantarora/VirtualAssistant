@@ -1,7 +1,7 @@
-import { Fragment } from "react";
-import { Transition } from "@headlessui/react";
-import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
-import { XMarkIcon } from "@heroicons/react/20/solid";
+import { Fragment } from 'react';
+import { Transition } from '@headlessui/react';
+import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon } from '@heroicons/react/20/solid';
 
 const Notification = ({ show, setShow, success = true, title, message }) => {
   if (!show) return null;

@@ -1,14 +1,14 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const userSchema = z.object({
-  fullname: z.string().min(2, "Full name is required"),
-  email: z.string().email("Invalid email address"),
-  mobileNumber: z
-    .string()
-    .regex(/^\d{9}$/, "Mobile number must be exactly 9 digits"),
+  fullname: z.string().min(2, 'Full name is required'),
+  email: z.string().email('Invalid email address'),
+  mobileNumber: z.string().regex(/^\d{9}$/, 'Mobile number must be exactly 9 digits'),
   providerType: z.string().optional(),
-  state: z.string().min(1, "Province is required"),
-  constituency: z.string().min(1, "Constituency is required"),
-  ward: z.string().min(1, "Ward is required"),
-  facility: z.string().min(1, "Facility is required"),
+  country: z.string().min(1, 'Country is required'),
+  state: z.string().min(1, 'Province is required'),
+  district: z.string().min(1, 'District is required'),
+  constituency: z.string().min(1, 'Constituency is required'),
+  ward: z.string().min(1, 'Ward is required'),
+  facility: z.string().min(1, 'Facility is required'),
 });

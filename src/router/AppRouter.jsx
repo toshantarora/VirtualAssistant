@@ -1,21 +1,24 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import ProtectedRoute from "../auth/ProtectedRoute";
-import AuthLayout from "../layouts/AuthLayout";
-import DashboardLayout from "../layouts/DashboardLayout";
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import ProtectedRoute from '../auth/ProtectedRoute';
+import AuthLayout from '../layouts/AuthLayout';
+import DashboardLayout from '../layouts/DashboardLayout';
 
-import Login from "../pages/auth/Login";
-import Signup from "../pages/auth/Signup";
-import ForgotPassword from "../pages/auth/ForgotPassword";
-import Dashboard from "../pages/dashboard/Dashboard";
-import Users from "../pages/dashboard/Users";
-import AddUser from "../pages/dashboard/AddUser";
-import Locations from "../pages/dashboard/Locations";
+import Login from '../pages/auth/Login';
+import Signup from '../pages/auth/Signup';
+import ForgotPassword from '../pages/auth/ForgotPassword';
+import Dashboard from '../pages/dashboard/Dashboard';
+import Users from '../pages/dashboard/Users';
+import AddUser from '../pages/dashboard/AddUser';
+import Locations from '../pages/dashboard/Locations';
 
 /* Masters Pages */
-import Province from "../pages/dashboard/masters/Province";
-import Constituency from "../pages/dashboard/masters/Constituency";
-import Facility from "../pages/dashboard/masters/Facility";
-import Ward from "../pages/dashboard/masters/Ward";
+import Country from '../pages/dashboard/masters/Country';
+import Province from '../pages/dashboard/masters/Province';
+import District from '../pages/dashboard/masters/District';
+import Constituency from '../pages/dashboard/masters/Constituency';
+import Ward from '../pages/dashboard/masters/Ward';
+import Facility from '../pages/dashboard/masters/Facility';
+import { LocationProvider } from '../context/LocationContext';
 
 export default function AppRouter() {
   return (
@@ -35,7 +38,9 @@ export default function AppRouter() {
         <Route
           element={
             <ProtectedRoute>
-              <DashboardLayout />
+              <LocationProvider>
+                <DashboardLayout />
+              </LocationProvider>
             </ProtectedRoute>
           }
         >
@@ -46,11 +51,13 @@ export default function AppRouter() {
 
           {/* ========= Masters ========= */}
           <Route path="/dashboard/masters">
-            <Route index element={<Navigate to="province" replace />} />
+            <Route index element={<Navigate to="country" replace />} />
+            <Route path="country" element={<Country />} />
             <Route path="province" element={<Province />} />
+            <Route path="district" element={<District />} />
             <Route path="constituency" element={<Constituency />} />
-            <Route path="facility" element={<Facility />} />
             <Route path="ward" element={<Ward />} />
+            <Route path="facility" element={<Facility />} />
           </Route>
         </Route>
 

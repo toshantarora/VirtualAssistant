@@ -1,4 +1,4 @@
-import { ChevronDown } from "lucide-react";
+import { ChevronDown } from 'lucide-react';
 
 const SelectFieldHeader = ({
   label,
@@ -6,19 +6,14 @@ const SelectFieldHeader = ({
   register,
   options = [],
   error,
-  placeholder = "Select",
+  placeholder = 'Select',
   onChange,
 }) => {
-
   const { onChange: rhfOnChange, ...rest } = register(name);
 
   return (
     <div className="">
-      {label && (
-        <label className="mb-1 block text-sm font-medium text-gray-700">
-          {label}
-        </label>
-      )}
+      {label && <label className="mb-1 block text-sm font-medium text-gray-700">{label}</label>}
 
       <div className="relative">
         <select
@@ -26,13 +21,13 @@ const SelectFieldHeader = ({
           className={`h-12 md:h-[60px] w-full appearance-none rounded-xl md:rounded-[24px] border px-4 md:px-6 py-2 md:py-3 pr-10 md:pr-12 text-xs md:text-sm outline-none
             ${
               error
-                ? "border-red-500 focus:ring-red-500"
-                : "border-primary-100 focus:border-primary focus:ring-primary"
+                ? 'border-red-500 focus:ring-red-500'
+                : 'border-primary-100 focus:border-primary focus:ring-primary'
             }
           `}
           onChange={(e) => {
-            rhfOnChange(e);   // ✅ update react-hook-form
-            onChange?.(e);    // ✅ your custom handler
+            rhfOnChange(e); // ✅ update react-hook-form
+            onChange?.(e); // ✅ your custom handler
           }}
         >
           <option value="">{placeholder}</option>

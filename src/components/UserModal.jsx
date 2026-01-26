@@ -49,7 +49,15 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
   // 🔹 Select change handlers (ONLY place where API is called)
   const onCountryChange = async (e) => {
     const value = e.target.value;
-    reset((p) => ({ ...p, country: value, state: '', district: '', constituency: '', ward: '', facility: '' }));
+    reset((p) => ({
+      ...p,
+      country: value,
+      state: '',
+      district: '',
+      constituency: '',
+      ward: '',
+      facility: '',
+    }));
     if (value) await fetchStates(value);
   };
 

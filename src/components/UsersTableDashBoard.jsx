@@ -1,9 +1,9 @@
-import { Loader2, Pencil, Trash2 } from "lucide-react";
-import { useState } from "react";
-import DeleteUserModal from "./DeleteUserModal";
-import { formatLastActive, formatUsageTime, getShortId } from "../utils/time";
-import { deleteUserApi } from "../services/dashboardService";
-import Notification from "./Notification";
+import { Loader2, Pencil, Trash2 } from 'lucide-react';
+import { useState } from 'react';
+import DeleteUserModal from './DeleteUserModal';
+import { formatLastActive, formatUsageTime, getShortId } from '../utils/time';
+import { deleteUserApi } from '../services/dashboardService';
+import Notification from './Notification';
 
 const UsersTable = ({ openEdit, users = [], loading, onUserDeleted, showDelete = true }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -13,8 +13,8 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted, showDelete =
   const [showNotification, setShowNotification] = useState(false);
   const [notificationData, setNotificationData] = useState({
     success: true,
-    title: "",
-    message: "",
+    title: '',
+    message: '',
   });
   const openDeleteModal = (user) => {
     setSelectedUser(user);
@@ -36,20 +36,20 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted, showDelete =
       await onUserDeleted?.();
       setNotificationData({
         success: true,
-        title: res.message || "User deleted successfully",
-        message: "The user has been deleted successfully.",
+        title: res.message || 'User deleted successfully',
+        message: 'The user has been deleted successfully.',
       });
       setShowNotification(true);
       setTimeout(() => setShowNotification(false), 3000);
       setIsModalOpen(false);
       setSelectedUser(null);
     } catch (error) {
-      console.error("Delete failed", error);
+      console.error('Delete failed', error);
 
       setNotificationData({
         success: false,
-        title: "Delete Failed",
-        message: "Unable to delete user. Please try again.",
+        title: 'Delete Failed',
+        message: 'Unable to delete user. Please try again.',
       });
       setShowNotification(true);
       setTimeout(() => setShowNotification(false), 3000);
@@ -81,13 +81,13 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted, showDelete =
         message={notificationData.message}
       />
       <div className="flex flex-col h-full rounded-xl overflow-hidden bg-white">
-        <div className="overflow-y-auto" style={{ maxHeight: "500px" }}>
+        <div className="overflow-y-auto" style={{ maxHeight: '500px' }}>
           <table className="w-full text-sm border-collapse">
             <thead className="sticky top-0 z-10 bg-[#f6f8f5] text-left shadow-sm">
               <tr>
                 <th className="px-6 py-4 font-medium">User ID</th>
                 <th className="px-6 py-4 font-medium">Name & Email</th>
-                <th className="px-6 py-4 font-medium">Mobile Number</th>{" "}
+                <th className="px-6 py-4 font-medium">Mobile Number</th>{' '}
                 <th className="px-6 py-4 font-medium">Usage Time</th>
                 <th className="px-6 py-4 font-medium">Last Active</th>
                 {(openEdit || showDelete) && <th className="px-6 py-4 font-medium">Actions</th>}
@@ -96,10 +96,7 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted, showDelete =
 
             <tbody className="divide-y divide-[#cfded6]">
               {users.map((user) => (
-                <tr
-                  key={user.id}
-                  className="hover:bg-gray-50 transition-colors"
-                >
+                <tr key={user.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-5">
                     <button
                       onClick={() => {
@@ -128,9 +125,7 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted, showDelete =
                   <td className="px-6 py-5 font-medium">
                     {formatUsageTime(user.totalUsageSeconds)}
                   </td>
-                  <td className="px-6 py-5 text-gray-600">
-                    {formatLastActive(user.lastActiveAt)}
-                  </td>
+                  <td className="px-6 py-5 text-gray-600">{formatLastActive(user.lastActiveAt)}</td>
 
                   {/* <td className="px-6 py-5 text-gray-600">
                     {user?.facility ? user?.facility?.name : "-"}
@@ -142,27 +137,27 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted, showDelete =
                     {user?.facilityType ? user?.facilityType : "-"}
                   </td> */}
                   {(openEdit || showDelete) && (
-                  <td className="px-6 py-5">
-                    <div className="flex gap-4">
-                      {openEdit && (
-                        <button
-                          onClick={() => openEditModal(user)}
-                          className="hover:text-green-700 transition-colors"
-                        >
-                          <Pencil size={18} />
-                        </button>
-                      )}
+                    <td className="px-6 py-5">
+                      <div className="flex gap-4">
+                        {openEdit && (
+                          <button
+                            onClick={() => openEditModal(user)}
+                            className="hover:text-green-700 transition-colors"
+                          >
+                            <Pencil size={18} />
+                          </button>
+                        )}
 
-                      {showDelete && (
-                      <button
-                        onClick={() => openDeleteModal(user)}
-                        className="hover:text-red-600 transition-colors"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                      )}
-                    </div>
-                  </td>
+                        {showDelete && (
+                          <button
+                            onClick={() => openDeleteModal(user)}
+                            className="hover:text-red-600 transition-colors"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        )}
+                      </div>
+                    </td>
                   )}
                 </tr>
               ))}

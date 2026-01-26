@@ -1,24 +1,20 @@
-import { NavLink, useLocation } from "react-router-dom";
-import {
-  LayoutDashboard,
-  UsersRound,
-  UserRoundPlus,
-  Wrench,
-  ChevronDown,
-} from "lucide-react";
-import { useState } from "react";
+import { NavLink, useLocation } from 'react-router-dom';
+import { LayoutDashboard, UsersRound, UserRoundPlus, Wrench, ChevronDown } from 'lucide-react';
+import { useState } from 'react';
 
 const navigation = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Users", href: "/dashboard/users", icon: UsersRound },
-  { name: "Add User", href: "/dashboard/add-user", icon: UserRoundPlus },
+  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { name: 'Users', href: '/dashboard/users', icon: UsersRound },
+  { name: 'Add User', href: '/dashboard/add-user', icon: UserRoundPlus },
 ];
 
 const mastersMenu = [
-  { name: "Province", href: "/dashboard/masters/province" },
-  { name: "Constituency", href: "/dashboard/masters/constituency" },
-  { name: "Facility", href: "/dashboard/masters/facility" },
-  { name: "Ward", href: "/dashboard/masters/ward" },
+  { name: 'Country', href: '/dashboard/masters/country' },
+  { name: 'Province', href: '/dashboard/masters/province' },
+  { name: 'District', href: '/dashboard/masters/district' },
+  { name: 'Constituency', href: '/dashboard/masters/constituency' },
+  { name: 'Ward', href: '/dashboard/masters/ward' },
+  { name: 'Facility', href: '/dashboard/masters/facility' },
 ];
 
 const SidebarNav = ({ onItemClick }) => {
@@ -28,7 +24,7 @@ const SidebarNav = ({ onItemClick }) => {
   const [mastersManuallyOpen, setMastersManuallyOpen] = useState(false);
 
   // derived state from route (NO setState)
-  const isMastersRoute = location.pathname.startsWith("/dashboard/masters");
+  const isMastersRoute = location.pathname.startsWith('/dashboard/masters');
 
   // final open state
   const mastersOpen = isMastersRoute || mastersManuallyOpen;
@@ -47,8 +43,8 @@ const SidebarNav = ({ onItemClick }) => {
                 `flex items-center gap-3 rounded-full px-6 py-3 text-base transition
                 ${
                   isActive
-                    ? "bg-light-grey text-black"
-                    : "text-primary hover:bg-light-grey hover:text-black"
+                    ? 'bg-light-grey text-black'
+                    : 'text-primary hover:bg-light-grey hover:text-black'
                 }`
               }
             >
@@ -66,8 +62,8 @@ const SidebarNav = ({ onItemClick }) => {
             className={`flex w-full items-center justify-between gap-3 rounded-full px-6 py-3 text-base transition
               ${
                 isMastersRoute
-                  ? "bg-light-grey text-black"
-                  : "text-primary hover:bg-light-grey hover:text-black"
+                  ? 'bg-light-grey text-black'
+                  : 'text-primary hover:bg-light-grey hover:text-black'
               }`}
           >
             <span className="flex items-center gap-3">
@@ -75,9 +71,7 @@ const SidebarNav = ({ onItemClick }) => {
               Masters
             </span>
             <ChevronDown
-              className={`h-4 w-4 transition-transform ${
-                mastersOpen ? "rotate-180" : ""
-              }`}
+              className={`h-4 w-4 transition-transform ${mastersOpen ? 'rotate-180' : ''}`}
             />
           </button>
 
@@ -92,8 +86,8 @@ const SidebarNav = ({ onItemClick }) => {
                       `block rounded-full px-4 py-2 text-sm transition
                       ${
                         isActive
-                          ? "bg-light-grey text-black"
-                          : "text-primary hover:bg-light-grey hover:text-black"
+                          ? 'bg-light-grey text-black'
+                          : 'text-primary hover:bg-light-grey hover:text-black'
                       }`
                     }
                   >

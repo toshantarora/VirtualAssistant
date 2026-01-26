@@ -1,4 +1,4 @@
-import { ChevronDown } from "lucide-react";
+import { ChevronDown } from 'lucide-react';
 
 const SelectField = ({
   label,
@@ -6,25 +6,21 @@ const SelectField = ({
   register,
   options = [],
   error,
-  placeholder = "Select",
-   onChange,
+  placeholder = 'Select',
+  onChange,
 }) => {
   return (
     <div className="">
-      {label && (
-        <label className="mb-1 block text-sm font-medium text-gray-700">
-          {label}
-        </label>
-      )}
+      {label && <label className="mb-1 block text-sm font-medium text-gray-700">{label}</label>}
 
       <div className="relative">
         <select
-           {...register(name, { onChange })}
+          {...register(name, { onChange })}
           className={`h-[60px] w-full appearance-none rounded-[24px] border px-6 py-3 pr-12 text-sm outline-none
             ${
               error
-                ? "border-red-500 focus:ring-red-500"
-                : "border-primary-100 focus:border-primary focus:ring-primary"
+                ? 'border-red-500 focus:ring-red-500'
+                : 'border-primary-100 focus:border-primary focus:ring-primary'
             }
           `}
         >
@@ -45,15 +41,9 @@ const SelectField = ({
       </div>
 
       {/* Error Message */}
-      {error && (
-        <p className="mt-1 text-xs text-red-500">{error.message}</p>
-      )}
+      {error && <p className="mt-1 text-xs text-red-500">{error.message}</p>}
     </div>
   );
 };
 
 export default SelectField;
-
-
-
-

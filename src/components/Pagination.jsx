@@ -1,9 +1,4 @@
-const Pagination = ({
-  currentPage,
-  totalItems,
-  itemsPerPage,
-  onPageChange,
-}) => {
+const Pagination = ({ currentPage, totalItems, itemsPerPage, onPageChange }) => {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   if (totalPages <= 1) return null;
   return (
@@ -32,4 +27,3 @@ const Pagination = ({
 };
 
 export default Pagination;
-

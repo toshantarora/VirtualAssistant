@@ -207,7 +207,14 @@ const Ward = () => {
     setIsModalOpen(false);
     setTimeout(() => {
       setEditingLocation(null);
-      reset({ ward: '', constituencyId: '', countryFilter: selectedCountryFilter, provinceFilter: selectedProvinceFilter, districtFilter: selectedDistrictFilter, constituencyFilter: selectedConstituencyFilter });
+      reset({
+        ward: '',
+        constituencyId: '',
+        countryFilter: selectedCountryFilter,
+        provinceFilter: selectedProvinceFilter,
+        districtFilter: selectedDistrictFilter,
+        constituencyFilter: selectedConstituencyFilter,
+      });
     }, 0);
   };
 
@@ -528,7 +535,9 @@ const Ward = () => {
                           ))}
                         </select>
                         {errors.constituencyId && (
-                          <p className="mt-1 text-xs text-red-500">{errors.constituencyId.message}</p>
+                          <p className="mt-1 text-xs text-red-500">
+                            {errors.constituencyId.message}
+                          </p>
                         )}
                       </div>
                       <InputBox
