@@ -11,6 +11,7 @@ import { useLocations } from '../hooks/useLocations';
 import StatusDialog from './StatusDialog';
 import { useNavigate } from 'react-router-dom';
 import { DEFAULT_COUNTRY_ID } from '../constants/location';
+import { PROVIDER_TYPES, DEFAULT_PROVIDER_TYPE } from '../constants/user';
 
 const AddUserForm = ({ onSuccess }) => {
   const [loading, setLoading] = useState(false);
@@ -46,6 +47,7 @@ const AddUserForm = ({ onSuccess }) => {
       constituency: '',
       ward: '',
       facility: '',
+      providerType: DEFAULT_PROVIDER_TYPE,
     },
   });
 
@@ -122,6 +124,7 @@ const AddUserForm = ({ onSuccess }) => {
         constituencyId: formData.constituency,
         wardId: formData.ward,
         facilityId: formData.facility,
+        providerType: formData.providerType,
         password: 'admin123',
       });
 
@@ -172,8 +175,18 @@ const AddUserForm = ({ onSuccess }) => {
               placeholder="Mobile Number"
               register={register}
               error={errors.mobileNumber}
-              maxLength={10}
+              maxLength={13}
+              minLength={7}
               type="tel"
+            />
+
+            <SelectField
+              name="providerType"
+              placeholder="Provider Type"
+              register={register}
+              error={errors.providerType}
+              value={watch('providerType')}
+              options={PROVIDER_TYPES}
             />
 
 

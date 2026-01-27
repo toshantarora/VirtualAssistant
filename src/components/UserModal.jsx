@@ -9,6 +9,7 @@ import { userSchema } from '../validations/userSchema';
 import { createUserApi, updateUserApi } from '../services/dashboardService';
 import { useLocations } from '../hooks/useLocations';
 import { DEFAULT_COUNTRY_ID } from '../constants/location';
+import { PROVIDER_TYPES, DEFAULT_PROVIDER_TYPE } from '../constants/user';
 const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
   const isEdit = mode === 'edit';
 
@@ -44,6 +45,7 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
       constituency: '',
       ward: '',
       facility: '',
+      providerType: DEFAULT_PROVIDER_TYPE,
     },
   });
 
@@ -118,9 +120,9 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
           state: userData.provinceId,
           district: userData.districtId || '',
           constituency: userData.constituencyId,
-          ward: userData.wardId,
           facility: userData.facilityId,
           mobileNumber: userData.mobile,
+          providerType: userData.providerType || DEFAULT_PROVIDER_TYPE,
         });
 
         if (userData.countryId) await fetchStates(userData.countryId);
@@ -184,6 +186,7 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
       constituency: '',
       ward: '',
       facility: '',
+      providerType: DEFAULT_PROVIDER_TYPE,
     });
 
     setSuccessMsg('');
@@ -252,10 +255,7 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
                 register={register}
                 error={errors.providerType}
                 value={watch('providerType')}
-                options={[
-                  { label: 'Regular', value: 'Regular' },
-                  { label: 'Consultant', value: 'Consultant' },
-                ]}
+                options={PROVIDER_TYPES}
               />
 
               <SelectField

@@ -12,6 +12,7 @@ import Notification from '../../components/Notification';
 import { useLocations } from '../../hooks/useLocations';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { DEFAULT_COUNTRY_ID } from '../../constants/location';
+import { PROVIDER_TYPES, DEFAULT_PROVIDER_TYPE } from '../../constants/user';
 
 const Signup = () => {
   useDocumentTitle('Create Account', 'Sign up for a new Usage Monitor account');
@@ -28,7 +29,7 @@ const Signup = () => {
       fullname: '',
       email: '',
       mobileNumber: '',
-      providerType: 'Regular',
+      providerType: DEFAULT_PROVIDER_TYPE,
       country: DEFAULT_COUNTRY_ID,
       state: '',
       district: '',
@@ -224,10 +225,7 @@ const Signup = () => {
                 register={register}
                 error={errors.providerType}
                 value={watch('providerType')}
-                options={[
-                  { label: 'Regular', value: 'Regular' },
-                  { label: 'Consultant', value: 'Consultant' },
-                ]}
+                options={PROVIDER_TYPES}
               />
 
               <div className="grid grid-cols-2 gap-4">
