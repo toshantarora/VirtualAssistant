@@ -90,9 +90,6 @@ const Users = () => {
   /* ------------------ Filtering State ------------------ */
   const [activeFilter, setActiveFilter] = useState('all'); // 'all', 'pending', 'archived'
 
-  useEffect(() => {
-    fetchStates(DEFAULT_COUNTRY_ID);
-  }, [fetchStates]);
 
 
   const onStateChange = async (e) => {

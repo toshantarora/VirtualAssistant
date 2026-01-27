@@ -105,9 +105,6 @@ const AddUserForm = ({ onSuccess }) => {
     if (val) await fetchFacilities(val);
   };
 
-  useEffect(() => {
-    fetchStates(DEFAULT_COUNTRY_ID);
-  }, [fetchStates]);
 
   /* ------------------ SUBMIT ------------------ */
   const onSubmit = async (formData) => {

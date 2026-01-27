@@ -114,9 +114,6 @@ const Dashboard = () => {
     setOpen(true);
   };
 
-  useEffect(() => {
-    fetchStates(DEFAULT_COUNTRY_ID);
-  }, [fetchStates]);
 
 
   const onStateChange = async (e) => {

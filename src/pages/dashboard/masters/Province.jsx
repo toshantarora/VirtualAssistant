@@ -73,9 +73,6 @@ const Province = () => {
     fetchCountries();
   }, [fetchCountries]);
 
-  useEffect(() => {
-    fetchStates(DEFAULT_COUNTRY_ID);
-  }, [fetchStates]);
 
   // Update list when filter changes
   useEffect(() => {

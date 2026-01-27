@@ -88,9 +88,6 @@ const Signup = () => {
   const [showPassword] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchStates(DEFAULT_COUNTRY_ID);
-  }, [fetchStates]);
 
 
   const onStateChange = async (e) => {
