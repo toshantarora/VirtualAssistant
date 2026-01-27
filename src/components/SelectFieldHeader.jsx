@@ -19,6 +19,7 @@ const SelectFieldHeader = ({
   onChange,
   value: externalValue,
   showAllOption = true, // New prop to control "All" option visibility
+  classNames = {},
 }) => {
   const [query, setQuery] = useState('');
   const [selectedValue, setSelectedValue] = useState(externalValue || '');
@@ -55,7 +56,7 @@ const SelectFieldHeader = ({
   );
 
   return (
-    <div className="relative w-full group">
+    <div className={`relative w-full group ${classNames.container}`}>
       {label && (
         <label className="mb-2 block text-sm font-bold tracking-tight text-slate-700 transition-colors group-focus-within:text-primary ml-1">
           {label}

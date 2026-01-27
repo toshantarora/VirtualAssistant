@@ -39,7 +39,7 @@ const AddUserForm = ({ onSuccess }) => {
       fullname: '',
       email: '',
       mobileNumber: '',
-      country: '',
+      country: 'ddb25e7d-e3fc-4d44-bf73-d2a23793c8b7',
       state: '',
       district: '',
       constituency: '',
@@ -47,6 +47,37 @@ const AddUserForm = ({ onSuccess }) => {
       facility: '',
     },
   });
+
+  /* ------------------ Watchers ------------------ */
+  const selectedCountry = watch('country');
+  const selectedState = watch('state');
+  const selectedDistrict = watch('district');
+  const selectedConstituency = watch('constituency');
+  const selectedWard = watch('ward');
+  const selectedFacility = watch('facility');
+
+  /* ------------------ Initial Fetch for Dependents ------------------ */
+  useEffect(() => {
+    const initDependents = async () => {
+      if (selectedCountry) await fetchStates(selectedCountry);
+      if (selectedState) await fetchDistricts(selectedState);
+      if (selectedDistrict) await fetchConstituencies(selectedDistrict);
+      if (selectedConstituency) await fetchWards(selectedConstituency);
+      if (selectedWard) await fetchFacilities(selectedWard);
+    };
+    initDependents();
+  }, [
+    selectedCountry,
+    selectedState,
+    selectedDistrict,
+    selectedConstituency,
+    selectedWard,
+    fetchStates,
+    fetchDistricts,
+    fetchConstituencies,
+    fetchWards,
+    fetchFacilities,
+  ]);
 
   /* ------------------ SELECT HANDLERS ------------------ */
   const onCountryChange = async (e) => {
@@ -127,12 +158,6 @@ const AddUserForm = ({ onSuccess }) => {
     }
   };
 
-  const selectedCountry = watch('country');
-  const selectedState = watch('state');
-  const selectedDistrict = watch('district');
-  const selectedConstituency = watch('constituency');
-  const selectedWard = watch('ward');
-
   const countries = getList('COUNTRY');
   const states = getList('PROVINCE', selectedCountry);
   const districts = getList('DISTRICT', selectedState);
@@ -173,12 +198,13 @@ const AddUserForm = ({ onSuccess }) => {
               placeholder="Country"
               register={register}
               error={errors.country}
-              value={watch('country')}
+              value={selectedCountry}
               onChange={onCountryChange}
               options={countries.map((c) => ({
                 label: c.name,
                 value: c.id,
               }))}
+              classNames={{ container: 'hidden' }}
             />
 
             <SelectField
@@ -186,7 +212,7 @@ const AddUserForm = ({ onSuccess }) => {
               placeholder="Province"
               register={register}
               error={errors.state}
-              value={watch('state')}
+              value={selectedState}
               onChange={onStateChange}
               options={states.map((s) => ({
                 label: s.name,
@@ -199,7 +225,7 @@ const AddUserForm = ({ onSuccess }) => {
               placeholder="District"
               register={register}
               error={errors.district}
-              value={watch('district')}
+              value={selectedDistrict}
               onChange={onDistrictChange}
               options={districts.map((d) => ({
                 label: d.name,
@@ -212,7 +238,7 @@ const AddUserForm = ({ onSuccess }) => {
               placeholder="Constituency"
               register={register}
               error={errors.constituency}
-              value={watch('constituency')}
+              value={selectedConstituency}
               onChange={onConstituencyChange}
               options={constituencies.map((c) => ({
                 label: c.name,
@@ -225,7 +251,7 @@ const AddUserForm = ({ onSuccess }) => {
               placeholder="Ward"
               register={register}
               error={errors.ward}
-              value={watch('ward')}
+              value={selectedWard}
               onChange={onWardChange}
               options={wards.map((w) => ({
                 label: w.name,
@@ -238,7 +264,7 @@ const AddUserForm = ({ onSuccess }) => {
               placeholder="Facility"
               register={register}
               error={errors.facility}
-              value={watch('facility')}
+              value={selectedFacility}
               options={facilities.map((f) => ({
                 label: f.name,
                 value: f.id,

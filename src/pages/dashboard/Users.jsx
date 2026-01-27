@@ -40,7 +40,7 @@ const Users = () => {
 
   const { watch, register, setValue } = useForm({
     defaultValues: {
-      country: '',
+      country: 'ddb25e7d-e3fc-4d44-bf73-d2a23793c8b7',
       province: '',
       district: '',
       constituency: '',
@@ -55,6 +55,29 @@ const Users = () => {
   const selectedConstituency = watch('constituency');
   const selectedWard = watch('ward');
   const selectedFacility = watch('facility');
+
+  /* ------------------ Initial Fetch for Dependents ------------------ */
+  useEffect(() => {
+    const initDependents = async () => {
+      if (selectedCountry) await fetchStates(selectedCountry);
+      if (selectedProvince) await fetchDistricts(selectedProvince);
+      if (selectedDistrict) await fetchConstituencies(selectedDistrict);
+      if (selectedConstituency) await fetchWards(selectedConstituency);
+      if (selectedWard) await fetchFacilities(selectedWard);
+    };
+    initDependents();
+  }, [
+    selectedCountry,
+    selectedProvince,
+    selectedDistrict,
+    selectedConstituency,
+    selectedWard,
+    fetchStates,
+    fetchDistricts,
+    fetchConstituencies,
+    fetchWards,
+    fetchFacilities,
+  ]);
 
   const countries = getList('COUNTRY');
   const states = getList('PROVINCE', selectedCountry);
@@ -186,17 +209,20 @@ const Users = () => {
             name="country"
             placeholder="Country"
             register={register}
+            value={selectedCountry}
             onChange={onCountryChange}
             options={countries.map((c) => ({
               label: c.name,
               value: c.id,
             }))}
+            classNames={{ container: 'hidden' }}
           />
 
           <SelectFieldHeader
             name="province"
             placeholder="Province"
             register={register}
+            value={selectedProvince}
             onChange={onStateChange}
             options={states.map((s) => ({
               label: s.name,
@@ -208,6 +234,7 @@ const Users = () => {
             name="district"
             placeholder="District"
             register={register}
+            value={selectedDistrict}
             onChange={onDistrictChange}
             options={districts.map((d) => ({
               label: d.name,
@@ -219,6 +246,7 @@ const Users = () => {
             name="constituency"
             placeholder="Constituency"
             register={register}
+            value={selectedConstituency}
             onChange={onConstituencyChange}
             options={constituencies.map((c) => ({
               label: c.name,
@@ -230,6 +258,7 @@ const Users = () => {
             name="ward"
             placeholder="Ward"
             register={register}
+            value={selectedWard}
             onChange={onWardChange}
             options={wards.map((w) => ({
               label: w.name,
@@ -241,6 +270,7 @@ const Users = () => {
             name="facility"
             placeholder="Facility"
             register={register}
+            value={selectedFacility}
             options={facilities.map((f) => ({
               label: f.name,
               value: f.id,

@@ -17,7 +17,7 @@ const AddUser = lazy(() => import('../pages/dashboard/AddUser'));
 const Locations = lazy(() => import('../pages/dashboard/Locations'));
 
 // Lazy load master pages (loaded on demand)
-const Country = lazy(() => import('../pages/dashboard/masters/Country'));
+// const Country = lazy(() => import('../pages/dashboard/masters/Country'));
 const Province = lazy(() => import('../pages/dashboard/masters/Province'));
 const District = lazy(() => import('../pages/dashboard/masters/District'));
 const Constituency = lazy(() => import('../pages/dashboard/masters/Constituency'));
@@ -93,14 +93,14 @@ export default function AppRouter() {
             {/* ========= Masters ========= */}
             <Route path="/dashboard/masters">
               <Route index element={<Navigate to="country" replace />} />
-              <Route 
+              {/* <Route 
                 path="country" 
                 element={
                   <Suspense fallback={<PageLoader />}>
                     <Country />
                   </Suspense>
                 } 
-              />
+              /> */}
               <Route 
                 path="province" 
                 element={

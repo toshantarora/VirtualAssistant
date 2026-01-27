@@ -321,6 +321,7 @@ const Facility = () => {
               value: c.id,
             }))}
             onChange={onCountryFilterChange}
+            classNames={{ container: 'hidden' }}
           />
           <SelectFieldHeader
             name="provinceFilter"

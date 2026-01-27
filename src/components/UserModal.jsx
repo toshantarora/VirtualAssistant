@@ -37,7 +37,7 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
       fullname: '',
       email: '',
       mobileNumber: '',
-      country: '',
+      country: isEdit ? '' : 'ddb25e7d-e3fc-4d44-bf73-d2a23793c8b7',
       state: '',
       district: '',
       constituency: '',
@@ -45,6 +45,36 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
       facility: '',
     },
   });
+
+  const selectedCountry = watch('country');
+  const selectedState = watch('state');
+  const selectedDistrict = watch('district');
+  const selectedConstituency = watch('constituency');
+  const selectedWard = watch('ward');
+  const selectedFacility = watch('facility');
+
+  /* ------------------ Initial Fetch for Dependents ------------------ */
+  useEffect(() => {
+    const initDependents = async () => {
+      if (selectedCountry) await fetchStates(selectedCountry);
+      if (selectedState) await fetchDistricts(selectedState);
+      if (selectedDistrict) await fetchConstituencies(selectedDistrict);
+      if (selectedConstituency) await fetchWards(selectedConstituency);
+      if (selectedWard) await fetchFacilities(selectedWard);
+    };
+    initDependents();
+  }, [
+    selectedCountry,
+    selectedState,
+    selectedDistrict,
+    selectedConstituency,
+    selectedWard,
+    fetchStates,
+    fetchDistricts,
+    fetchConstituencies,
+    fetchWards,
+    fetchFacilities,
+  ]);
 
   // 🔹 Select change handlers (ONLY place where API is called)
   const onCountryChange = async (e) => {
@@ -108,10 +138,6 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
         });
 
         if (userData.countryId) await fetchStates(userData.countryId);
-        if (userData.provinceId) await fetchDistricts(userData.provinceId);
-        if (userData.districtId) await fetchConstituencies(userData.districtId);
-        if (userData.constituencyId) await fetchWards(userData.constituencyId);
-        if (userData.wardId) await fetchFacilities(userData.wardId);
 
         setPrefillLoading(false);
       }
@@ -180,11 +206,6 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
     setLoading(false);
     onClose();
   };
-  const selectedCountry = watch('country');
-  const selectedState = watch('state');
-  const selectedDistrict = watch('district');
-  const selectedConstituency = watch('constituency');
-  const selectedWard = watch('ward');
 
   const countries = getList('COUNTRY');
   const states = getList('PROVINCE', selectedCountry);
@@ -255,12 +276,13 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
                 placeholder="Country"
                 register={register}
                 error={errors.country}
-                value={watch('country')}
+                value={selectedCountry}
                 onChange={onCountryChange}
                 options={countries.map((c) => ({
                   label: c.name,
                   value: c.id,
                 }))}
+                classNames={{ container: 'hidden' }}
               />
 
               <SelectField
@@ -268,7 +290,7 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
                 placeholder="Province"
                 register={register}
                 error={errors.state}
-                value={watch('state')}
+                value={selectedState}
                 onChange={onStateChange}
                 options={states.map((s) => ({
                   label: s.name,
@@ -281,7 +303,7 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
                 placeholder="District"
                 register={register}
                 error={errors.district}
-                value={watch('district')}
+                value={selectedDistrict}
                 onChange={onDistrictChange}
                 options={districts.map((d) => ({
                   label: d.name,
@@ -294,7 +316,7 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
                 placeholder="Constituency"
                 register={register}
                 error={errors.constituency}
-                value={watch('constituency')}
+                value={selectedConstituency}
                 options={constituencies.map((c) => ({
                   label: c.name,
                   value: c.id,
@@ -307,7 +329,7 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
                 placeholder="Ward"
                 register={register}
                 error={errors.ward}
-                value={watch('ward')}
+                value={selectedWard}
                 options={wards.map((w) => ({
                   label: w.name,
                   value: w.id,
@@ -320,7 +342,7 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
                 placeholder="Facility"
                 register={register}
                 error={errors.facility}
-                value={watch('facility')}
+                value={selectedFacility}
                 options={facilities.map((f) => ({
                   label: f.name,
                   value: f.id,

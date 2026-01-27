@@ -9,7 +9,7 @@ const navigation = [
 ];
 
 const mastersMenu = [
-  { name: 'Country', href: '/dashboard/masters/country' },
+//   { name: 'Country', href: '/dashboard/masters/country' },
   { name: 'Province', href: '/dashboard/masters/province' },
   { name: 'District', href: '/dashboard/masters/district' },
   { name: 'Constituency', href: '/dashboard/masters/constituency' },

@@ -19,6 +19,7 @@ const SelectField = ({
   onChange,
   value: externalValue,
   showAllOption = false, // Default to false for form fields (only show in filters)
+  classNames = {},
 }) => {
   const [query, setQuery] = useState('');
   const [selectedValue, setSelectedValue] = useState(externalValue || '');
@@ -55,7 +56,7 @@ const SelectField = ({
   );
 
   return (
-    <div className="relative w-full group">
+    <div className={`relative w-full group ${classNames.container}`}>
       {label && (
         <label className="mb-2 block text-sm font-bold tracking-tight text-slate-700 transition-colors group-focus-within:text-primary">
           {label}

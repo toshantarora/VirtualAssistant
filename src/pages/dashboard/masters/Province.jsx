@@ -200,6 +200,7 @@ const Province = () => {
             onChange={(e) => {
               if (e.target.value) fetchStates(e.target.value);
             }}
+            classNames={{ container: 'hidden' }}
           />
         </div>
       </div>

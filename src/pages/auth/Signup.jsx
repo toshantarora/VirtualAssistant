@@ -23,6 +23,18 @@ const Signup = () => {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(userSchema),
+    defaultValues: {
+      fullname: '',
+      email: '',
+      mobileNumber: '',
+      providerType: 'Regular',
+      country: 'ddb25e7d-e3fc-4d44-bf73-d2a23793c8b7',
+      state: '',
+      district: '',
+      constituency: '',
+      ward: '',
+      facility: '',
+    },
   });
 
   const {
@@ -34,6 +46,36 @@ const Signup = () => {
     fetchWards,
     fetchFacilities,
   } = useLocations();
+
+  const selectedCountry = watch('country');
+  const selectedState = watch('state');
+  const selectedDistrict = watch('district');
+  const selectedConstituency = watch('constituency');
+  const selectedWard = watch('ward');
+  const selectedFacility = watch('facility');
+
+  /* ------------------ Initial Fetch for Dependents ------------------ */
+  useEffect(() => {
+    const initDependents = async () => {
+      if (selectedCountry) await fetchStates(selectedCountry);
+      if (selectedState) await fetchDistricts(selectedState);
+      if (selectedDistrict) await fetchConstituencies(selectedDistrict);
+      if (selectedConstituency) await fetchWards(selectedConstituency);
+      if (selectedWard) await fetchFacilities(selectedWard);
+    };
+    initDependents();
+  }, [
+    selectedCountry,
+    selectedState,
+    selectedDistrict,
+    selectedConstituency,
+    selectedWard,
+    fetchStates,
+    fetchDistricts,
+    fetchConstituencies,
+    fetchWards,
+    fetchFacilities,
+  ]);
 
   const [showToast, setShowToast] = useState(false);
   const [toastData, setToastData] = useState({
@@ -132,11 +174,6 @@ const Signup = () => {
     }
   };
 
-  const selectedCountry = watch('country');
-  const selectedState = watch('state');
-  const selectedDistrict = watch('district');
-  const selectedConstituency = watch('constituency');
-  const selectedWard = watch('ward');
 
   const countries = getList('COUNTRY');
   const states = getList('PROVINCE', selectedCountry);
@@ -212,12 +249,13 @@ const Signup = () => {
                   placeholder="Country"
                   register={register}
                   error={errors.country}
-                  value={watch('country')}
+                  value={selectedCountry}
                   onChange={onCountryChange}
                   options={countries.map((c) => ({
                     label: c.name,
                     value: c.id,
                   }))}
+                  classNames={{ container: 'hidden' }}
                 />
 
                 <SelectField
@@ -225,7 +263,7 @@ const Signup = () => {
                   placeholder="Province"
                   register={register}
                   error={errors.state}
-                  value={watch('state')}
+                  value={selectedState}
                   onChange={onStateChange}
                   options={states.map((s) => ({
                     label: s.name,
@@ -238,7 +276,7 @@ const Signup = () => {
                   placeholder="District"
                   register={register}
                   error={errors.district}
-                  value={watch('district')}
+                  value={selectedDistrict}
                   onChange={onDistrictChange}
                   options={districts.map((d) => ({
                     label: d.name,
@@ -251,7 +289,7 @@ const Signup = () => {
                   placeholder="Constituency"
                   register={register}
                   error={errors.constituency}
-                  value={watch('constituency')}
+                  value={selectedConstituency}
                   options={constituencies.map((c) => ({
                     label: c.name,
                     value: c.id,
@@ -264,7 +302,7 @@ const Signup = () => {
                   placeholder="Ward"
                   register={register}
                   error={errors.ward}
-                  value={watch('ward')}
+                  value={selectedWard}
                   options={wards.map((w) => ({
                     label: w.name,
                     value: w.id,
@@ -277,7 +315,7 @@ const Signup = () => {
                   placeholder="Facility"
                   register={register}
                   error={errors.facility}
-                  value={watch('facility')}
+                  value={selectedFacility}
                   options={facilities.map((f) => ({
                     label: f.name,
                     value: f.id,

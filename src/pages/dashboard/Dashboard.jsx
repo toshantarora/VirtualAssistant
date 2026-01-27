@@ -54,7 +54,7 @@ const Dashboard = () => {
 
   const { watch, register, setValue } = useForm({
     defaultValues: {
-      country: '',
+      country: 'ddb25e7d-e3fc-4d44-bf73-d2a23793c8b7',
       province: '',
       district: '',
       constituency: '',
@@ -62,6 +62,37 @@ const Dashboard = () => {
       facility: '',
     },
   });
+
+  /* ------------------ Watchers & Derivations ------------------ */
+  const selectedCountry = watch('country');
+  const selectedProvince = watch('province');
+  const selectedDistrict = watch('district');
+  const selectedConstituency = watch('constituency');
+  const selectedWard = watch('ward');
+  const selectedFacility = watch('facility');
+
+  /* ------------------ Initial Fetch for Dependents ------------------ */
+  useEffect(() => {
+    const initDependents = async () => {
+      if (selectedCountry) await fetchStates(selectedCountry);
+      if (selectedProvince) await fetchDistricts(selectedProvince);
+      if (selectedDistrict) await fetchConstituencies(selectedDistrict);
+      if (selectedConstituency) await fetchWards(selectedConstituency);
+      if (selectedWard) await fetchFacilities(selectedWard);
+    };
+    initDependents();
+  }, [
+    selectedCountry,
+    selectedProvince,
+    selectedDistrict,
+    selectedConstituency,
+    selectedWard,
+    fetchStates,
+    fetchDistricts,
+    fetchConstituencies,
+    fetchWards,
+    fetchFacilities,
+  ]);
 
   /* ------------------ Stats State ------------------ */
   const [stats, setStats] = useState({
@@ -128,13 +159,6 @@ const Dashboard = () => {
     if (val) await fetchFacilities(val);
   };
 
-  /* ------------------ Watchers & Derivations ------------------ */
-  const selectedCountry = watch('country');
-  const selectedProvince = watch('province');
-  const selectedDistrict = watch('district');
-  const selectedConstituency = watch('constituency');
-  const selectedWard = watch('ward');
-  const selectedFacility = watch('facility');
 
   // Derive lists from context
   const countries = getList('COUNTRY');
@@ -287,19 +311,20 @@ const Dashboard = () => {
             name="country"
             placeholder="Country"
             register={register}
-            value={watch('country')}
+            value={selectedCountry}
             onChange={onCountryChange}
             options={countries.map((c) => ({
               label: c.name,
               value: c.id,
             }))}
+            classNames={{ container: 'hidden' }}
           />
 
           <SelectFieldHeader
             name="province"
             placeholder="Province"
             register={register}
-            value={watch('province')}
+            value={selectedProvince}
             onChange={onStateChange}
             options={states.map((s) => ({
               label: s.name,
@@ -311,7 +336,7 @@ const Dashboard = () => {
             name="district"
             placeholder="District"
             register={register}
-            value={watch('district')}
+            value={selectedDistrict}
             onChange={onDistrictChange}
             options={districts.map((d) => ({
               label: d.name,
@@ -323,7 +348,7 @@ const Dashboard = () => {
             name="constituency"
             placeholder="Constituency"
             register={register}
-            value={watch('constituency')}
+            value={selectedConstituency}
             onChange={onConstituencyChange}
             options={constituencies.map((c) => ({
               label: c.name,
@@ -335,7 +360,7 @@ const Dashboard = () => {
             name="ward"
             placeholder="Ward"
             register={register}
-            value={watch('ward')}
+            value={selectedWard}
             onChange={onWardChange}
             options={wards.map((w) => ({
               label: w.name,
@@ -347,7 +372,7 @@ const Dashboard = () => {
             name="facility"
             placeholder="Facility"
             register={register}
-            value={watch('facility')}
+            value={selectedFacility}
             options={facilities.map((f) => ({
               label: f.name,
               value: f.id,

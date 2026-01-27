@@ -270,6 +270,7 @@ const Constituency = () => {
               value: c.id,
             }))}
             onChange={onCountryFilterChange}
+            classNames={{ container: 'hidden' }}
           />
           <SelectFieldHeader
             name="provinceFilter"
@@ -367,13 +368,15 @@ const Constituency = () => {
                         </td>
                       </tr>
                     ))}
-                    {locations.length === 0 && (<tr>
+                    {locations.length === 0 && (
+                      <tr>
                         <td colSpan={3} className="px-6 py-12 text-center text-gray-500">
                           {selectedDistrictFilter
                             ? 'No constituencies found'
                             : 'Select a District to view Constituencies'}
                         </td>
-                      </tr>)}
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
