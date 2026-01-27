@@ -15,7 +15,7 @@ import { DEFAULT_COUNTRY_ID } from '../../constants/location';
 import { PROVIDER_TYPES, DEFAULT_PROVIDER_TYPE } from '../../constants/user';
 
 const Signup = () => {
-  useDocumentTitle('Create Account', 'Sign up for a new Usage Monitor account');
+  useDocumentTitle('Create Account', 'Sign up for a new Virtual Assistant account');
 
   const {
     register,

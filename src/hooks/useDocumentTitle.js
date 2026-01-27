@@ -5,11 +5,11 @@ import { useEffect } from 'react';
  * @param {string} title - Page title
  * @param {string} description - Page description for meta tag
  */
-export const useDocumentTitle = (title, description = 'Usage Monitor - Healthcare Management System') => {
+export const useDocumentTitle = (title, description = 'Virtual Assistant - Healthcare Management System') => {
   useEffect(() => {
     // Set document title
     const previousTitle = document.title;
-    document.title = title ? `${title} | Usage Monitor` : 'Usage Monitor';
+    document.title = title ? `${title} | Virtual Assistant` : 'Virtual Assistant';
 
     // Set or update meta description
     let metaDescription = document.querySelector('meta[name="description"]');
