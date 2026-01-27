@@ -108,31 +108,57 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
     if (!isOpen) return;
 
     const init = async () => {
-      reset();
-      await fetchStates(DEFAULT_COUNTRY_ID);
+      if (!isEdit) {
+        reset({
+          fullname: '',
+          email: '',
+          mobileNumber: '',
+          country: DEFAULT_COUNTRY_ID,
+          state: '',
+          district: '',
+          constituency: '',
+          ward: '',
+          facility: '',
+          providerType: DEFAULT_PROVIDER_TYPE,
+        });
+        await fetchStates(DEFAULT_COUNTRY_ID);
+        return;
+      }
 
       if (isEdit && userData) {
         setPrefillLoading(true);
-        reset({
-          fullname: userData.fullname,
-          email: userData.email,
-          country: userData.countryId || '',
-          state: userData.provinceId,
-          district: userData.districtId || '',
-          constituency: userData.constituencyId,
-          facility: userData.facilityId,
-          mobileNumber: userData.mobile,
-          providerType: userData.providerType || DEFAULT_PROVIDER_TYPE,
-        });
+        try {
+          // Fetch all necessary location data in parallel to populate the cache
+          await Promise.all([
+            userData.countryId && fetchStates(userData.countryId),
+            userData.provinceId && fetchDistricts(userData.provinceId),
+            userData.districtId && fetchConstituencies(userData.districtId),
+            userData.constituencyId && fetchWards(userData.constituencyId),
+            userData.wardId && fetchFacilities(userData.wardId),
+          ]);
 
-        if (userData.countryId) await fetchStates(userData.countryId);
-
-        setPrefillLoading(false);
+          reset({
+            fullname: userData.fullname || '',
+            email: userData.email || '',
+            country: userData.countryId || DEFAULT_COUNTRY_ID,
+            state: userData.provinceId || '',
+            district: userData.districtId || '',
+            constituency: userData.constituencyId || '',
+            ward: userData.wardId || '',
+            facility: userData.facilityId || '',
+            mobileNumber: userData.mobile || '',
+            providerType: userData.providerType || DEFAULT_PROVIDER_TYPE,
+          });
+        } catch (error) {
+          console.error('Prefill error:', error);
+        } finally {
+          setPrefillLoading(false);
+        }
       }
     };
 
     init();
-  }, [isOpen]);
+  }, [isOpen, isEdit, userData, reset, fetchStates, fetchDistricts, fetchConstituencies, fetchWards, fetchFacilities]);
 
   /* ------------------ SUBMIT ------------------ */
 

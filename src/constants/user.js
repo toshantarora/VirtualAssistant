@@ -3,4 +3,4 @@ export const PROVIDER_TYPES = [
   { label: 'Consultant', value: 'consultant' },
 ];
 
-export const DEFAULT_PROVIDER_TYPE = 'regular';
+export const DEFAULT_PROVIDER_TYPE = '';
