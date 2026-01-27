@@ -10,6 +10,7 @@ import SelectFieldHeader from '../../../components/SelectFieldHeader';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
+import { DEFAULT_COUNTRY_ID } from '../../../constants/location';
 
 const constituencySchema = z.object({
   countryId: z.string().min(1, 'Country is required'),
@@ -54,11 +55,11 @@ const Constituency = () => {
   } = useForm({
     resolver: zodResolver(constituencySchema),
     defaultValues: {
-      countryId: '',
+      countryId: DEFAULT_COUNTRY_ID,
       provinceId: '',
       districtId: '',
       constituency: '',
-      countryFilter: '',
+      countryFilter: DEFAULT_COUNTRY_ID,
       provinceFilter: '',
       districtFilter: '',
     },
@@ -105,16 +106,9 @@ const Constituency = () => {
     fetchCountries();
   }, [fetchCountries]);
 
-  // Initial Load - default country logic
   useEffect(() => {
-    if (!selectedCountryFilter && countries.length > 0) {
-      const zambia = countries.find((c) => c.name.toLowerCase() === 'zambia');
-      if (zambia) {
-        setValue('countryFilter', zambia.id);
-        fetchStates(zambia.id);
-      }
-    }
-  }, [countries, selectedCountryFilter, setValue, fetchStates]);
+    fetchStates(DEFAULT_COUNTRY_ID);
+  }, [fetchStates]);
 
   // Cascading Logic for filters
   const onCountryFilterChange = async (e) => {
@@ -258,44 +252,6 @@ const Constituency = () => {
   return (
     <div className="space-y-6">
       {/* Filter Card */}
-      <div className="bg-white p-3 md:p-5 mt-4 rounded-2xl border border-primary-100">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
-          <SelectFieldHeader
-            name="countryFilter"
-            placeholder="Country"
-            register={register}
-            value={watch('countryFilter')}
-            options={countries.map((c) => ({
-              label: c.name,
-              value: c.id,
-            }))}
-            onChange={onCountryFilterChange}
-            classNames={{ container: 'hidden' }}
-          />
-          <SelectFieldHeader
-            name="provinceFilter"
-            placeholder="Province"
-            register={register}
-            value={watch('provinceFilter')}
-            options={states.map((s) => ({
-              label: s.name,
-              value: s.id,
-            }))}
-            onChange={onProvinceFilterChange}
-          />
-          <SelectFieldHeader
-            name="districtFilter"
-            placeholder="District"
-            register={register}
-            value={watch('districtFilter')}
-            options={districts.map((d) => ({
-              label: d.name,
-              value: d.id,
-            }))}
-            onChange={onDistrictFilterChange}
-          />
-        </div>
-      </div>
 
       <div className="bg-white rounded-lg shadow-sm p-6 min-h-[calc(100vh-(--spacing(32)))]">
         <div className="relative mb-6 flex flex-wrap items-center gap-4">
@@ -320,6 +276,30 @@ const Constituency = () => {
               <Plus size={18} />
               Add New Constituency
             </button>
+            <div className="mt-4 flex flex-wrap gap-4">
+            <SelectFieldHeader
+                name="provinceFilter"
+                placeholder="Province"
+                register={register}
+                value={watch('provinceFilter')}
+                options={states.map((s) => ({
+                label: s.name,
+                value: s.id,
+                }))}
+                onChange={onProvinceFilterChange}
+            />
+            <SelectFieldHeader
+                name="districtFilter"
+                placeholder="District"
+                register={register}
+                value={watch('districtFilter')}
+                options={districts.map((d) => ({
+                label: d.name,
+                value: d.id,
+                }))}
+                onChange={onDistrictFilterChange}
+            />
+            </div>
           </div>
         </div>
 
@@ -425,25 +405,6 @@ const Constituency = () => {
                   </DialogTitle>
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="space-y-4">
-                      <div className="">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Country
-                        </label>
-                        <select
-                          {...register('countryId')}
-                          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none"
-                        >
-                          <option value="">Select Country</option>
-                          {countries.map((c) => (
-                            <option key={c.id} value={c.id}>
-                              {c.name}
-                            </option>
-                          ))}
-                        </select>
-                        {errors.countryId && (
-                          <p className="mt-1 text-xs text-red-500">{errors.countryId.message}</p>
-                        )}
-                      </div>
 
                       <div className="">
                         <label className="block text-sm font-medium text-gray-700 mb-1">

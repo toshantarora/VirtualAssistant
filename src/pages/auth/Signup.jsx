@@ -11,6 +11,7 @@ import { signupApi } from '../../services/authService';
 import Notification from '../../components/Notification';
 import { useLocations } from '../../hooks/useLocations';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
+import { DEFAULT_COUNTRY_ID } from '../../constants/location';
 
 const Signup = () => {
   useDocumentTitle('Create Account', 'Sign up for a new Usage Monitor account');
@@ -28,7 +29,7 @@ const Signup = () => {
       email: '',
       mobileNumber: '',
       providerType: 'Regular',
-      country: 'ddb25e7d-e3fc-4d44-bf73-d2a23793c8b7',
+      country: DEFAULT_COUNTRY_ID,
       state: '',
       district: '',
       constituency: '',
@@ -88,18 +89,9 @@ const Signup = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchCountries();
-  }, [fetchCountries]);
+    fetchStates(DEFAULT_COUNTRY_ID);
+  }, [fetchStates]);
 
-  const onCountryChange = async (e) => {
-    const value = e.target.value;
-    setValue('state', '');
-    setValue('district', '');
-    setValue('constituency', '');
-    setValue('facility', '');
-    setValue('ward', '');
-    if (value) await fetchStates(value);
-  };
 
   const onStateChange = async (e) => {
     const value = e.target.value;
@@ -243,20 +235,7 @@ const Signup = () => {
                 ]}
               />
 
-              <div className="grid grid-cols-2 gap-4">
-                <SelectField
-                  name="country"
-                  placeholder="Country"
-                  register={register}
-                  error={errors.country}
-                  value={selectedCountry}
-                  onChange={onCountryChange}
-                  options={countries.map((c) => ({
-                    label: c.name,
-                    value: c.id,
-                  }))}
-                  classNames={{ container: 'hidden' }}
-                />
+<div className="grid grid-cols-2 gap-4">
 
                 <SelectField
                   name="state"

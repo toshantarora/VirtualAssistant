@@ -92,7 +92,7 @@ export default function AppRouter() {
 
             {/* ========= Masters ========= */}
             <Route path="/dashboard/masters">
-              <Route index element={<Navigate to="country" replace />} />
+              <Route index element={<Navigate to="province" replace />} />
               {/* <Route 
                 path="country" 
                 element={

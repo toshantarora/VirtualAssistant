@@ -10,6 +10,7 @@ import SelectFieldHeader from '../../../components/SelectFieldHeader';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
+import { DEFAULT_COUNTRY_ID } from '../../../constants/location';
 
 const provinceSchema = z.object({
   countryId: z.string().min(1, 'Country is required'),
@@ -44,9 +45,9 @@ const Province = () => {
   } = useForm({
     resolver: zodResolver(provinceSchema),
     defaultValues: {
-      countryId: '',
+      countryId: DEFAULT_COUNTRY_ID,
       province: '',
-      countryFilter: '',
+      countryFilter: DEFAULT_COUNTRY_ID,
     },
   });
 
@@ -72,16 +73,9 @@ const Province = () => {
     fetchCountries();
   }, [fetchCountries]);
 
-  // Initial Load Zambia
   useEffect(() => {
-    if (!selectedCountryFilter && countries.length > 0) {
-      const zambia = countries.find((c) => c.name.toLowerCase() === 'zambia');
-      if (zambia) {
-        setValue('countryFilter', zambia.id);
-        fetchStates(zambia.id);
-      }
-    }
-  }, [countries, selectedCountryFilter, setValue, fetchStates]);
+    fetchStates(DEFAULT_COUNTRY_ID);
+  }, [fetchStates]);
 
   // Update list when filter changes
   useEffect(() => {
@@ -186,24 +180,6 @@ const Province = () => {
   return (
     <div className="space-y-6">
       {/* Filter Card */}
-      <div className="bg-white p-3 md:p-5 mt-4 rounded-2xl border border-primary-100">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
-          <SelectFieldHeader
-            name="countryFilter"
-            placeholder="Country"
-            register={register}
-            value={watch('countryFilter')}
-            options={countries.map((c) => ({
-              label: c.name,
-              value: c.id,
-            }))}
-            onChange={(e) => {
-              if (e.target.value) fetchStates(e.target.value);
-            }}
-            classNames={{ container: 'hidden' }}
-          />
-        </div>
-      </div>
 
       <div className="bg-white rounded-lg shadow-sm p-6 min-h-[calc(100vh-(--spacing(32)))]">
         <div className="relative mb-6 flex flex-wrap items-center gap-4">
@@ -242,7 +218,6 @@ const Province = () => {
                 <table className="w-full border-collapse text-sm">
                   <thead className="sticky top-0 z-10 bg-[#f6f8f5] text-left shadow-sm">
                     <tr>
-                      <th className="px-6 py-4 font-medium">Country</th>
                       <th className="px-6 py-4 font-medium">Name</th>
                       <th className="px-6 py-4 font-medium text-right">Action</th>
                     </tr>
@@ -250,9 +225,6 @@ const Province = () => {
                   <tbody className="divide-y divide-[#cfded6]">
                     {filteredLocations?.map((location) => (
                       <tr key={location.id} className="transition-colors hover:bg-gray-50">
-                        <td className="px-6 py-5">
-                          <p className="font-medium text-gray-900">{location.country?.name}</p>
-                        </td>
                         <td className="px-6 py-5">
                           <div className="flex items-center gap-3">
                             <div>
@@ -332,25 +304,6 @@ const Province = () => {
                     {isEditMode ? 'Edit Province' : 'Add New Province'}
                   </DialogTitle>
                   <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Country
-                      </label>
-                      <select
-                        {...register('countryId')}
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none"
-                      >
-                        <option value="">Select Country</option>
-                        {countries.map((c) => (
-                          <option key={c.id} value={c.id}>
-                            {c.name}
-                          </option>
-                        ))}
-                      </select>
-                      {errors.countryId && (
-                        <p className="mt-1 text-xs text-red-500">{errors.countryId.message}</p>
-                      )}
-                    </div>
 
                     <div className="mt-4">
                       <InputBox

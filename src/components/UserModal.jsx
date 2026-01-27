@@ -8,6 +8,7 @@ import SelectField from './SelectField';
 import { userSchema } from '../validations/userSchema';
 import { createUserApi, updateUserApi } from '../services/dashboardService';
 import { useLocations } from '../hooks/useLocations';
+import { DEFAULT_COUNTRY_ID } from '../constants/location';
 const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
   const isEdit = mode === 'edit';
 
@@ -37,7 +38,7 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
       fullname: '',
       email: '',
       mobileNumber: '',
-      country: isEdit ? '' : 'ddb25e7d-e3fc-4d44-bf73-d2a23793c8b7',
+      country: DEFAULT_COUNTRY_ID,
       state: '',
       district: '',
       constituency: '',
@@ -76,20 +77,6 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
     fetchFacilities,
   ]);
 
-  // 🔹 Select change handlers (ONLY place where API is called)
-  const onCountryChange = async (e) => {
-    const value = e.target.value;
-    reset((p) => ({
-      ...p,
-      country: value,
-      state: '',
-      district: '',
-      constituency: '',
-      ward: '',
-      facility: '',
-    }));
-    if (value) await fetchStates(value);
-  };
 
   const onStateChange = async (e) => {
     const value = e.target.value;
@@ -121,7 +108,7 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
 
     const init = async () => {
       reset();
-      await fetchCountries();
+      await fetchStates(DEFAULT_COUNTRY_ID);
 
       if (isEdit && userData) {
         setPrefillLoading(true);
@@ -192,7 +179,7 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
       fullname: '',
       email: '',
       mobileNumber: '',
-      country: '',
+      country: DEFAULT_COUNTRY_ID,
       state: '',
       district: '',
       constituency: '',
@@ -271,19 +258,6 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
                 ]}
               />
 
-              <SelectField
-                name="country"
-                placeholder="Country"
-                register={register}
-                error={errors.country}
-                value={selectedCountry}
-                onChange={onCountryChange}
-                options={countries.map((c) => ({
-                  label: c.name,
-                  value: c.id,
-                }))}
-                classNames={{ container: 'hidden' }}
-              />
 
               <SelectField
                 name="state"

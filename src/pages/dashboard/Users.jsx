@@ -8,6 +8,7 @@ import { useLocations } from '../../hooks/useLocations';
 import { useForm } from 'react-hook-form';
 import SelectFieldHeader from '../../components/SelectFieldHeader';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
+import { DEFAULT_COUNTRY_ID } from '../../constants/location';
 
 const Users = () => {
   useDocumentTitle('Manage Users', 'View and manage system users');
@@ -40,7 +41,7 @@ const Users = () => {
 
   const { watch, register, setValue } = useForm({
     defaultValues: {
-      country: 'ddb25e7d-e3fc-4d44-bf73-d2a23793c8b7',
+      country: DEFAULT_COUNTRY_ID,
       province: '',
       district: '',
       constituency: '',
@@ -89,21 +90,10 @@ const Users = () => {
   /* ------------------ Filtering State ------------------ */
   const [activeFilter, setActiveFilter] = useState('all'); // 'all', 'pending', 'archived'
 
-  /* ------------------ Fetch Init ------------------ */
   useEffect(() => {
-    fetchCountries();
-  }, [fetchCountries]);
+    fetchStates(DEFAULT_COUNTRY_ID);
+  }, [fetchStates]);
 
-  /* ------------------ Select Handlers ------------------ */
-  const onCountryChange = async (e) => {
-    const val = e.target.value;
-    setValue('province', '');
-    setValue('district', '');
-    setValue('constituency', '');
-    setValue('ward', '');
-    setValue('facility', '');
-    if (val) await fetchStates(val);
-  };
 
   const onStateChange = async (e) => {
     const val = e.target.value;
@@ -205,18 +195,6 @@ const Users = () => {
       {/* ================= Location Filters ================= */}
       <div className="bg-white p-3 md:p-5 mt-4 md:mt-8 rounded-2xl border border-primary-100">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
-          <SelectFieldHeader
-            name="country"
-            placeholder="Country"
-            register={register}
-            value={selectedCountry}
-            onChange={onCountryChange}
-            options={countries.map((c) => ({
-              label: c.name,
-              value: c.id,
-            }))}
-            classNames={{ container: 'hidden' }}
-          />
 
           <SelectFieldHeader
             name="province"

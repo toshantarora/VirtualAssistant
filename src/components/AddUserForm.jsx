@@ -10,6 +10,7 @@ import { createUserApi } from '../services/dashboardService';
 import { useLocations } from '../hooks/useLocations';
 import StatusDialog from './StatusDialog';
 import { useNavigate } from 'react-router-dom';
+import { DEFAULT_COUNTRY_ID } from '../constants/location';
 
 const AddUserForm = ({ onSuccess }) => {
   const [loading, setLoading] = useState(false);
@@ -39,7 +40,7 @@ const AddUserForm = ({ onSuccess }) => {
       fullname: '',
       email: '',
       mobileNumber: '',
-      country: 'ddb25e7d-e3fc-4d44-bf73-d2a23793c8b7',
+      country: DEFAULT_COUNTRY_ID,
       state: '',
       district: '',
       constituency: '',
@@ -79,20 +80,6 @@ const AddUserForm = ({ onSuccess }) => {
     fetchFacilities,
   ]);
 
-  /* ------------------ SELECT HANDLERS ------------------ */
-  const onCountryChange = async (e) => {
-    const val = e.target.value;
-    reset((p) => ({
-      ...p,
-      country: val,
-      state: '',
-      district: '',
-      constituency: '',
-      ward: '',
-      facility: '',
-    }));
-    if (val) await fetchStates(val);
-  };
 
   const onStateChange = async (e) => {
     const val = e.target.value;
@@ -118,10 +105,9 @@ const AddUserForm = ({ onSuccess }) => {
     if (val) await fetchFacilities(val);
   };
 
-  /* ------------------ INIT ------------------ */
   useEffect(() => {
-    fetchCountries();
-  }, [fetchCountries]);
+    fetchStates(DEFAULT_COUNTRY_ID);
+  }, [fetchStates]);
 
   /* ------------------ SUBMIT ------------------ */
   const onSubmit = async (formData) => {
@@ -193,19 +179,6 @@ const AddUserForm = ({ onSuccess }) => {
               type="tel"
             />
 
-            <SelectField
-              name="country"
-              placeholder="Country"
-              register={register}
-              error={errors.country}
-              value={selectedCountry}
-              onChange={onCountryChange}
-              options={countries.map((c) => ({
-                label: c.name,
-                value: c.id,
-              }))}
-              classNames={{ container: 'hidden' }}
-            />
 
             <SelectField
               name="state"

@@ -8,7 +8,9 @@ import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@
 import { useLocations } from '../../hooks/useLocations';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 
-const LOCATION_HIERARCHY = ['COUNTRY', 'PROVINCE', 'DISTRICT', 'CONSTITUENCY', 'WARD', 'FACILITY'];
+import { DEFAULT_COUNTRY_ID } from '../../constants/location';
+
+const LOCATION_HIERARCHY = ['PROVINCE', 'DISTRICT', 'CONSTITUENCY', 'WARD', 'FACILITY'];
 
 const Locations = () => {
   useDocumentTitle('Locations', 'Manage geographical location hierarchy');
@@ -42,7 +44,7 @@ const Locations = () => {
   } = useForm();
 
   const currentParentId =
-    breadcrumbs.length > 0 ? breadcrumbs[breadcrumbs.length - 1].id : undefined;
+    breadcrumbs.length > 0 ? breadcrumbs[breadcrumbs.length - 1].id : DEFAULT_COUNTRY_ID;
   const currentLevelIndex = breadcrumbs.length;
   const nextType = editingLocation
     ? editingLocation.type

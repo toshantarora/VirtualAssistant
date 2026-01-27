@@ -11,6 +11,7 @@ import SelectFieldHeader from '../../components/SelectFieldHeader';
 import { getDashboardStats, getUsers } from '../../services/dashboardService';
 import { useForm } from 'react-hook-form';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
+import { DEFAULT_COUNTRY_ID } from '../../constants/location';
 
 const Dashboard = () => {
   useDocumentTitle('Dashboard', 'Overview of system usage and user statistics');
@@ -54,7 +55,7 @@ const Dashboard = () => {
 
   const { watch, register, setValue } = useForm({
     defaultValues: {
-      country: 'ddb25e7d-e3fc-4d44-bf73-d2a23793c8b7',
+      country: DEFAULT_COUNTRY_ID,
       province: '',
       district: '',
       constituency: '',
@@ -113,21 +114,10 @@ const Dashboard = () => {
     setOpen(true);
   };
 
-  /* ------------------ FETCH COUNTRIES ------------------ */
   useEffect(() => {
-    fetchCountries();
-  }, [fetchCountries]);
+    fetchStates(DEFAULT_COUNTRY_ID);
+  }, [fetchStates]);
 
-  /* ------------------ SELECT HANDLERS ------------------ */
-  const onCountryChange = async (e) => {
-    const val = e.target.value;
-    setValue('province', '');
-    setValue('district', '');
-    setValue('constituency', '');
-    setValue('ward', '');
-    setValue('facility', '');
-    if (val) await fetchStates(val);
-  };
 
   const onStateChange = async (e) => {
     const val = e.target.value;
@@ -307,18 +297,6 @@ const Dashboard = () => {
 
       <div className="bg-white p-3 md:p-5 mt-4 md:mt-8 rounded-2xl border border-primary-100">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 md:gap-4">
-          <SelectFieldHeader
-            name="country"
-            placeholder="Country"
-            register={register}
-            value={selectedCountry}
-            onChange={onCountryChange}
-            options={countries.map((c) => ({
-              label: c.name,
-              value: c.id,
-            }))}
-            classNames={{ container: 'hidden' }}
-          />
 
           <SelectFieldHeader
             name="province"
