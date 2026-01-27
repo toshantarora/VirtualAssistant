@@ -88,8 +88,6 @@ const Signup = () => {
   const [showPassword] = useState(false);
   const navigate = useNavigate();
 
-
-
   const onStateChange = async (e) => {
     const value = e.target.value;
     setValue('district', '');
@@ -163,7 +161,6 @@ const Signup = () => {
     }
   };
 
-
   const countries = getList('COUNTRY');
   const states = getList('PROVINCE', selectedCountry);
   const districts = getList('DISTRICT', selectedState);
@@ -216,7 +213,8 @@ const Signup = () => {
                 placeholder="Mobile Number"
                 register={register}
                 error={errors.mobileNumber}
-                maxLength={9}
+                maxLength={13}
+                minLength={7}
                 type="tel"
               />
 
@@ -232,8 +230,7 @@ const Signup = () => {
                 ]}
               />
 
-<div className="grid grid-cols-2 gap-4">
-
+              <div className="grid grid-cols-2 gap-4">
                 <SelectField
                   name="state"
                   placeholder="Province"

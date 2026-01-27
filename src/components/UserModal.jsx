@@ -77,7 +77,6 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
     fetchFacilities,
   ]);
 
-
   const onStateChange = async (e) => {
     const value = e.target.value;
     reset((p) => ({ ...p, state: value, district: '', constituency: '', ward: '', facility: '' }));
@@ -243,7 +242,8 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
                 placeholder="Mobile Number"
                 register={register}
                 error={errors.mobileNumber}
-                maxLength={10}
+                maxLength={13}
+                minLength={7}
                 type="tel"
               />
               <SelectField
@@ -257,7 +257,6 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
                   { label: 'Consultant', value: 'Consultant' },
                 ]}
               />
-
 
               <SelectField
                 name="state"
