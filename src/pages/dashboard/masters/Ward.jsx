@@ -303,44 +303,51 @@ const Ward = () => {
               <Plus size={18} />
               Add New Ward
             </button>
-            <div className="mt-4 flex flex-wrap gap-4">
-            <SelectFieldHeader
-                name="provinceFilter"
-                placeholder="Province"
-                register={register}
-                value={watch('provinceFilter')}
-                options={states.map((s) => ({
-                label: s.name,
-                value: s.id,
-                }))}
-                onChange={onProvinceFilterChange}
-            />
-            <SelectFieldHeader
-                name="districtFilter"
-                placeholder="District"
-                register={register}
-                value={watch('districtFilter')}
-                options={districts.map((d) => ({
-                label: d.name,
-                value: d.id,
-                }))}
-                onChange={onDistrictFilterChange}
-            />
-            <SelectFieldHeader
-                name="constituencyFilter"
-                placeholder="Constituency"
-                register={register}
-                value={watch('constituencyFilter')}
-                options={constituencies.map((c) => ({
-                label: c.name,
-                value: c.id,
-                }))}
-                onChange={onConstituencyFilterChange}
-            />
-            </div>
+          
           </div>
         </div>
+        <div className="mt-4 flex flex-col sm:flex-row sm:items-end gap-3">
+          <SelectFieldHeader
+            name="provinceFilter"
+            placeholder="Province"
+            register={register}
+            value={watch('provinceFilter')}
+            options={states.map((s) => ({
+              label: s.name,
+              value: s.id,
+            }))}
+            onChange={onProvinceFilterChange}
+            className="flex-1 min-w-0"
+          />
 
+          <SelectFieldHeader
+            name="districtFilter"
+            placeholder="District"
+            register={register}
+            value={watch('districtFilter')}
+            options={districts.map((d) => ({
+              label: d.name,
+              value: d.id,
+            }))}
+            onChange={onDistrictFilterChange}
+            className="flex-1 min-w-0"
+          />
+          <SelectFieldHeader
+            name="constituencyFilter"
+            placeholder="Constituency"
+            register={register}
+            value={watch('constituencyFilter')}
+            options={constituencies.map((c) => ({
+              label: c.name,
+              value: c.id,
+            }))}
+            onChange={onConstituencyFilterChange}
+            className="flex-1 min-w-0"
+          />
+          <button className="flex items-center gap-2 rounded-lg bg-primary px-4 py-4 text-white hover:bg-primary/90">
+            Submit
+          </button>
+        </div>
         <div className="mt-6">
           {loading ? (
             <div className="flex justify-center items-center h-64">
@@ -386,13 +393,15 @@ const Ward = () => {
                         </td>
                       </tr>
                     ))}
-                    {locations.length === 0 && (<tr>
+                    {locations.length === 0 && (
+                      <tr>
                         <td colSpan={3} className="px-6 py-12 text-center text-gray-500">
                           {selectedConstituencyFilter
                             ? 'No wards found'
                             : 'Select a Constituency to view Wards'}
                         </td>
-                      </tr>)}
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -441,7 +450,6 @@ const Ward = () => {
                   </DialogTitle>
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="space-y-4">
-
                       <div className="">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Province

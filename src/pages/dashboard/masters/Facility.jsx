@@ -302,7 +302,6 @@ const Facility = () => {
 
   return (
     <div className="space-y-6">
-
       <div className="bg-white rounded-lg shadow-sm p-6 min-h-[calc(100vh-(--spacing(32)))]">
         <div className="relative mb-6 flex flex-wrap items-center gap-4">
           <h1 className="text-2xl font-bold text-gray-800">Facility</h1>
@@ -326,55 +325,61 @@ const Facility = () => {
               <Plus size={18} />
               Add New Facility
             </button>
-            <div className="mt-4 flex flex-wrap gap-4">
-                <SelectFieldHeader
-                    name="provinceFilter"
-                    placeholder="Province"
-                    register={register}
-                    value={watch('provinceFilter')}
-                    options={states.map((s) => ({
-                    label: s.name,
-                    value: s.id,
-                    }))}
-                    onChange={onProvinceFilterChange}
-                />
-                <SelectFieldHeader
-                    name="districtFilter"
-                    placeholder="District"
-                    register={register}
-                    value={watch('districtFilter')}
-                    options={districts.map((d) => ({
-                    label: d.name,
-                    value: d.id,
-                    }))}
-                    onChange={onDistrictFilterChange}
-                />
-                <SelectFieldHeader
-                    name="constituencyFilter"
-                    placeholder="Constituency"
-                    register={register}
-                    value={watch('constituencyFilter')}
-                    options={constituencies.map((c) => ({
-                    label: c.name,
-                    value: c.id,
-                    }))}
-                    onChange={onConstituencyFilterChange}
-                />
-                <SelectFieldHeader
-                    name="wardFilter"
-                    placeholder="Ward"
-                    register={register}
-                    value={watch('wardFilter')}
-                    options={wards.map((w) => ({
-                    label: w.name,
-                    value: w.id,
-                    }))}
-                    onChange={onWardFilterChange}
-                />
-            </div>
+            <div className="mt-4 flex flex-wrap gap-4"></div>
           </div>
         </div>
 
+        <div className="mt-4 flex flex-col sm:flex-row sm:items-end gap-3">
+          <SelectFieldHeader
+            name="provinceFilter"
+            placeholder="Province"
+            register={register}
+            value={watch('provinceFilter')}
+            options={states.map((s) => ({
+              label: s.name,
+              value: s.id,
+            }))}
+            onChange={onProvinceFilterChange}
+             className="flex-1 min-w-0"
+          />
+          <SelectFieldHeader
+            name="districtFilter"
+            placeholder="District"
+            register={register}
+            value={watch('districtFilter')}
+            options={districts.map((d) => ({
+              label: d.name,
+              value: d.id,
+            }))}
+            onChange={onDistrictFilterChange}
+             className="flex-1 min-w-0"
+          />
+          <SelectFieldHeader
+            name="constituencyFilter"
+            placeholder="Constituency"
+            register={register}
+            value={watch('constituencyFilter')}
+            options={constituencies.map((c) => ({
+              label: c.name,
+              value: c.id,
+            }))}
+            onChange={onConstituencyFilterChange}
+          />
+          <SelectFieldHeader
+            name="wardFilter"
+            placeholder="Ward"
+            register={register}
+            value={watch('wardFilter')}
+            options={wards.map((w) => ({
+              label: w.name,
+              value: w.id,
+            }))}
+            onChange={onWardFilterChange}
+          />
+          <button className="flex items-center gap-2 rounded-lg bg-primary px-4 py-4 text-white hover:bg-primary/90">
+            Submit
+          </button>
+        </div>
         <div className="mt-6">
           {loading ? (
             <div className="flex justify-center items-center h-64">
@@ -420,13 +425,15 @@ const Facility = () => {
                         </td>
                       </tr>
                     ))}
-                    {locations.length === 0 && (<tr>
+                    {locations.length === 0 && (
+                      <tr>
                         <td colSpan={3} className="px-6 py-12 text-center text-gray-500">
                           {selectedWardFilter
                             ? 'No facilities found'
                             : 'Select a Ward to view Facilities'}
                         </td>
-                      </tr>)}
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -475,7 +482,6 @@ const Facility = () => {
                   </DialogTitle>
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="space-y-4">
-
                       <div className="">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Province

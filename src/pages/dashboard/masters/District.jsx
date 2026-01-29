@@ -252,22 +252,26 @@ const District = () => {
               <Plus size={18} />
               Add New District
             </button>
-            <div className="mt-4">
-            <SelectFieldHeader
-                name="provinceFilter"
-                placeholder="Province"
-                register={register}
-                value={watch('provinceFilter')}
-                options={states.map((s) => ({
-                label: s.name,
-                value: s.id,
-                }))}
-                onChange={onProvinceFilterChange}
-            />
-            </div>
           </div>
         </div>
+        <div className="mt-4 flex flex-col sm:flex-row sm:items-end gap-3">
+          <SelectFieldHeader
+            name="provinceFilter"
+            placeholder="Province"
+            register={register}
+            value={watch('provinceFilter')}
+            options={states.map((s) => ({
+              label: s.name,
+              value: s.id,
+            }))}
+            onChange={onProvinceFilterChange}
+            className="flex-1 min-w-0"
+          />
 
+          <button className="flex items-center gap-2 rounded-lg bg-primary px-4 py-4 text-white hover:bg-primary/90">
+            Submit
+          </button>
+        </div>
         <div className="mt-6">
           {loading ? (
             <div className="flex justify-center items-center h-64">
@@ -370,8 +374,7 @@ const District = () => {
                   </DialogTitle>
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="space-y-4">
-                      <div className="">
-                      </div>
+                      <div className=""></div>
 
                       <div className="">
                         <label className="block text-sm font-medium text-gray-700 mb-1">

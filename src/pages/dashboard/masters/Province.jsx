@@ -5,12 +5,13 @@ import locationService from '../../../services/locationService';
 import InputBox from '../../../components/InputBox';
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react';
 import ConfirmDeleteModal from '../../../components/ConfirmDeleteModal';
-import { useLocations } from '../../../hooks/useLocations';
+
 import SelectFieldHeader from '../../../components/SelectFieldHeader';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 import { DEFAULT_COUNTRY_ID } from '../../../constants/location';
+import Pagination from '../../../components/Pagination';
 
 const provinceSchema = z.object({
   countryId: z.string().min(1, 'Country is required'),
@@ -18,9 +19,18 @@ const provinceSchema = z.object({
 });
 
 const Province = () => {
-  useDocumentTitle('Provinces', 'Manage province locations');
+   useDocumentTitle('Provinces', 'Manage province locations');
+
   const [loading, setLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [provinceData, setProvinceData] = useState([]);
+  const [totalItems, setTotalItems] = useState(0);
+
+  // Pagination + Search
+  const [currentPage, setCurrentPage] = useState(1);
+  const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+
+  const limit = 10;
 
   // Modals
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -30,9 +40,6 @@ const Province = () => {
   const [locationToDelete, setLocationToDelete] = useState(null);
 
   const isEditMode = Boolean(editingLocation);
-
-  // Filters
-  const { countries, getList, refreshList, fetchCountries, fetchStates } = useLocations();
 
   const {
     register,
@@ -53,42 +60,52 @@ const Province = () => {
 
   const selectedCountryFilter = watch('countryFilter');
 
-  // Get data from global context
-  const locations = getList('PROVINCE', selectedCountryFilter);
+  // ================= DEBOUNCE SEARCH =================
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
 
-  // ================= FETCH DATA =================
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  // ================= FETCH PROVINCES =================
   const fetchProvinces = useCallback(async () => {
-    setLoading(true);
     try {
-      await refreshList('PROVINCE', selectedCountryFilter);
+      setLoading(true);
+
+      const res = await locationService.getFiltersLocations({
+        type: 'PROVINCE',
+        countryId: selectedCountryFilter,
+        page: currentPage,
+        limit,
+        search: debouncedSearch || undefined,
+      });
+
+      setProvinceData(res.items || []);
+      setTotalItems(res.total || 0);
     } catch (error) {
-      console.error('Failed to fetch provinces', error);
+      console.error('Province fetch error:', error);
     } finally {
       setLoading(false);
     }
-  }, [selectedCountryFilter, refreshList]);
+  }, [currentPage, limit, debouncedSearch, selectedCountryFilter]);
 
-  // Initial Load - fetch countries
-  useEffect(() => {
-    fetchCountries();
-  }, [fetchCountries]);
-
-
-  // Update list when filter changes
   useEffect(() => {
     fetchProvinces();
   }, [fetchProvinces]);
 
-  const filteredLocations = (locations || []).filter((location) =>
-    location.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Reset page when country filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCountryFilter]);
 
   // ================= MODAL HANDLERS =================
   const openCreateModal = () => {
     setEditingLocation(null);
     reset({
       province: '',
-      countryId: selectedCountryFilter || '',
+      countryId: selectedCountryFilter,
       countryFilter: selectedCountryFilter,
     });
     setIsModalOpen(true);
@@ -104,10 +121,12 @@ const Province = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setTimeout(() => {
-      setEditingLocation(null);
-      reset({ province: '', countryId: '', countryFilter: selectedCountryFilter });
-    }, 0);
+    setEditingLocation(null);
+    reset({
+      province: '',
+      countryId: selectedCountryFilter,
+      countryFilter: selectedCountryFilter,
+    });
   };
 
   const openDeleteModal = (e, location) => {
@@ -116,12 +135,14 @@ const Province = () => {
     setDeleteModalOpen(true);
   };
 
-  // ================= ADD / EDIT PROVINCE =================
+  // ================= SAVE PROVINCE =================
   const onSubmit = async (data) => {
     const name = data.province.trim();
 
-    const exists = locations.some(
-      (loc) => loc.name.toLowerCase() === name.toLowerCase() && loc.id !== editingLocation?.id
+    const exists = provinceData.some(
+      (loc) =>
+        loc.name.toLowerCase() === name.toLowerCase() &&
+        loc.id !== editingLocation?.id
     );
 
     if (exists) {
@@ -149,7 +170,7 @@ const Province = () => {
       }
 
       closeModal();
-      await fetchProvinces();
+      fetchProvinces();
     } catch (error) {
       console.error('Save failed', error);
       alert(error.response?.data?.message || 'Failed to save province');
@@ -164,7 +185,6 @@ const Province = () => {
 
     try {
       await locationService.deleteLocation(locationToDelete.id, 'PROVINCE');
-
       setDeleteModalOpen(false);
       setLocationToDelete(null);
       fetchProvinces();
@@ -173,7 +193,6 @@ const Province = () => {
       alert(error.response?.data?.message || 'Failed to delete province');
     }
   };
-
   return (
     <div className="space-y-6">
       {/* Filter Card */}
@@ -187,8 +206,11 @@ const Province = () => {
             <input
               type="text"
               placeholder="Search province..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              value={search}
+               onChange={(e) => {
+                setSearch(e.target.value);
+                setCurrentPage(1);
+              }}
               className="w-full rounded-lg border border-gray-300 pl-10 pr-4 py-2 text-sm shadow-sm focus:border-primary focus:ring-1 focus:ring-primary placeholder-gray-400 outline-none"
             />
           </div>
@@ -220,7 +242,7 @@ const Province = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#cfded6]">
-                    {filteredLocations?.map((location) => (
+                    {provinceData?.map((location) => (
                       <tr key={location.id} className="transition-colors hover:bg-gray-50">
                         <td className="px-6 py-5">
                           <div className="flex items-center gap-3">
@@ -249,16 +271,24 @@ const Province = () => {
                         </td>
                       </tr>
                     ))}
-                    {locations.length === 0 && (<tr>
+                    {provinceData?.length === 0 && (
+                      <tr>
                         <td colSpan={3} className="px-6 py-12 text-center text-gray-500">
                           No provinces found
                         </td>
-                      </tr>)}
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
             </div>
           )}
+          <Pagination
+          currentPage={currentPage}
+          totalItems={totalItems}
+          itemsPerPage={limit}
+          onPageChange={setCurrentPage}
+        />
         </div>
 
         <ConfirmDeleteModal
@@ -301,7 +331,6 @@ const Province = () => {
                     {isEditMode ? 'Edit Province' : 'Add New Province'}
                   </DialogTitle>
                   <form onSubmit={handleSubmit(onSubmit)}>
-
                     <div className="mt-4">
                       <InputBox
                         name="province"
@@ -339,3 +368,8 @@ const Province = () => {
 };
 
 export default Province;
+
+
+
+
+
