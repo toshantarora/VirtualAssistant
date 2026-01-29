@@ -691,7 +691,7 @@ const LocationMasterBase = ({
                     <div className="space-y-4">
                       {/* Cascading selects for modal */}
                       {typeIndex >= 1 && (
-                        <div>
+                        <div className="hidden">
                           <label className="block text-sm font-semibold text-gray-700 mb-1.5">
                             Country
                           </label>
