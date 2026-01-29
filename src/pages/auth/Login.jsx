@@ -13,7 +13,7 @@ import Notification from '../../components/Notification';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 
 const Login = () => {
-  useDocumentTitle('Login', 'Login to access the Usage Monitor admin dashboard');
+  useDocumentTitle('Login', 'Login to access the Virtual Assistant admin dashboard');
   
   const {
     register,

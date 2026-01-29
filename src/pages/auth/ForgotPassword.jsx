@@ -15,7 +15,7 @@ const forgotPasswordSchema = z.object({
 });
 
 const ForgotPassword = () => {
-  useDocumentTitle('Forgot Password', 'Reset your Usage Monitor account password');
+  useDocumentTitle('Forgot Password', 'Reset your Virtual Assistant account password');
 
   const {
     register,
