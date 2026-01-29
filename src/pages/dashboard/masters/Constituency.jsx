@@ -248,7 +248,7 @@ const Constituency = () => {
       alert(error.response?.data?.message || 'Failed to delete constituency');
     }
   };
-
+console.log("filteredLocations", filteredLocations)
   return (
     <div className="space-y-6">
       {/* Filter Card */}
@@ -276,31 +276,41 @@ const Constituency = () => {
               <Plus size={18} />
               Add New Constituency
             </button>
-            <div className="mt-4 flex flex-wrap gap-4">
-            <SelectFieldHeader
-                name="provinceFilter"
-                placeholder="Province"
-                register={register}
-                value={watch('provinceFilter')}
-                options={states.map((s) => ({
-                label: s.name,
-                value: s.id,
-                }))}
-                onChange={onProvinceFilterChange}
-            />
-            <SelectFieldHeader
-                name="districtFilter"
-                placeholder="District"
-                register={register}
-                value={watch('districtFilter')}
-                options={districts.map((d) => ({
-                label: d.name,
-                value: d.id,
-                }))}
-                onChange={onDistrictFilterChange}
-            />
-            </div>
           </div>
+        </div>
+        <div className="mt-4 flex flex-col sm:flex-row sm:items-end gap-3">
+          <SelectFieldHeader
+            name="provinceFilter"
+            placeholder="Province"
+            register={register}
+            value={watch('provinceFilter')}
+            options={states.map((s) => ({
+              label: s.name,
+              value: s.id,
+            }))}
+            onChange={onProvinceFilterChange}
+            className="flex-1 min-w-0"
+          />
+
+          <SelectFieldHeader
+            name="districtFilter"
+            placeholder="District"
+            register={register}
+            value={watch('districtFilter')}
+            options={districts.map((d) => ({
+              label: d.name,
+              value: d.id,
+            }))}
+            onChange={onDistrictFilterChange}
+            className="flex-1 min-w-0"
+          />
+
+          <button
+           
+            className="flex items-center gap-2 rounded-lg bg-primary px-4 py-4 text-white hover:bg-primary/90"
+          >
+            Submit
+          </button>
         </div>
 
         <div className="mt-6">
@@ -314,6 +324,7 @@ const Constituency = () => {
                 <table className="w-full border-collapse text-sm">
                   <thead className="sticky top-0 z-10 bg-[#f6f8f5] text-left shadow-sm">
                     <tr>
+                      <th className="px-6 py-4 font-medium">Province</th>
                       <th className="px-6 py-4 font-medium">District</th>
                       <th className="px-6 py-4 font-medium">Constituency</th>
                       <th className="px-6 py-4 font-medium text-right">Action</th>
@@ -405,7 +416,6 @@ const Constituency = () => {
                   </DialogTitle>
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="space-y-4">
-
                       <div className="">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Province
