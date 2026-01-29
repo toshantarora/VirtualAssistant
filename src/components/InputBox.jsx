@@ -8,8 +8,13 @@ const InputBox = ({
   name, 
   maxLength, 
   error,
-  disabled = false 
+  disabled = false,
+  value,
+  onChange,
+  onKeyDown,
 }) => {
+  const registerProps = register && name ? register(name) : {};
+
   return (
     <div className="relative w-full group">
       {label && (
@@ -23,7 +28,10 @@ const InputBox = ({
         placeholder={placeholder}
         maxLength={maxLength}
         disabled={disabled}
-        {...register(name)}
+        value={value}
+        onChange={onChange}
+        onKeyDown={onKeyDown}
+        {...registerProps}
         className={`
           h-11 md:h-[56px] w-full 
           rounded-xl md:rounded-2xl border 

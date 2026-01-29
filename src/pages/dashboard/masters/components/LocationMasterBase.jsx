@@ -3,6 +3,7 @@ import { Plus, Pencil, Trash2, Search } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import locationService from '../../../../services/locationService';
 import InputBox from '../../../../components/InputBox';
+import SelectField from '../../../../components/SelectField';
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react';
 import ConfirmDeleteModal from '../../../../components/ConfirmDeleteModal';
 import { useLocations } from '../../../../hooks/useLocations';
@@ -445,17 +446,11 @@ const LocationMasterBase = ({
                 {searchPlaceholder}
               </label> */}
               <div className="relative">
-                <Search
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                  size={16}
-                />
-                <input
-                  type="text"
+                <InputBox
                   placeholder={searchPlaceholder}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSearchClick()}
-                  className="w-full rounded-lg border border-gray-300 pl-10 pr-12 py-2 text-sm shadow-sm focus:border-primary focus:ring-1 focus:ring-primary placeholder-gray-400 outline-none bg-white transition-all"
                 />
                 <button
                   onClick={handleSearchClick}
@@ -692,127 +687,97 @@ const LocationMasterBase = ({
                       {/* Cascading selects for modal */}
                       {typeIndex >= 1 && (
                         <div className="hidden">
-                          <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                            Country
-                          </label>
-                          <select
-                            {...register('countryId')}
+                          <SelectField
+                            name="countryId"
+                            label="Country"
+                            register={register}
+                            error={errors.countryId}
+                            value={watchCountryId}
                             onChange={(e) => {
-                              setValue('countryId', e.target.value);
+                              const val = e.target.value;
+                              setValue('countryId', val);
                               setValue('provinceId', '');
                               setValue('districtId', '');
                               setValue('constituencyId', '');
                               setValue('wardId', '');
-                              fetchStates(e.target.value);
+                              if (val) fetchStates(val);
                             }}
-                            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none"
-                          >
-                            <option value="">Select Country</option>
-                            {countries.map((c) => (
-                              <option key={c.id} value={c.id}>
-                                {c.name}
-                              </option>
-                            ))}
-                          </select>
+                            options={countries.map((c) => ({ label: c.name, value: c.id }))}
+                          />
                         </div>
                       )}
 
                       {typeIndex >= 2 && (
-                        <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                            Province
-                          </label>
-                          <select
-                            {...register('provinceId')}
-                            onChange={(e) => {
-                              setValue('provinceId', e.target.value);
-                              setValue('districtId', '');
-                              setValue('constituencyId', '');
-                              setValue('wardId', '');
-                              fetchDistricts(e.target.value);
-                            }}
-                            disabled={!watchCountryId}
-                            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none disabled:bg-gray-50"
-                          >
-                            <option value="">Select Province</option>
-                            {modalStates.map((s) => (
-                              <option key={s.id} value={s.id}>
-                                {s.name}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
+                        <SelectField
+                          name="provinceId"
+                          label="Province"
+                          placeholder="Select Province"
+                          register={register}
+                          error={errors.provinceId}
+                          value={watchProvinceId}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setValue('provinceId', val);
+                            setValue('districtId', '');
+                            setValue('constituencyId', '');
+                            setValue('wardId', '');
+                            if (val) fetchDistricts(val);
+                          }}
+                          disabled={!watchCountryId}
+                          options={modalStates.map((s) => ({ label: s.name, value: s.id }))}
+                        />
                       )}
 
                       {typeIndex >= 3 && (
-                        <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                            District
-                          </label>
-                          <select
-                            {...register('districtId')}
-                            onChange={(e) => {
-                              setValue('districtId', e.target.value);
-                              setValue('constituencyId', '');
-                              setValue('wardId', '');
-                              fetchConstituencies(e.target.value);
-                            }}
-                            disabled={!watchProvinceId}
-                            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none disabled:bg-gray-50"
-                          >
-                            <option value="">Select District</option>
-                            {modalDistricts.map((d) => (
-                              <option key={d.id} value={d.id}>
-                                {d.name}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
+                        <SelectField
+                          name="districtId"
+                          label="District"
+                          placeholder="Select District"
+                          register={register}
+                          error={errors.districtId}
+                          value={watchDistrictId}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setValue('districtId', val);
+                            setValue('constituencyId', '');
+                            setValue('wardId', '');
+                            if (val) fetchConstituencies(val);
+                          }}
+                          disabled={!watchProvinceId}
+                          options={modalDistricts.map((d) => ({ label: d.name, value: d.id }))}
+                        />
                       )}
 
                       {typeIndex >= 4 && (
-                        <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                            Constituency
-                          </label>
-                          <select
-                            {...register('constituencyId')}
-                            onChange={(e) => {
-                              setValue('constituencyId', e.target.value);
-                              setValue('wardId', '');
-                              fetchWards(e.target.value);
-                            }}
-                            disabled={!watchDistrictId}
-                            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none disabled:bg-gray-50"
-                          >
-                            <option value="">Select Constituency</option>
-                            {modalConstituencies.map((c) => (
-                              <option key={c.id} value={c.id}>
-                                {c.name}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
+                        <SelectField
+                          name="constituencyId"
+                          label="Constituency"
+                          placeholder="Select Constituency"
+                          register={register}
+                          error={errors.constituencyId}
+                          value={watchConstituencyId}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setValue('constituencyId', val);
+                            setValue('wardId', '');
+                            if (val) fetchWards(val);
+                          }}
+                          disabled={!watchDistrictId}
+                          options={modalConstituencies.map((c) => ({ label: c.name, value: c.id }))}
+                        />
                       )}
 
                       {typeIndex >= 5 && (
-                        <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                            Ward
-                          </label>
-                          <select
-                            {...register('wardId')}
-                            disabled={!watchConstituencyId}
-                            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none disabled:bg-gray-50"
-                          >
-                            <option value="">Select Ward</option>
-                            {modalWards.map((w) => (
-                              <option key={w.id} value={w.id}>
-                                {w.name}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
+                        <SelectField
+                          name="wardId"
+                          label="Ward"
+                          placeholder="Select Ward"
+                          register={register}
+                          error={errors.wardId}
+                          value={watch('wardId')}
+                          disabled={!watchConstituencyId}
+                          options={modalWards.map((w) => ({ label: w.name, value: w.id }))}
+                        />
                       )}
 
                       <InputBox
@@ -828,14 +793,14 @@ const LocationMasterBase = ({
                       <button
                         type="button"
                         onClick={closeModal}
-                        className="px-5 py-2.5 rounded-lg border border-gray-300 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                        className="px-5 py-2.5 rounded-lg border border-gray-300 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
                       >
                         Cancel
                       </button>
                       <button
                         type="submit"
                         disabled={creating}
-                        className="px-5 py-2.5 rounded-lg bg-primary text-white text-sm font-bold hover:bg-primary-dark shadow-lg shadow-primary/20 disabled:opacity-50"
+                        className="px-6 py-2.5 rounded-lg bg-primary text-white text-sm font-bold hover:bg-primary-dark shadow-lg shadow-primary/20 disabled:opacity-50 transition-all"
                       >
                         {creating ? 'Saving...' : isEditMode ? 'Update' : 'Create'}
                       </button>

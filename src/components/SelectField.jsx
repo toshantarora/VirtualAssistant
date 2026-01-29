@@ -20,6 +20,7 @@ const SelectField = ({
   value: externalValue,
   showAllOption = false, // Default to false for form fields (only show in filters)
   classNames = {},
+  disabled = false,
 }) => {
   const [query, setQuery] = useState('');
   const [selectedValue, setSelectedValue] = useState(externalValue || '');
@@ -66,6 +67,7 @@ const SelectField = ({
       <Combobox
         as="div"
         value={selectedValue}
+        disabled={disabled}
         onChange={(val) => {
           setSelectedValue(val || '');
           const event = {
@@ -78,13 +80,14 @@ const SelectField = ({
         immediate
       >
         <div className="relative">
-          <ComboboxButton className="w-full text-left outline-none block">
+          <ComboboxButton className="w-full text-left outline-none block" disabled={disabled}>
             <div 
               className={`
                 relative flex items-center h-[54px] w-full 
                 overflow-hidden rounded-2xl border 
                 transition-all duration-300 ease-out
                 bg-white shadow-sm
+                ${disabled ? 'bg-slate-50 cursor-not-allowed opacity-60' : ''}
                 ${error 
                   ? 'border-red-400 ring-2 ring-red-500/10 shadow-red-500/5' 
                   : 'border-slate-200 hover:border-primary/40 focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10'
@@ -96,12 +99,13 @@ const SelectField = ({
               </div>
 
               <ComboboxInput
-                className="h-full w-full border-none bg-transparent py-2 pl-10 pr-12 text-sm font-semibold text-slate-800 placeholder-slate-500 focus:ring-0 outline-none"
+                className="h-full w-full border-none bg-transparent py-2 pl-10 pr-12 text-sm font-semibold text-slate-800 placeholder-slate-500 focus:ring-0 outline-none disabled:cursor-not-allowed"
                 displayValue={() => selectedOption?.label || ''}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder={placeholder}
                 autoComplete="off"
-                onClick={(e) => e.target.select()}
+                onClick={(e) => !disabled && e.target.select()}
+                disabled={disabled}
               />
 
               <div className="absolute right-4 flex items-center gap-2 pointer-events-none">
@@ -116,7 +120,7 @@ const SelectField = ({
           </ComboboxButton>
 
           {/* Clear button positioned absolutely, outside ComboboxButton */}
-          {selectedValue !== '' && (
+          {selectedValue !== '' && !disabled && (
             <div
               onClick={(e) => {
                 e.preventDefault();
