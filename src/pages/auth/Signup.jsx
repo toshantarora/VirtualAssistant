@@ -56,29 +56,6 @@ const Signup = () => {
   const selectedWard = watch('ward');
   const selectedFacility = watch('facility');
 
-  /* ------------------ Initial Fetch for Dependents ------------------ */
-  useEffect(() => {
-    const initDependents = async () => {
-      if (selectedCountry) await fetchStates(selectedCountry);
-      if (selectedState) await fetchDistricts(selectedState);
-      if (selectedDistrict) await fetchConstituencies(selectedDistrict);
-      if (selectedConstituency) await fetchWards(selectedConstituency);
-      if (selectedWard) await fetchFacilities(selectedWard);
-    };
-    initDependents();
-  }, [
-    selectedCountry,
-    selectedState,
-    selectedDistrict,
-    selectedConstituency,
-    selectedWard,
-    fetchStates,
-    fetchDistricts,
-    fetchConstituencies,
-    fetchWards,
-    fetchFacilities,
-  ]);
-
   const [showToast, setShowToast] = useState(false);
   const [toastData, setToastData] = useState({
     success: true,

@@ -71,15 +71,15 @@ const AddUserForm = ({ onSuccess }) => {
     initDependents();
   }, [
     selectedCountry,
-    selectedState,
-    selectedDistrict,
-    selectedConstituency,
-    selectedWard,
-    fetchStates,
-    fetchDistricts,
-    fetchConstituencies,
-    fetchWards,
-    fetchFacilities,
+    // selectedState,
+    // selectedDistrict,
+    // selectedConstituency,
+    // selectedWard,
+    // fetchStates,
+    // fetchDistricts,
+    // fetchConstituencies,
+    // fetchWards,
+    // fetchFacilities,
   ]);
 
 

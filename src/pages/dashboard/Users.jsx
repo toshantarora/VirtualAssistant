@@ -57,29 +57,6 @@ const Users = () => {
   const selectedWard = watch('ward');
   const selectedFacility = watch('facility');
 
-  /* ------------------ Initial Fetch for Dependents ------------------ */
-  useEffect(() => {
-    const initDependents = async () => {
-      if (selectedCountry) await fetchStates(selectedCountry);
-      if (selectedProvince) await fetchDistricts(selectedProvince);
-      if (selectedDistrict) await fetchConstituencies(selectedDistrict);
-      if (selectedConstituency) await fetchWards(selectedConstituency);
-      if (selectedWard) await fetchFacilities(selectedWard);
-    };
-    initDependents();
-  }, [
-    selectedCountry,
-    selectedProvince,
-    selectedDistrict,
-    selectedConstituency,
-    selectedWard,
-    fetchStates,
-    fetchDistricts,
-    fetchConstituencies,
-    fetchWards,
-    fetchFacilities,
-  ]);
-
   const countries = getList('COUNTRY');
   const states = getList('PROVINCE', selectedCountry);
   const districts = getList('DISTRICT', selectedProvince);
