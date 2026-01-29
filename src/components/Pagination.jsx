@@ -2,7 +2,7 @@ const Pagination = ({ currentPage, totalItems, itemsPerPage, onPageChange }) => 
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   if (totalPages <= 1) return null;
   return (
-    <div className="flex items-center justify-between pt-6 text-sm">
+    <div className="flex items-center justify-between pt-6 text-sm gap-6">
       <p className="text-green-800">{`Page ${currentPage} of ${totalPages}`}</p>
 
       <div className="flex gap-3">

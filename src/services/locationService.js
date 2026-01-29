@@ -7,6 +7,12 @@ const locationService = {
     return response.data?.data || [];
   },
 
+  // Search locations (paginated)
+  searchLocations: async (params = {}) => {
+    const response = await api.get('/admin/locations/search', { params });
+    return response.data?.data;
+  },
+
   // Create a new location
   createLocation: async (data) => {
     const response = await api.post('/admin/locations', data);
