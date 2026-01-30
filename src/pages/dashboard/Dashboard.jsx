@@ -170,7 +170,7 @@ const Dashboard = () => {
         role: 'USER',
         activeLast7Days: activeFilter === 'active' ? true : undefined,
         inactiveLast7Days: activeFilter === 'inactive' ? true : undefined,
-        status:
+        userStatus:
           activeFilter === 'pending'
             ? 'PENDING'
             : activeFilter === 'active' || activeFilter === 'inactive'

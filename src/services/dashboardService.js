@@ -40,7 +40,7 @@ export const getUsers = async ({
   limit = 10,
   search = '',
   role = 'USER',
-  status,
+  userStatus,
   lastActiveFrom,
   lastActiveTo,
   activeLast7Days,
@@ -62,7 +62,7 @@ export const getUsers = async ({
   };
 
   if (search) params.search = search;
-  if (status) params.userStatus = status;
+  if (userStatus) params.userStatus = userStatus;
   if (lastActiveFrom) params.lastActiveFrom = lastActiveFrom;
   if (lastActiveTo) params.lastActiveTo = lastActiveTo;
   if (activeLast7Days !== undefined) params.activeLast7Days = activeLast7Days;
