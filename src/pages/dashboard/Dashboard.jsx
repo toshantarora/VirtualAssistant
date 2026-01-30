@@ -175,7 +175,7 @@ const Dashboard = () => {
             ? 'PENDING'
             : activeFilter === 'active' || activeFilter === 'inactive'
               ? 'APPROVED'
-              : undefined,
+              : 'APPROVED',
         sortBy: 'recent',
         countryId: selectedCountry,
         provinceId: selectedProvince,
