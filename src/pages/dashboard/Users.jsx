@@ -120,7 +120,7 @@ const Users = () => {
         limit,
         search,
         role: 'USER',
-        status:
+        userStatus:
           activeFilter === 'all'
             ? undefined
             : activeFilter === 'pending'
