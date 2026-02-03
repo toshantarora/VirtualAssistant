@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import loginImg from '../../assets/login-illustration.png';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,6 +14,10 @@ import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 
 const Login = () => {
   useDocumentTitle('Login', 'Login to access the Virtual Assistant admin dashboard');
+  
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const messageParam = searchParams.get('message');
   
   const {
     register,
@@ -33,6 +37,18 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
+
+  useEffect(() => {
+    if (messageParam === 'relogin session expired') {
+      setToastData({
+        success: false,
+        title: 'Session Expired',
+        message: 'Please login again to continue',
+      });
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 5000);
+    }
+  }, [messageParam]);
 
   const onSubmit = async (data) => {
     try {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import loginImg from '../../assets/login-illustration.png';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -41,8 +41,6 @@ const Signup = () => {
 
   const {
     getList,
-    fetchCountries,
-    fetchStates,
     fetchDistricts,
     fetchConstituencies,
     fetchWards,
@@ -139,7 +137,6 @@ const Signup = () => {
     }
   };
 
-  const countries = getList('COUNTRY');
   const states = getList('PROVINCE', selectedCountry);
   const districts = getList('DISTRICT', selectedState);
   const constituencies = getList('CONSTITUENCY', selectedDistrict);

@@ -21,7 +21,6 @@ const AddUserForm = ({ onSuccess }) => {
   const [dialogMessage, setDialogMessage] = useState('');
   const {
     getList,
-    fetchCountries,
     fetchStates,
     fetchDistricts,
     fetchConstituencies,
@@ -130,7 +129,7 @@ const AddUserForm = ({ onSuccess }) => {
 
       if (res?.success) {
         setDialogType('success');
-        setDialogMessage('User created successfully!');
+        setDialogMessage(res?.message || 'User created successfully!');
         setDialogOpen(true);
         reset();
         onSuccess?.();
@@ -144,7 +143,6 @@ const AddUserForm = ({ onSuccess }) => {
     }
   };
 
-  const countries = getList('COUNTRY');
   const states = getList('PROVINCE', selectedCountry);
   const districts = getList('DISTRICT', selectedState);
   const constituencies = getList('CONSTITUENCY', selectedDistrict);

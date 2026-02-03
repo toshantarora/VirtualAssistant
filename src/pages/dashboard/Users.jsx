@@ -31,8 +31,6 @@ const Users = () => {
   /* ------------------ Locations ------------------ */
   const {
     getList,
-    fetchCountries,
-    fetchStates,
     fetchDistricts,
     fetchConstituencies,
     fetchWards,
@@ -57,7 +55,6 @@ const Users = () => {
   const selectedWard = watch('ward');
   const selectedFacility = watch('facility');
 
-  const countries = getList('COUNTRY');
   const states = getList('PROVINCE', selectedCountry);
   const districts = getList('DISTRICT', selectedProvince);
   const constituencies = getList('CONSTITUENCY', selectedDistrict);

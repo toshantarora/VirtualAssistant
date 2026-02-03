@@ -14,12 +14,12 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
   const isEdit = mode === 'edit';
 
   const [loading, setLoading] = useState(false);
-  const [successMsg, setSuccessMsg] = useState('');
+  const [msg, setMsg] = useState('');
+  const [type, setType] = useState('success');
   const [prefillLoading, setPrefillLoading] = useState(false);
 
   const {
     getList,
-    fetchCountries,
     fetchStates,
     fetchDistricts,
     fetchConstituencies,
@@ -142,7 +142,8 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
   const onSubmit = async (formData) => {
     try {
       setLoading(true);
-      setSuccessMsg('');
+      setMsg('');
+      setType('success');
 
       const payload = {
         email: formData.email,
@@ -160,19 +161,20 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
 
       if (isEdit) {
         await updateUserApi(userData.id, payload);
-        setSuccessMsg('User updated successfully!');
+        setMsg('User updated successfully!');
       } else {
-        await createUserApi({
+        const user = await createUserApi({
           ...payload,
           password: 'admin123',
         });
-        setSuccessMsg('User created successfully!');
+        setMsg(user?.message || 'User created successfully!');
       }
 
       await onSuccess?.();
       setTimeout(handleClose, 1000);
     } catch (err) {
-      setSuccessMsg(err?.response?.data?.message || (isEdit ? 'Update failed' : 'Create failed'));
+      setType('error');
+      setMsg(err?.response?.data?.message || (isEdit ? 'Update failed' : 'Create failed'));
     } finally {
       setLoading(false);
     }
@@ -192,14 +194,14 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
       providerType: DEFAULT_PROVIDER_TYPE,
     });
 
-    setSuccessMsg('');
+    setMsg('');
+    setType('success');
 
     setPrefillLoading(false);
     setLoading(false);
     onClose();
   };
 
-  const countries = getList('COUNTRY');
   const states = getList('PROVINCE', selectedCountry);
   const districts = getList('DISTRICT', selectedState);
   const constituencies = getList('CONSTITUENCY', selectedDistrict);
@@ -216,9 +218,13 @@ const UserModal = ({ isOpen, onClose, mode, userData = {}, onSuccess }) => {
             <span className="text-xl font-semibold">{isEdit ? 'Edit User' : 'Add User'}</span>
           </div>
 
-          {successMsg && (
-            <div className={`mb-4 rounded px-4 py-2 ${'bg-green-100 text-green-700'}`}>
-              {successMsg}
+          {msg && (
+            <div
+              className={`mb-4 rounded px-4 py-2 ${
+                type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+              }`}
+            >
+              {msg}
             </div>
           )}
 

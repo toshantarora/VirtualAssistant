@@ -45,8 +45,6 @@ const Dashboard = () => {
 
   const {
     getList,
-    // fetchCountries,
-    fetchStates,
     fetchDistricts,
     fetchConstituencies,
     fetchWards,
@@ -125,7 +123,6 @@ const Dashboard = () => {
 
 
   // Derive lists from context
-  const countries = getList('COUNTRY');
   const states = getList('PROVINCE', selectedCountry);
   const districts = getList('DISTRICT', selectedProvince);
   const constituencies = getList('CONSTITUENCY', selectedDistrict);

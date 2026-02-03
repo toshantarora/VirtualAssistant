@@ -21,7 +21,7 @@ const Notification = ({ show, setShow, success = true, title, message }) => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="pointer-events-auto w-full max-w-sm rounded-lg bg-white shadow-lg outline outline-1 outline-black/5">
+          <div className="pointer-events-auto w-full max-w-sm rounded-lg bg-white shadow-lg outline-1 outline-black/5">
             <div className="p-4">
               <div className="flex items-start">
                 {/* Icon */}
