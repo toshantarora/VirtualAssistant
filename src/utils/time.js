@@ -2,7 +2,18 @@ export const formatUsageTime = (seconds = 0) => {
   if (!seconds) return '0h 0m';
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
-  return `${h}h ${m}m`;
+
+  const totalMinutes = (h * 60) + m;
+
+  const days = Math.floor(totalMinutes / (24 * 60));
+  const remainingMinutesAfterDays = totalMinutes % (24 * 60);
+
+  const remainingHours = Math.floor(remainingMinutesAfterDays / 60);
+  const remainingMins = remainingMinutesAfterDays % 60;
+
+  return days>0 ? `${days}d ${remainingHours}h ${remainingMins}m` : `${remainingHours}h ${remainingMins}m`;
+
+  // return `${h}h ${m}m`;
 };
 
 export const formatLastActive = (date) => {
@@ -10,8 +21,11 @@ export const formatLastActive = (date) => {
   const diff = Date.now() - new Date(date).getTime();
   const mins = Math.floor(diff / 60000);
   if (mins < 60) return `${mins} mins ago`;
-  const hrs = Math.floor(mins / 60);
-  return `${hrs} hrs ago`;
+  const days = Math.floor(mins / (24 * 60));
+  const remainingMinutesAfterDays = mins % (24 * 60);
+  const remainingHours = Math.floor(remainingMinutesAfterDays / 60);
+  // const hrs = Math.floor(mins / 60);
+  return days>0 ? `${days}d ${remainingHours} hrs ago` : `${remainingHours} hrs ago`;
 };
 
 export const getShortId = (uuid) => {
