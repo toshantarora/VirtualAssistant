@@ -25,7 +25,7 @@ const ActionButton = (
   </div>
 );
 
-const UsersTable = ({ openEdit, users = [], loading, onUserDeleted }) => {
+const UsersTable = ({ openEdit, users = [], loading, onUserDeleted, showEditOption, showArchiveOption }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [deleting, setDeleting] = useState(false);
@@ -200,7 +200,7 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted }) => {
                       )}
 
                       {/* Archive Button (For Non-Archived) */}
-                      {user.userStatus !== 'ARCHIVED' && !user.deletedAt && (
+                      {showArchiveOption && user.userStatus !== 'ARCHIVED' && !user.deletedAt && (
                         <ActionButton
                           onClick={() => handleStatusUpdate(user.id, 'ARCHIVED', 'archived')}
                           disabled={actionLoading === user.id}
@@ -222,13 +222,14 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted }) => {
                           title="Restore User"
                         />
                       )}
-
+                      {showEditOption && 
                       <ActionButton
                         onClick={() => openEditModal(user)}
                         icon={Pencil}
                         className="hover:bg-blue-100 text-blue-600"
                         title="Edit User"
                       />
+                      }
                     </div>
                   </td>
                 </tr>

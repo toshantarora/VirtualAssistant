@@ -12,6 +12,7 @@ import { getDashboardStats, getUsers } from '../../services/dashboardService';
 import { useForm } from 'react-hook-form';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { DEFAULT_COUNTRY_ID } from '../../constants/location';
+import UsersTable from '../../components/UsersTable';
 
 const Dashboard = () => {
   useDocumentTitle('Dashboard', 'Overview of system usage and user statistics');
@@ -342,13 +343,25 @@ const Dashboard = () => {
           }}
           showAddUser={false}
         />
-
+        {
+          activeFilter === 'pending' ? 
+          <UsersTable
+          users={users}
+          loading={usersLoading}
+          // openEdit={openEdit}
+          showEditOption={false}
+          showArchiveOption={false}
+          onUserDeleted={handleUserDeleted}
+        />
+        :
         <UsersTableDashBoard
           users={users}
           loading={usersLoading}
           onUserDeleted={handleUserDeleted}
           showDelete={false}
-        />
+        /> 
+        }
+        
       </div>
 
       {/* ================= Pagination ================= */}

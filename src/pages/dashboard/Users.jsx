@@ -265,6 +265,8 @@ const Users = () => {
           users={users}
           loading={loading}
           openEdit={openEdit}
+          showEditOption={true}
+          showArchiveOption={true}
           onUserDeleted={handleUserDeleted}
         />
       </div>
