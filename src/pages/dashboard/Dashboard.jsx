@@ -257,7 +257,7 @@ const Dashboard = () => {
         />
 
         <StatCard
-          title="Pending Users"
+          title="Approval Requests"
           value={stats.pendingUsers}
           icon={Clock}
           loading={statsLoading}
