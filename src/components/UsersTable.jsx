@@ -137,7 +137,7 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted, showEditOpti
                 <th className="px-6 py-4 font-medium">Constituency</th>{' '}
                 <th className="px-6 py-4 font-medium">Facility</th>
                 <th className="px-6 py-4 font-medium">ward</th>{' '}
-                <th className="px-6 py-4 font-medium">Facility Type</th>
+                <th className="px-6 py-4 font-medium">Provider Type</th>
                 <th className="px-6 py-4 font-medium">Actions</th>
               </tr>
             </thead>
@@ -183,7 +183,7 @@ const UsersTable = ({ openEdit, users = [], loading, onUserDeleted, showEditOpti
                   </td>
                   <td className="px-6 py-5 text-gray-600">{user?.ward ? user?.ward?.name : '-'}</td>
                   <td className="px-6 py-5 text-gray-600">
-                    {user?.facilityType ? user?.facilityType?.name : '-'}
+                    {user?.providerType ? user?.providerType.charAt(0).toUpperCase() + user?.providerType.slice(1) : '-'}
                   </td>
                   <td className="px-6 py-5">
                     <div className="flex gap-2">
