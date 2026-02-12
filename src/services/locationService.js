@@ -30,7 +30,16 @@ const locationService = {
     const response = await api.delete(`/admin/locations/${id}`, {
       params: { type },
     });
-    return response.data;
+    return response.data.data;
+  },
+
+  importLocations: async (formData) => {
+    const response = await api.post('/admin/locations/import', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data.data;
   },
 
   // Get location hierarchy/details if needed
