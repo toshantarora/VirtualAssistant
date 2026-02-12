@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { Plus, Pencil, Trash2, Search } from 'lucide-react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { Plus, Pencil, Trash2, Search, Upload } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import locationService from '../../../../services/locationService';
 import InputBox from '../../../../components/InputBox';
@@ -12,6 +12,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useDocumentTitle } from '../../../../hooks/useDocumentTitle';
 import { DEFAULT_COUNTRY_ID } from '../../../../constants/location';
 import Pagination from '../../../../components/Pagination';
+import ImportProgressModal from './ImportProgressModal';
 
 const LEVELS = ['COUNTRY', 'PROVINCE', 'DISTRICT', 'CONSTITUENCY', 'WARD', 'FACILITY'];
 
@@ -40,6 +41,11 @@ const LocationMasterBase = ({
   const [editingLocation, setEditingLocation] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [locationToDelete, setLocationToDelete] = useState(null);
+
+  // Import State
+  const [importModalOpen, setImportModalOpen] = useState(false);
+  const [importJobId, setImportJobId] = useState(null);
+  const fileInputRef = useRef(null);
 
   const isEditMode = Boolean(editingLocation);
   const typeIndex = LEVELS.indexOf(type);
@@ -177,6 +183,44 @@ const LocationMasterBase = ({
     setAppliedSearch(searchTerm);
     setPage(1);
   };
+
+  // ================= IMPORT HANDLER =================
+  const handleImportClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.name.endsWith('.csv')) {
+      alert('Please upload a CSV file');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      setLoading(true);
+      const res = await locationService.importLocations(formData);
+      setImportJobId(res.jobId);
+      setImportModalOpen(true);
+    } catch (error) {
+      console.error('Import failed', error);
+      alert(error.response?.data?.message || 'Failed to initiate import');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleImportComplete = useCallback(() => {
+    // Refresh data after import
+    fetchData();
+  }, [fetchData]);
 
   // ================= MODAL HANDLERS =================
   const openCreateModal = () => {
@@ -340,6 +384,21 @@ const LocationMasterBase = ({
 
   return (
     <div className="space-y-6">
+      <ImportProgressModal
+        key={importJobId}
+        isOpen={importModalOpen}
+        onClose={() => setImportModalOpen(false)}
+        jobId={importJobId}
+        onComplete={handleImportComplete}
+      />
+      <input
+        type="file"
+        ref={fileInputRef}
+        className="hidden"
+        accept=".csv"
+        onChange={handleFileChange}
+      />
+
       {/* ================= Filters Card ================= */}
       {typeIndex > 1 && (
         <div className="bg-white p-4 md:p-6 rounded-2xl border border-primary-100 shadow-sm">
@@ -462,13 +521,24 @@ const LocationMasterBase = ({
             </div>
           </div>
 
-          <button
-            onClick={openCreateModal}
-            className="flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-white font-bold hover:bg-primary-dark transition-all shadow-lg shadow-primary/20"
-          >
-            <Plus size={18} />
-            Add New {type.charAt(0) + type.slice(1).toLowerCase()}
-          </button>
+          <div className="flex gap-3">
+            {type === 'FACILITY' && (
+              <button
+                onClick={handleImportClick}
+                className="flex items-center gap-2 rounded-lg bg-white border border-gray-300 px-4 py-2.5 text-gray-700 font-bold hover:bg-gray-50 transition-all shadow-sm"
+              >
+                <Upload size={18} />
+                Import
+              </button>
+            )}
+            <button
+              onClick={openCreateModal}
+              className="flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-white font-bold hover:bg-primary-dark transition-all shadow-lg shadow-primary/20"
+            >
+              <Plus size={18} />
+              Add New {type.charAt(0) + type.slice(1).toLowerCase()}
+            </button>
+          </div>
         </div>
 
         <div className="mt-8">
